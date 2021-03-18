@@ -1,0 +1,42 @@
+name == main
+https://www.zhihu.com/question/49136398/answer/138164069
+    python -m 参数
+    https://blog.konghy.cn/2017/04/24/python-entry-program/
+
+py 导入模块
+https://www.cnblogs.com/asap/p/11092241.html
+
+随机数
+random.randint(a, b) #[a, b]
+https://docs.python.org/zh-cn/3.8/library/random.html
+
+
+对用户进行操作：
+create user 'uslib'@'localhost' identified by 'uslib';
+
+update user SET host='localhost' WHERE user='uslib';
+FLUSH PRIVILEGES;
+
+GRANT ALL PRIVILEGES ON uslib.* TO 'uslib'@'localhost';
+show grants for 'uslib'@'localhost';
+revoke all privileges on *.* from 'uslib'@'localhost';
+
+
+
+
+疑问：
+python不需要类属性的get set https://zhidao.baidu.com/question/560254173357287284.html
+@property 装饰器 https://blog.csdn.net/weixin_42205723/article/details/88411374
+
+外键
+
+mysql unique是索引吗
+https://zhidao.baidu.com/question/1930330526003212307.html
+http://c.biancheng.net/view/2445.html
+
+pycharm；连接github
+https://blog.csdn.net/zha6476003/article/details/83052032
+
+github可以有多个remote吗？
+remote是什么意思？
+https://www.runoob.com/git/git-remote-repo.html
