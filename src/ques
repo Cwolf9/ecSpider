@@ -40,3 +40,28 @@ https://blog.csdn.net/zha6476003/article/details/83052032
 github可以有多个remote吗？
 remote是什么意思？
 https://www.runoob.com/git/git-remote-repo.html
+
+
+OpenSSL SSL_connect: Connection was reset in connection to github.com:443
+https://blog.csdn.net/ximaiyao1984/article/details/110822578
+https://blog.csdn.net/qq_42359718/article/details/114254337
+https://blog.csdn.net/daerzei/article/details/79528153
+https://www.jianshu.com/p/62261a62c9cc
+
+git config --global http.sslVerify false
+git config --global --unset http.proxy
+git config --local http.proxy 127.0.0.1:1080
+hosts文件中加入github的ip地址
+
+OpenSSL SSL_read: Connection was reset, errno 10054：
+https://blog.csdn.net/qq_42643690/article/details/114386634
+git config --global http.sslBackend "openssl"
+
+修改git postbuffer缓存大小：
+git config --global http.postBuffer 524288000
+git config --global http.postBuffer 500M
+
+windows查看端口，进程：
+netstat -aon
+tasklist
+https://docs.microsoft.com/zh-cn/windows-hardware/drivers/debugger/finding-the-process-id
