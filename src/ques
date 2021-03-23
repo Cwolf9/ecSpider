@@ -27,6 +27,7 @@ revoke all privileges on *.* from 'uslib'@'localhost';
 疑问：
 python不需要类属性的get set https://zhidao.baidu.com/question/560254173357287284.html
 @property 装饰器 https://blog.csdn.net/weixin_42205723/article/details/88411374
+@classmethod
 
 外键
 
@@ -65,3 +66,29 @@ windows查看端口，进程：
 netstat -aon
 tasklist
 https://docs.microsoft.com/zh-cn/windows-hardware/drivers/debugger/finding-the-process-id
+
+
+pymysql autocommit:
+https://blog.csdn.net/maxmao1024/article/details/79575829
+MySQL 的 SELECT，INSERT，UPDATE或DELETE都会开启事务。
+如果AUTOCOMMIT设置为1（默认值），每一个SQL语句都被认为是一个完整的事务。 AUTOCOMMIT设置为0时，在随后的一系列语句的作用就像一个事务，直到一个明确的COMMIT语句结束。
+脚本是python 写的，用的pymysql 操作数据库。pymysql 初始化连接时，默认 autocommit=False, 代码里也没有手动commit, 脚本本身是常驻进程，所以查询事务一直没有提交。
+将pymysql 的连接初始化的 autocommit 设为 True, 至此问题解决。
+
+
+tkinter 事件event
+绑定鼠标键盘事件
+- 将Listbox和鼠标左键单击动作进行了事件绑定.目的是想每在Listbox里选中一项,就打印出当选项的索引信息。结果无论你选中哪一项,打印出来的信息都是你前一次选中的项的信息.
+我能不能这样理解,当我选中某一项时,Listbox所绑定的事件就马上执行,而此时Listbox的curselection值还没有及时更新?
+- 这个事情是这样的，如果和Button1绑定，那么在用户按下鼠标时会立刻执行绑定的函数，然后才把消息传递给ListBox，然后才会有Cursel的改变。
+我的意见是绑定<ButtonRelease-1>，因为鼠标按下时就立刻进入了ListBox的消息循环，Cursel已改变。在鼠标弹起时再取结果就是正确的了。
+
+tkinter after方法
+
+调用join方法后，主线程被阻塞，锁住text资源，子线程申请访问text资源失败，导致死锁。
+
+python Thread join wait
+https://www.jianshu.com/p/def7f016dd5e
+https://blog.csdn.net/cumtb2002/article/details/107766049
+https://blog.csdn.net/houyanhua1/article/details/78229808
+https://blog.csdn.net/weixin_39794130/article/details/111067545

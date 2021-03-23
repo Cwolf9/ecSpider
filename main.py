@@ -24,9 +24,10 @@ https://www.cnblogs.com/Tommy-Yu/p/3988893.html
 
 import sys
 print(sys.path[0])
-x = sys.path[0] + '\\leetcode'
+x = sys.path[0] + '\\tryatry\\leetcode'
 print(x)
 sys.path.append(x)
+# import tryatry.leetcode.exercise
 import exercise
 '''
 要导入上级目录，可以借助 sys.path，把上级目录加到 sys.path 里。

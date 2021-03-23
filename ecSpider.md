@@ -63,6 +63,15 @@ wcpath varchar(20),
 tags varchar(100),
 primary key(userid)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table searchinfo(
+userid int(11) not null,
+pt varchar(5) not null,
+cookie varchar(200) not null,
+referer varchar(50) not null,
+primary key(userid, pt)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 ```
 
 
@@ -72,6 +81,8 @@ primary key(userid)
 ```mysql
 insert into users (userid, username, password, nickname, sex)
 values (default, 'cwolf9', '123456','李行', '男');
+
+insert into users (username, password, email, phonenumber, nickname, sex) value ('wqe','wqe','wqe','wqe','wqe','w')
 ```
 
 
