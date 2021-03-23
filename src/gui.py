@@ -19,8 +19,7 @@ from tkinter import scrolledtext
 import fileinput
 import os
 import pickle
-
-import LoginFrame
+import loginFrame
 
 
 class ecSpider(Tk):
@@ -28,15 +27,22 @@ class ecSpider(Tk):
         super().__init__()
         self.rt = self
         self.rt.title("基于爬虫的电商比价系统")
-        self.changeSrcSize(800)
-        self.login_Frm = LoginFrame.LoginFrame(self.rt)
-        self.login_Frm.grid(row=0, column=0)
+        self.change_src_size(800)
+        self.login_frame = loginFrame.LoginFrame(self.rt)
+        self.login_frame.pack()
+        self.main_frame = Frame(self.rt)
+        self.create_main_page()
 
-    def changeSrcSize(self, width=1200, height=800):
+    def change_src_size(self, width=1200, height=800):
         screenwidth = self.rt.winfo_screenwidth()
         screenheight = self.rt.winfo_screenheight()
         size = '%dx%d+%d+%d' % (width, height, (screenwidth - width) / 2, (screenheight - height) / 2)
         self.rt.geometry(size)
+
+    def goto_login(self):
+        self.main_frame.pack_forget()
+        self.change_src_size(800)
+        self.login_frame.pack()
 
     def show_main_window(self):
         print('hello, main window')
@@ -44,9 +50,19 @@ class ecSpider(Tk):
             with open('data\\info.pickle', 'rb') as f:
                 self.usr_info = pickle.load(f)
                 print(self.usr_info)
+            self.rt.title("基于爬虫的电商比价系统^.^   欢迎 " + self.usr_info['login_username'])
+            self.login_frame.pack_forget()
+            self.change_src_size()
+            self.main_frame.pack()
         except FileNotFoundError:
             messagebox.showerror(title='错误提示！', message='系统出错，请重新登录！')
-        self.rt.title("基于爬虫的电商比价系统^.^   欢迎 " + self.usr_info['login_username'])
+            self.goto_login()
+
+    def create_main_page(self):
+        Label(self.main_frame, text='123', width=20).pack()
+        Button(self.main_frame, text='hello', command=self.goto_login).pack()
+
+
 if __name__ == "__main__":
     ecs = ecSpider()
     root = ecs.rt

@@ -11,6 +11,8 @@ from conf_win import *
 from tkinter import Tk, Frame, Button, Label, LabelFrame, Text, PhotoImage, Entry, messagebox, font, StringVar, IntVar, Checkbutton
 from tkinter import W, E, N, S, END, BOTTOM, TOP, BOTH, X, Y
 import pickle
+from src.model import Users
+
 
 class LoginFrame(Frame):
     def __init__(self, master, **kw):
@@ -46,9 +48,9 @@ class LoginFrame(Frame):
                 self.re_pw.set(usr_info['login_re_pw'])
                 self.username.set("")
                 self.password.set("")
-                if self.re_un == 1:
+                if self.re_un.get() == 1:
                     self.username.set(usr_info['login_username'])
-                if self.re_pw == 1:
+                if self.re_pw.get() == 1:
                     self.password.set(usr_info['login_password'])
         except:
             pass
@@ -82,32 +84,29 @@ class LoginFrame(Frame):
     def login(self, event=None):
         if event:
             print(event, event.char, event.keysym, event.keycode)
-        un = self.username.get()
-        pw = self.password.get()
+        un = self.username.get().strip()
+        pw = self.password.get().strip()
         print(un, pw)
-        invalid_symbols = ['\\', '/', ',', '.', '<', '>', '?', ':', ';', '\'', '\"', '[', ']', '{', '}', '|', ' ', '\n', '\r']
+        invalid_symbols = ['\\', '/', ',', '<', '>', '?', ':', ';', '\'', '\"', '[', ']', '{', '}', '|', ' ', '\n', '\r']
         errorno = 0
         if min(len(un), len(pw)) < 2:
             errorno = -2
-        for c in un:
-            if c in invalid_symbols:
-                errorno = -1
-        for c in pw:
+        for c in un + pw:
             if c in invalid_symbols:
                 errorno = -1
         if errorno == 0:
             query_sql = utilMysql.genQuerySql('users', (USERNAME, ), (un, ))
             query_res = utilMysql.queryUsers(query_sql)
-            if query_res != []:
+            if query_res:
                 query_sql = utilMysql.genQuerySql('users', (USERNAME, PASSWORD), (un, pw))
                 query_res = utilMysql.queryUsers(query_sql)
-                if query_res != []:
+                if query_res:
                     with open('data\\info.pickle', 'wb') as f:
                         usr_info = {'login_userid': query_res[0][0],
                                     'login_username': query_res[0][1],
                                     'login_password': query_res[0][2],
-                                    'login_re_un': self.re_un,
-                                    'login_re_pw': self.re_pw
+                                    'login_re_un': self.re_un.get(),
+                                    'login_re_pw': self.re_pw.get()
                         }
                         pickle.dump(usr_info, f)
                     self.master.show_main_window()
@@ -116,7 +115,7 @@ class LoginFrame(Frame):
             else:
                 errorno = -3
             pass
-        error_mes = ['', '用户名或密码包含非法字符', '用户名或密码长度不得少于6位', '不存在此用户', '密码错误']
+        error_mes = ['', '用户名或密码包含非法字符', '用户名或密码长度不得少于5位', '不存在此用户', '密码错误']
         if errorno != 0:
             messagebox.showerror(title='错误提示！', message=error_mes[-errorno])
 
@@ -127,6 +126,7 @@ class LoginFrame(Frame):
         self.email.set("")
         self.phonenumber.set("")
         self.nickname.set("")
+
         self.login_page.pack_forget()
         self.reg_page.pack()
 
@@ -148,33 +148,65 @@ class LoginFrame(Frame):
         self.email.set("")
         self.phonenumber.set("")
         self.nickname.set("")
+
         self.reg_page.pack_forget()
         self.login_page.pack()
 
     def create_reg_page(self):
-        label_font = font.Font(family='微软雅黑', size=18)
+        label_font = font.Font(family='微软雅黑', size=16)
+        label_font2 = font.Font(family='微软雅黑', size=18)
         entry_font = font.Font(family='微软雅黑', size=14)
-        Label(self.reg_page, text="注册页面", font=label_font).grid(row=0, sticky=E, pady=15)
+        Label(self.reg_page, text="注册页面", font=label_font2).grid(row=0, sticky=E, pady=15)
 
         Label(self.reg_page, text="账号*:", font=label_font, width=10).grid(row=1, sticky=E, pady=10, padx=150)
-        Entry(self.reg_page, textvariable=self.username, font=entry_font, width=20).grid(row=1, column=1, stick=W, columnspan=3, ipady=6)
+        Entry(self.reg_page, textvariable=self.username, font=entry_font, width=20).grid(row=1, column=1, stick=W, columnspan=3, ipady=5, pady=12)
         Label(self.reg_page, text="密码*:", font=label_font, width=10).grid(row=2, stick=E, pady=10, padx=150)
-        Entry(self.reg_page, textvariable=self.password, show='*', font=entry_font, width=20).grid(row=2, column=1, stick=W, columnspan=3, ipady=6)
+        Entry(self.reg_page, textvariable=self.password, show='*', font=entry_font, width=20).grid(row=2, column=1, stick=W, columnspan=3, ipady=5, pady=12)
         Label(self.reg_page, text="重复密码*:", font=label_font, width=10).grid(row=3, stick=E, pady=10, padx=150)
-        Entry(self.reg_page, textvariable=self.repassword, show='*', font=entry_font, width=20).grid(row=3, column=1, stick=W, columnspan=3, ipady=6)
+        Entry(self.reg_page, textvariable=self.repassword, show='*', font=entry_font, width=20).grid(row=3, column=1, stick=W, columnspan=3, ipady=5, pady=12)
         Label(self.reg_page, text="邮箱:", font=label_font, width=10).grid(row=4, stick=E, pady=10, padx=150)
-        Entry(self.reg_page, textvariable=self.email, font=entry_font, width=20).grid(row=4, column=1, stick=W, columnspan=3, ipady=6)
+        Entry(self.reg_page, textvariable=self.email, font=entry_font, width=20).grid(row=4, column=1, stick=W, columnspan=3, ipady=5, pady=12)
         Label(self.reg_page, text="电话号码:", font=label_font, width=10).grid(row=5, stick=E, pady=10, padx=150)
-        Entry(self.reg_page, textvariable=self.phonenumber, font=entry_font, width=20).grid(row=5, column=1, stick=W, columnspan=3, ipady=6)
+        Entry(self.reg_page, textvariable=self.phonenumber, font=entry_font, width=20).grid(row=5, column=1, stick=W, columnspan=3, ipady=5, pady=12)
         Label(self.reg_page, text="昵称:", font=label_font, width=10).grid(row=6, stick=E, pady=10, padx=150)
-        Entry(self.reg_page, textvariable=self.nickname, font=entry_font, width=20).grid(row=6, column=1, stick=W, columnspan=3, ipady=6)
+        Entry(self.reg_page, textvariable=self.nickname, font=entry_font, width=20).grid(row=6, column=1, stick=W, columnspan=2, ipady=5, pady=12)
         Label(self.reg_page, text="性别:", font=label_font, width=10).grid(row=7, stick=E, pady=10, padx=150)
-        Checkbutton(self.reg_page, text='男', variable=self.sex, onvalue='男', offvalue='女', font=entry_font, width=6).grid(row=7, column=1,
-                                                                                                stick=W)
-        Checkbutton(self.reg_page, text='女', variable=self.sex, onvalue='女', offvalue='男', font=entry_font, width=8).grid(row=7, column=2,
-                                                                                                stick=W)
-        Button(self.reg_page, text="返回", command=self.re_login).grid(row=8, stick=W, pady=10)
-        Button(self.reg_page, text="注册", command=self.register).grid(row=8, column=1, stick=E)
+        Checkbutton(self.reg_page, text='男', variable=self.sex, onvalue='男', offvalue='女', font=entry_font,
+                    width=6).grid(row=7, column=1, stick=W, pady=12)
+        Checkbutton(self.reg_page, text='女', variable=self.sex, onvalue='女', offvalue='男', font=entry_font,
+                    width=8).grid(row=7, column=2, stick=W, pady=12)
+        Button(self.reg_page, text="返回", command=self.re_login, font=entry_font, width=5).grid(row=8, pady=10)
+        Button(self.reg_page, text="注册", command=self.register, font=entry_font, width=5).grid(row=8, column=1,
+                                                                                               columnspan=2)
 
     def register(self):
-        pass
+        un = self.username.get().strip()
+        pw = self.password.get().strip()
+        repw = self.repassword.get().strip()
+        print(un, pw)
+        re_user = Users.Users(0, self.username.get().strip(), self.password.get().strip(), self.email.get().strip(), self.phonenumber.get().strip(),
+                              self.nickname.get().strip(), self.sex.get().strip())
+        check_res = re_user.self_check()
+        if pw != repw:
+            check_res = -4
+        print(check_res)
+        error_mes = ['注册成功！请登录吧~', '用户名或密码包含非法字符', '用户名或密码长度不得少于5位', '邮箱或电话号码格式不正确', '两次密码输入不相同', '已存在此用户名', '系统出错，请重试！']
+        if check_res == 0:
+            query_sql = utilMysql.genQuerySql('users', (USERNAME,), (un,))
+            query_res = utilMysql.queryUsers(query_sql)
+            if not query_res:
+                ins_sql = utilMysql.genInsSql('users', (USERNAME, PASSWORD, EMAIL, PHONENUMBER, NICKNAME, SEX), re_user.getAttrs())
+                ins_res = utilMysql.insertUsers(ins_sql)
+                if ins_res:
+                    self.username.set(re_user.username)
+                    self.password.set("")
+                else:
+                    check_res = -6
+            else:
+                check_res = -5
+        if check_res != 0:
+            messagebox.showerror(title='错误提示！', message=error_mes[-check_res])
+        else:
+            messagebox.showinfo(title='温馨提示！', message=error_mes[0])
+            self.reg_page.pack_forget()
+            self.login_page.pack()
