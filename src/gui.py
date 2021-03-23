@@ -10,9 +10,8 @@
 im = Image.open(path)
 im.show()
 '''
-from tkinter import *
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import Tk, Frame, Button, Label, LabelFrame, Text, StringVar, PhotoImage, Entry, messagebox
 from tkinter import filedialog
 from tkinter import simpledialog
 from tkinter import font
@@ -21,7 +20,7 @@ import fileinput
 import os
 import pickle
 
-import LoginFrm
+import LoginFrame
 
 
 class ecSpider(Tk):
@@ -30,7 +29,7 @@ class ecSpider(Tk):
         self.rt = self
         self.rt.title("基于爬虫的电商比价系统")
         self.changeSrcSize(800)
-        self.login_Frm = LoginFrm.LoginFrm(self.rt)
+        self.login_Frm = LoginFrame.LoginFrame(self.rt)
         self.login_Frm.grid(row=0, column=0)
 
     def changeSrcSize(self, width=1200, height=800):

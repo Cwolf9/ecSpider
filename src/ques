@@ -92,3 +92,12 @@ https://www.jianshu.com/p/def7f016dd5e
 https://blog.csdn.net/cumtb2002/article/details/107766049
 https://blog.csdn.net/houyanhua1/article/details/78229808
 https://blog.csdn.net/weixin_39794130/article/details/111067545
+
+tkinter 焦点：
+控件的话使用focus_set()函数来指定焦点，如果窗口那就很麻烦了，因为现在WINDOWS要让一个进程窗口获取焦点，需要使用SetForegroundWindow AttachThreadInput等API。
+问题：
+1.遇到在类中创建图片不能显示的问题，是因为图片变量定义成局部变量，导致离开函数后，变量被回收，ui找不到图片对象，就无法显示图片
+
+2.给button按钮绑定回车按键失败。
+一运行程序马上进入回车键绑定的函数，且并非真实事件。焦点也不在窗口上
+

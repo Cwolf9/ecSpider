@@ -148,7 +148,6 @@ def insertUsers(sql: str):
         exe_res = cursor.execute(sql)
         # 使用 fetchall() 方法获取所有数据, 返回元组
         fet_res = cursor.fetchall()
-        print(fet_res)
         # 提交修改 (事务机制)
         conn.commit()
     except AttributeError as e:
@@ -183,7 +182,6 @@ def testInsertSql():
         exe_res = cursor.execute(sql, (username, password))
         # 使用 fetchall() 方法获取所有数据, 返回元组
         fet_res = cursor.fetchall()
-        print(fet_res)
         # 提交修改 (事务机制)
         conn.commit()
     except AttributeError as e:
@@ -209,7 +207,6 @@ def deleteUsers(sql):
         cursor = mysql_conn.getCursor()
         exe_res = cursor.execute(sql)
         fet_res = cursor.fetchall()
-        print(fet_res)
         # 提交修改 (事务机制)
         conn.commit()
     except AttributeError as e:
@@ -232,7 +229,6 @@ def queryUsers(sql) -> List[tuple]:
         exe_res = cursor.execute(sql)
         fet_res = cursor.fetchall()
         userlist = list(items for items in fet_res)
-        print(userlist)
     except AttributeError as e:
         print('AttributeError: ', e)
     except Exception as e:
@@ -253,7 +249,6 @@ def updateUser(sql) -> bool:
         cursor = mysql_conn.getCursor()
         exe_res = cursor.execute(sql)
         fet_res = cursor.fetchall()
-        print(fet_res)
         # 提交修改 (事务机制)
         conn.commit()
     except AttributeError as e:
