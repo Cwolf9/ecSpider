@@ -6,11 +6,12 @@
 @date: 2021-03-22 21:27
 @desc:
 """
-import utilMysql
-from conf_win import *
+
 from tkinter import Tk, Frame, Button, Label, LabelFrame, Text, PhotoImage, Entry, messagebox, font, StringVar, IntVar, Checkbutton
 from tkinter import W, E, N, S, END, BOTTOM, TOP, BOTH, X, Y
 import pickle
+from src import utilMysql
+from src.conf_win import *
 from src.model import Users
 
 
@@ -96,10 +97,10 @@ class LoginFrame(Frame):
                 errorno = -1
         if errorno == 0:
             query_sql = utilMysql.genQuerySql('users', (USERNAME, ), (un, ))
-            query_res = utilMysql.queryUsers(query_sql)
+            query_res = utilMysql.query(query_sql)
             if query_res:
                 query_sql = utilMysql.genQuerySql('users', (USERNAME, PASSWORD), (un, pw))
-                query_res = utilMysql.queryUsers(query_sql)
+                query_res = utilMysql.query(query_sql)
                 if query_res:
                     with open('data\\info.pickle', 'wb') as f:
                         usr_info = {'login_userid': query_res[0][0],
@@ -193,10 +194,10 @@ class LoginFrame(Frame):
         error_mes = ['注册成功！请登录吧~', '用户名或密码包含非法字符', '用户名或密码长度不得少于5位', '邮箱或电话号码格式不正确', '两次密码输入不相同', '已存在此用户名', '系统出错，请重试！']
         if check_res == 0:
             query_sql = utilMysql.genQuerySql('users', (USERNAME,), (un,))
-            query_res = utilMysql.queryUsers(query_sql)
+            query_res = utilMysql.query(query_sql)
             if not query_res:
                 ins_sql = utilMysql.genInsSql('users', (USERNAME, PASSWORD, EMAIL, PHONENUMBER, NICKNAME, SEX), re_user.getAttrs())
-                ins_res = utilMysql.insertUsers(ins_sql)
+                ins_res = utilMysql.insert(ins_sql)
                 if ins_res:
                     self.username.set(re_user.username)
                     self.password.set("")

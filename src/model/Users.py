@@ -9,13 +9,8 @@
 import re
 class Users:
     def __init__(self, userid, username, password, email='xxx@qq.com', phonenumber='12345678901', nickname='李某', sex='X'):
-        self.userid = userid
-        self.username = username
-        self.password = password
-        self.email = email
-        self.phonenumber = phonenumber
-        self.nickname = nickname
-        self.sex = sex
+        self.userid, self.username, self.password, self.email, self.phonenumber, self.nickname, self.sex = \
+            userid, username, password, email, phonenumber, nickname, sex
 
     def getAttrs(self):
         return (self.username, self.password, self.email, self.phonenumber, self.nickname, self.sex)
@@ -43,13 +38,9 @@ class Users:
 
     @classmethod
     def genUsers(cls, tup: tuple):
-        userid = tup[0]
-        username = tup[1]
-        password = tup[2]
-        email = tup[3]
-        phonenumber = tup[4]
-        nickname = tup[5]
-        sex = tup[6]
+        userid, username, password, email, phonenumber, nickname, sex = tup[0], tup[1], tup[2], tup[3], tup[4], tup[5], tup[6]
         return Users(userid, username, password, email, phonenumber, nickname, sex)
-# user = Users(0, 'zs', 'zs')
-# print(user)
+
+if __name__ == "__main__":
+    user = Users(0, 'zs', 'zs')
+    print(user)

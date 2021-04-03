@@ -7,13 +7,12 @@
 @desc:
 """
 import platform
-import conf_win
 import pymysql
 import threading
-from src.model import Users
 from typing import List
 import time
-
+from src.model import Users
+from src import conf_win
 
 # 跨环境配置
 platform_os = platform.system()
@@ -102,7 +101,9 @@ def tuple_str(tup, ip = 0):
     for x in tup:
         if cnt != 0:
             string += ', '
-        if ip == 0:
+        if isinstance(x, int) or isinstance(x, float):
+            string += str(x)
+        elif ip == 0:
             string += repr(x)[1:-1]
         else:
             string += "'" + repr(x)[1:-1] + "'"
@@ -123,7 +124,9 @@ def tuple_str2(tup, val):
     for x in tup:
         if cnt != 0:
             string += ' and '
-        if '%' not in val[cnt]:
+        if isinstance(val[cnt], int) or isinstance(val[cnt], float):
+            string += repr(x)[1:-1] + ' = ' + "'" + str(val[cnt]) + "'"
+        elif '%' not in val[cnt]:
             string += repr(x)[1:-1] + ' = ' + "'" + repr(val[cnt])[1:-1] + "'"
         else:
             string += repr(x)[1:-1] + ' like ' + "'" + repr(val[cnt])[1:-1] + "'"
@@ -133,7 +136,7 @@ def tuple_str2(tup, val):
 def genInsSql(table_name, fields, values):
     return "insert into " + table_name + ' ' + tuple_str(fields) + \
     ' values ' + tuple_str(values, 1)
-def insertUsers(sql: str):
+def insert(sql: str):
     """插入数据到users表，提供sql语句
     :param sql: sql语句
     :return: bool，是否插入成功
@@ -198,7 +201,7 @@ def testInsertSql():
 
 def genDelSql(table_name, fields, values):
     return "delete from " + table_name + ' where ' + tuple_str2(fields, values)
-def deleteUsers(sql):
+def delete(sql):
     result = True
     mysql_conn = MySQLConnection()
     conn = None
@@ -220,8 +223,12 @@ def deleteUsers(sql):
     return result
 
 def genQuerySql(table_name, fields, values):
-    return "select * from " + table_name + ' where ' + tuple_str2(fields, values)
-def queryUsers(sql) -> List[tuple]:
+    if fields:
+        return "select * from " + table_name + ' where ' + tuple_str2(fields, values)
+    else:
+        return "select * from " + table_name
+
+def query(sql) -> List[tuple]:
     userlist = []
     mysql_conn = MySQLConnection()
     try:
@@ -239,13 +246,13 @@ def genUpdSql(table_name, fields, values, fields2, values2):
     return "update " + table_name + \
            ' set ' + tuple_str2(fields, values) + \
            ' where ' + tuple_str2(fields2, values2)
-def updateUser(sql) -> bool:
+def update(sql) -> bool:
     result = True
     mysql_conn = MySQLConnection()
     conn = None
     try:
         conn = mysql_conn.getConn()
-        print('*', conn.autocommit_mode, conn.get_autocommit())
+        # print('*', conn.autocommit_mode, conn.get_autocommit())
         cursor = mysql_conn.getCursor()
         exe_res = cursor.execute(sql)
         fet_res = cursor.fetchall()
@@ -264,19 +271,19 @@ def updateUser(sql) -> bool:
 if __name__ == '__main__':
     # 删除用户
     sql = genDelSql('users', ('username', 'password'), ('wemz2', 'wemz2'))
-    res = deleteUsers(sql)
+    res = delete(sql)
     print('delete: ', res)
 
     # 新增用户
     user = Users.Users(0, 'wemz2', 'wemz2')
     sql = genInsSql('users', ('username', 'password', 'email', 'phonenumber', 'nickname', 'sex'), user.getAttrs())
     print(sql)
-    insertUsers(sql)
+    insert(sql)
 
     # 查询用户
     sql = genQuerySql('users', ('username', 'password'), ('wemz', 'wemz'))
     print(sql)
-    res = queryUsers(sql)
+    res = query(sql)
     print('query: ', res)
     new_user = Users.Users.genUsers(res[0])
     print("new_users: ", new_user)
@@ -284,13 +291,14 @@ if __name__ == '__main__':
     # 更新用户信息
     upd_sql = genUpdSql('users', ('password',), ('zs4',), ('username', 'password'), ('zs', 'zs3'))
     print(upd_sql)
-    upd_res = updateUser(upd_sql)
+    upd_res = update(upd_sql)
     print('upd_res: ', upd_res)
 
     print(get_now_time())
 
-    a = ('123', 'abc', r'z12%')
-    print(a.__str__(), tuple_str(a))
+    print(type(123), type(12.34))
+    a = (123, 'abc', r'z12%', 34.00)
+    print(a.__str__(), tuple_str(a, 1))
     print(tuple_str2(a, a))
 
     print(genInsSql('users', ('username', 'password'), ('\b123', '\t234')))

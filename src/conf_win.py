@@ -9,7 +9,7 @@
 # the configuration file of windows(develop) environment
 
 # path configure
-DATA_ROOT_PATH = 'D:\\document\\PyCharmProject\\ecSpider\\src\\data'
+DATA_ROOT_PATH = 'D:\\document\\PyCharmProject\\ecSpider\\src\\data\\'
 
 # mysql configure
 DB_USER = "ecspider"
@@ -19,13 +19,13 @@ DB_PORT = "3306"
 DB_NAME = "ecspider"
 
 
-USERID = 'userid'
-USERNAME = 'username'
-PASSWORD = 'password'
-EMAIL = 'email'
-PHONENUMBER = 'phonenumber'
-NICKNAME = 'nickname'
-SEX = 'sex'
+USERID, USERNAME, PASSWORD, EMAIL, PHONENUMBER, NICKNAME, SEX = 'userid', 'username', 'password', 'email', 'phonenumber', 'nickname', 'sex'
+
+GOODID, PLATFORM, TITLE, PRICE, MSALES, SHOPNAME, HREF, PICPATH, TAGS = 'goodid', 'platform', 'title', 'price', 'msales', 'shopname', 'href', 'picpath', 'tags'
+
+USERID, SEARCHTERM, WORDCLOUD, WCPATH, TAGS = 'userid', 'searchterm', 'wordcloud', 'wcpath', 'tags'
+
+NOWPRICE, LOWPRICE, HIGHPRICE, HREF, PICPATH = 'nowprice', 'lowprice', 'highprice', 'href', 'picpath'
 
 if __name__ == "__main__":
     print("conf_win")

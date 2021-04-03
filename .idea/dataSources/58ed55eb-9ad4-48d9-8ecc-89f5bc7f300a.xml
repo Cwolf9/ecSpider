@@ -918,7 +918,8 @@
     </column>
     <column id="289" parent="277" name="picpath">
       <Position>8</Position>
-      <DataType>varchar(30)|0s</DataType>
+      <DataType>varchar(50)|0s</DataType>
+      <DefaultExpression>&apos;img_huaban.gif&apos;</DefaultExpression>
     </column>
     <column id="290" parent="277" name="tags">
       <Position>9</Position>
@@ -1069,7 +1070,7 @@ pt</ColNames>
     </column>
     <column id="320" parent="281" name="picpath">
       <Position>8</Position>
-      <DataType>varchar(30)|0s</DataType>
+      <DataType>varchar(50)|0s</DataType>
     </column>
     <index id="321" parent="281" name="goodid">
       <ColNames>goodid</ColNames>
