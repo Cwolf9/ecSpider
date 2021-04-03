@@ -16,7 +16,7 @@ class Watchlist:
         return (self.userid, self.goodid, self.platform, self.nowprice, self.lowprice, self.highprice, self.href, self.picpath)
 
     def showItem(self):
-        return (self.userid, self.goodid, self.platform, self.nowprice, self.lowprice, self.highprice, self.href, self.picpath)
+        return (self.userid, self.goodid, self.platform, self.nowprice, self.lowprice, self.highprice, self.href)
 
     def __str__(self):
         return "userid: %s, goodid: %s, nowprice: %f" % (self.userid, self.goodid, self.nowprice)

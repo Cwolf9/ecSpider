@@ -111,7 +111,7 @@ def tuple_str(tup, ip = 0):
     string += ')'
     return string
 
-def tuple_str2(tup, val):
+def tuple_str2(tup, val, ip = ' and '):
     """
     将tuple变成字符串
     用于生成delete, select, update sql语句时，field = value部分
@@ -123,7 +123,7 @@ def tuple_str2(tup, val):
     string = ""
     for x in tup:
         if cnt != 0:
-            string += ' and '
+            string += ip
         if isinstance(val[cnt], int) or isinstance(val[cnt], float):
             string += repr(x)[1:-1] + ' = ' + "'" + str(val[cnt]) + "'"
         elif '%' not in val[cnt]:
@@ -244,7 +244,7 @@ def query(sql) -> List[tuple]:
 
 def genUpdSql(table_name, fields, values, fields2, values2):
     return "update " + table_name + \
-           ' set ' + tuple_str2(fields, values) + \
+           ' set ' + tuple_str2(fields, values, ' , ') + \
            ' where ' + tuple_str2(fields2, values2)
 def update(sql) -> bool:
     result = True

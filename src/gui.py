@@ -22,7 +22,7 @@ from PIL import Image, ImageTk
 import pickle
 import time
 
-from src.model import Users, Goods
+from src.model import Users, Goods, Watchlist
 from src import utilMysql, loginFrame
 from src.conf_win import *
 from src.spiders import taobao
@@ -37,7 +37,7 @@ class ecSpider(Tk):
         self.login_frame.pack()
         self.pf_all, self.pf_tb, self.pf_jd, self.pf_tmcs, self.pf_wph = IntVar(value=0), IntVar(value=1), IntVar(value=1), IntVar(value=0), IntVar(value=0)
         # 排序方式
-        self.sort_var = tk.IntVar()
+        self.sort_var = tk.IntVar(value=1)
         self.goodsinfo = []
         self.main_frame = Frame(self.rt, width=1200, height=800)
         self.create_main_page()
@@ -107,6 +107,9 @@ class ecSpider(Tk):
         self.pt_frame.pack(side='top', fill=BOTH, expand='yes')
         self.goodslist_frame = Frame(self.main_frame, width=1200, bg='pink', height=700)
         self.goodslist_frame.pack(side='bottom', fill=BOTH, expand='yes')
+        self.watchlist_frame = Frame(self.main_frame, width=1200, bg='yellow', height=700)
+        # self.watchlist_frame.pack(side='bottom', fill=BOTH, expand='yes')
+
 
         self.key_word = StringVar()
         self.crawl_num = IntVar(value=10)
@@ -158,10 +161,9 @@ class ecSpider(Tk):
 
         s = ttk.Style()
         s.configure('Treeview', rowheight=80)
-        # 表格
+        # 表格及表格滚动条
         self.tree = ttk.Treeview(self.goodslist_frame, columns=['1', '2', '3', '4', '5', '6', '7', '8'],
                                  height=7)
-        # 表格滚动条
         self.VScroll1 = ttk.Scrollbar(self.tree, orient='vertical', command=self.tree.yview)
         self.tree.column('#0', width=100, anchor='w')
         self.tree.heading('#0', text='图片')
@@ -186,8 +188,38 @@ class ecSpider(Tk):
         self.tree.place(x=5, y=30)
         self.tree.bind('<ButtonRelease-1>', self.treeviewClick)
 
+        self.tree2 = ttk.Treeview(self.watchlist_frame, columns=['1', '2', '3', '4', '5', '6', '7'],
+                                 height=7)
+        self.VScroll12 = ttk.Scrollbar(self.tree2, orient='vertical', command=self.tree2.yview)
+        self.tree2.column('#0', width=100, anchor='w')
+        self.tree2.heading('#0', text='图片')
+        self.tree2.column('1', width=60, anchor='w')
+        self.tree2.heading('1', text='USERID')
+        self.tree2.column('2', width=120, anchor='w')
+        self.tree2.heading('2', text='GOODID')
+        self.tree2.column('3', width=80, anchor='w')
+        self.tree2.heading('3', text='平台')
+        self.tree2.column('4', width=60, anchor='w')
+        self.tree2.heading('4', text='当前价格')
+        self.tree2.column('5', width=60, anchor='w')
+        self.tree2.heading('5', text='最低价格')
+        self.tree2.column('6', width=60, anchor='w')
+        self.tree2.heading('6', text='最高价格')
+        self.tree2.column('7', width=300, anchor='w')
+        self.tree2.heading('7', text='链接')
+        self.VScroll12.place(relx=0.979, rely=0, relwidth=0.020, relheight=1)
+        self.tree2.configure(yscrollcommand=self.VScroll12.set)
+        self.tree2.place(x=170, y=30)
+
+    def delTreeView(self, tree):
+        x = tree.get_children()
+        for item in x:
+            tree.delete(item)
+
     def search(self):
         start = time.perf_counter()
+        self.goodslist_frame.pack(side='bottom', fill=BOTH, expand='yes')
+        self.watchlist_frame.pack_forget()
         self.key_word.set(self.key_word.get().strip())
         print(self.key_word.get())
         rec_que_res = utilMysql.query(utilMysql.genQuerySql('records', (USERID,), (self.usr_info['login_userid'], )))
@@ -219,6 +251,7 @@ class ecSpider(Tk):
             tk.messagebox.showinfo(title='提示', message='当前无商品信息')
             return
         else:
+            self.delTreeView(self.tree)
             num = 1
             self.gdsimgs = []
             for goods in self.goodsinfo:
@@ -250,16 +283,88 @@ class ecSpider(Tk):
             print(item_text)
 
     def watchlist(self):
-        pass
+        self.goodslist_frame.pack_forget()
+        self.watchlist_frame.pack(side='bottom', fill=BOTH, expand='yes')
+        sql = utilMysql.genQuerySql('watchlist', (USERID, ), (self.usr_info['login_userid'], ))
+        wl_res = utilMysql.query(sql)
+        print(wl_res)
+        if not wl_res:
+            tk.messagebox.showinfo(title='提示', message='当前无商品信息')
+            return
+        else:
+            self.delTreeView(self.tree2)
+            num = 1
+            self.gdsimgs = []
+            for iwl in wl_res:
+                wl = Watchlist.Watchlist.genWatchlist(iwl)
+                print(wl)
+                wlslist = [*wl.showItem()]
+                print(wlslist)
+                self.gdsimg = Image.open(DATA_ROOT_PATH + wl.picpath)
+                self.gdsimg = self.gdsimg.resize((80, 80))
+                self.gdsimg = ImageTk.PhotoImage(self.gdsimg)
+                self.gdsimgs.append(self.gdsimg)
+                self.tree2.insert('', 'end', image=self.gdsimgs[num - 1], values=wlslist)
+                num = num + 1
+
     def add_watchlist(self):
         print('list_id: ', self.list_id.get())
         for item_id in self.list_id.get().split():
             try:
-                sql = utilMysql.genInsSql('watchlist', )
+                sql = utilMysql.genQuerySql('watchlist', (USERID, GOODID), (self.usr_info['login_userid'], self.goodsinfo[int(item_id)-1][0]))
+                wl_res = utilMysql.query(sql)
+                if wl_res:
+                    print('wl_res: ', wl_res)
+                    print(self.goodsinfo[int(item_id) - 1])
+                    flag = 0
+                    if float(self.goodsinfo[int(item_id) - 1][3]) < float(wl_res[0][4]):
+                        sql = utilMysql.genUpdSql('watchlist', (LOWPRICE, NOWPRICE), (self.goodsinfo[int(item_id) - 1][3], self.goodsinfo[int(item_id) - 1][3]),
+                                                  (USERID, GOODID), (self.usr_info['login_userid'], self.goodsinfo[int(item_id)-1][0]))
+                        utilMysql.update(sql)
+                        flag = 1
+                    if float(self.goodsinfo[int(item_id) - 1][3]) > float(wl_res[0][5]):
+                        sql = utilMysql.genUpdSql('watchlist', (HIGHPRICE, NOWPRICE), (self.goodsinfo[int(item_id) - 1][3], self.goodsinfo[int(item_id) - 1][3]),
+                                                  (USERID, GOODID), (self.usr_info['login_userid'], self.goodsinfo[int(item_id)-1][0]))
+                        utilMysql.update(sql)
+                        flag = 1
+                    if flag == 0:
+                        sql = utilMysql.genUpdSql('watchlist', (NOWPRICE, ), (self.goodsinfo[int(item_id) - 1][3], ),
+                                          (USERID, GOODID),
+                                          (self.usr_info['login_userid'], self.goodsinfo[int(item_id)-1][0]))
+                        utilMysql.update(sql)
+                else:
+                    sql = utilMysql.genInsSql('watchlist', (USERID, GOODID, PLATFORM, NOWPRICE, LOWPRICE, HIGHPRICE, HREF, PICPATH),
+                                                (self.usr_info['login_userid'], self.goodsinfo[int(item_id) - 1][0], self.goodsinfo[int(item_id) - 1][1] + ' ' + self.goodsinfo[int(item_id) - 1][2], self.goodsinfo[int(item_id) - 1][3], self.goodsinfo[int(item_id) - 1][3], self.goodsinfo[int(item_id) - 1][3], self.goodsinfo[int(item_id) - 1][6], self.goodsinfo[int(item_id) - 1][7]))
+                    utilMysql.insert(sql)
             except:
                 continue
     def upd_watchlist(self):
-        pass
+        sql = utilMysql.genQuerySql('watchlist', (USERID,), (self.usr_info['login_userid'],))
+        wl_res = utilMysql.query(sql)
+        for iwl in wl_res:
+            new_p = taobao.getNewPrice('https:' + iwl[6], float(iwl[3]))
+            flag = 0
+            if new_p < float(iwl[4]):
+                sql = utilMysql.genUpdSql('watchlist', (LOWPRICE, NOWPRICE),
+                                          (new_p, new_p),
+                                          (USERID, GOODID),
+                                          (self.usr_info['login_userid'], iwl[1]))
+                utilMysql.update(sql)
+                flag = 1
+            if new_p > float(iwl[5]):
+                sql = utilMysql.genUpdSql('watchlist', (HIGHPRICE, NOWPRICE),
+                                          (new_p, new_p),
+                                          (USERID, GOODID),
+                                          (self.usr_info['login_userid'], iwl[1]))
+                utilMysql.update(sql)
+                flag = 1
+            if flag == 0 and new_p != float(iwl[3]):
+                sql = utilMysql.genUpdSql('watchlist', (NOWPRICE, ), (new_p, ),
+                                          (USERID, GOODID),
+                                          (self.usr_info['login_userid'], iwl[1]))
+                utilMysql.update(sql)
+        self.watchlist()
+
     def description(self):
         pass
     def software_about(self):
