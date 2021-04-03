@@ -22,13 +22,13 @@ class Searchinfo:
         return "userid: %s, pt: %s, cookie: %s" % (self.userid, self.pt, self.cookie)
 
     @classmethod
-    def genWatchlist(cls, tup: tuple):
+    def genSearchinfo(cls, tup: tuple):
         userid, pt, cookie, referer = tup[0], tup[1], tup[2], tup[3]
         return Searchinfo(userid, pt, cookie, referer)
 
 if __name__ == "__main__":
-    searchinfo = Searchinfo(1, 'TB615651833644', '淘宝', 12, 11, 13, '//detail.tmall.com/item.htm?id=615651833644', 'O1CN01qXLQ231sW59J818ds_!!0-item_pic.png')
+    searchinfo = Searchinfo(1,  '淘宝',  '44', 'Og')
     print(searchinfo)
-    sql = utilMysql.genInsSql('watchlist', (USERID, PT, COOKIE, REFERER), searchinfo.getAttrs())
+    sql = utilMysql.genInsSql('searchinfo', (USERID, PT, COOKIE, REFERER), searchinfo.getAttrs())
     print(sql)
     utilMysql.insert(sql)
