@@ -27,5 +27,7 @@ USERID, SEARCHTERM, WORDCLOUD, WCPATH, TAGS = 'userid', 'searchterm', 'wordcloud
 
 NOWPRICE, LOWPRICE, HIGHPRICE, HREF, PICPATH = 'nowprice', 'lowprice', 'highprice', 'href', 'picpath'
 
+USERID, PT, COOKIE, REFERER = 'userid', 'pt', 'cookie', 'referer'
+
 if __name__ == "__main__":
     print("conf_win")
