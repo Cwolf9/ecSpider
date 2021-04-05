@@ -21,6 +21,7 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 import pickle
 import time
+import threading
 from functools import wraps
 
 from src.model import Users, Goods, Watchlist
@@ -273,6 +274,9 @@ class ecSpider(Tk):
         self.watchlist_frame.pack_forget()
         self.key_word.set(self.key_word.get().strip())
         print(self.key_word.get())
+        if not self.key_word.get():
+            tk.messagebox.showinfo(title='提示', message='请输入搜索关键词')
+            return
         if not isinstance(self.crawl_num.get(), int):
             self.crawl_num.set(10)
 
@@ -283,7 +287,7 @@ class ecSpider(Tk):
         print('rec_que_res: ', rec_que_res)
         if rec_que_res:
             gds_que_res = utilMysql.query(
-                utilMysql.genQuerySql('goods', (TITLE,), ("%" + self.key_word.get() + "%",)))
+                utilMysql.genQuerySql('goods', (TAGS,), ("%" + self.key_word.get() + "%",)))
             print('gds: ', gds_que_res)
             for gd in gds_que_res:
                 self.goodsinfo.append(gd)
@@ -334,17 +338,32 @@ class ecSpider(Tk):
                 self.tree.insert('', 'end', image=self.gdsimgs[num - 1], values=goodslist)
                 num = num + 1
 
+    def my_single_down(self, platform, x, key_word):
+        picpath = 'img_huaban.gif'
+        # picpath = taobao.downPic('https:' + x[6])
+        res_good = (x[0], platform, x[3], x[1], x[5], x[4], x[2], picpath, key_word)
+        sql = utilMysql.genInsSql('goods', (GOODID, PLATFORM, TITLE, PRICE, MSALES, SHOPNAME, HREF, PICPATH, TAGS),
+                                  res_good)
+        print(sql)
+        print(res_good)
+        utilMysql.insert(sql)
+        # self.goodsinfo.append(res_good)
+
     @a_new_decorator
     def search_tb(self, platform='淘宝'):
         print(self.key_word.get(), self.crawl_num.get())
         res_info = taobao.getTaobaoProd(self.key_word.get(), self.crawl_num.get())
         start = time.perf_counter()
+        t = None
         for x in res_info:
-            res_good = (x[0], platform, x[3], x[1], x[5], x[4], x[2], taobao.downPic('https:'+x[6]), self.key_word.get())
-            sql = utilMysql.genInsSql('goods', (GOODID, PLATFORM, TITLE, PRICE, MSALES, SHOPNAME, HREF, PICPATH, TAGS),
-                                  res_good)
-            utilMysql.insert(sql)
-            self.goodsinfo.append(res_good)
+            t = threading.Thread(target=self.my_single_down, args=(platform, x, self.key_word.get()))
+            t.start()
+            t.join()
+        gds_que_res = utilMysql.query(
+            utilMysql.genQuerySql('goods', (TAGS,), ("%" + self.key_word.get() + "%",)))
+        print('gds: ', gds_que_res)
+        for gd in gds_que_res:
+            self.goodsinfo.append(gd)
         end = time.perf_counter()
         print('Downloading: Running time: %s Seconds' % (end - start))
 

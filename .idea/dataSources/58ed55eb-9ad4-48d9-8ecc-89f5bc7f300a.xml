@@ -937,7 +937,7 @@
     </column>
     <column id="293" parent="278" name="searchterm">
       <Position>2</Position>
-      <DataType>varchar(20)|0s</DataType>
+      <DataType>varchar(2000)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
     <column id="294" parent="278" name="wordcloud">
