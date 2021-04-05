@@ -6,6 +6,7 @@
 @date: 2021-03-17 22:00
 @desc:
 """
+from functools import wraps
 
 import requests
 import os
@@ -46,7 +47,7 @@ def downPic(url = "https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/306390577
                 "referer": "https://s.taobao.com/",
                 'cookie': r'cookie2=17b54f4e7e5b3a136597c2c5d57e44c0; t=5b9661cda0b5e825c49d562bbebfb7f1; _tb_token_=57b73e781399b; _samesite_flag_=true; enc=4IcYQAEf6n8oYeYZDLKpWuyuMMQld6/11EcD6gmhQrw/ybZmwqhhOo45tTuOpZMXQNYfj/hoIHrzvTvg+5UuTA==; thw=cn; hng=GLOBAL|zh-CN|USD|999; alitrackid=www.taobao.com; cna=ghItGJbpnRQCAd73JQuwqdcQ; sgcookie=E100NOFdbUuG0giKiCqGPLgbiPtWrrW/OFH3Z9DCpT97yY5fs/u8mDnDG+D89/SoRX1DpyqxtIWGfmWRUoM1Ls8Sxw==; uc3=nk2=3Rj2a800wpk=&vt3=F8dCuASkA7t1hb70TZk=&lg2=VT5L2FSpMGV7TQ==&id2=UU6nRCwmzNLA9Q==; csg=b906308a; lgc=\u9152\u75AF\u72FClp; dnk=\u9152\u75AF\u72FClp; skt=2ebe208bc2b09887; existShop=MTYxMzgwMTMyNQ==; uc4=nk4=0@35PWOqVA3il14ddukkZfRtNILw==&id4=0@U2xqIFo4BlQVQlqi37APKGI6gPxX; tracknick=\u9152\u75AF\u72FClp; _cc_=WqG3DMC9EA==; lastalitrackid=login.taobao.com; mt=ci=-1_0; xlly_s=1; JSESSIONID=9E44C71750433AA69BF8FD5932CC3D97; uc1=cookie16=U+GCWk/74Mx5tgzv3dWpnhjPaQ==&cookie14=Uoe1hgKdxnFfYQ==&cookie21=VT5L2FSpczFp&pas=0&existShop=false; tfstk=cnrhBbXvpyuIjWuglMiQ3I9kczbOZxbEOurablptB1lj72qNi4Lwuw9dIXF32U1..; l=eBaGSPBgOnge4bd2BOfZnurza77TIIRAguPzaNbMiOCPOF1p5bBOW6gi3m89CnGVh6yeR3zWDma_BeYBqCvan5U62j-la6Hmn; isg=BCMjF3-LRzHIczSS9_XDuB2QsmfNGLda-Tn12FWAcwL5lEO23eiRqiDOimSaNA9S'
             }
-            r = requests.get(url, headers=headers)
+            r = requests.get(url, headers=headers, timeout=0.7)
             with open(path, 'wb') as f:
                 f.write(r.content)#保存为二进制格式
                 f.close()
@@ -59,7 +60,7 @@ def downPic(url = "https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/306390577
     return path.split('\\')[-1]
 
 
-def getTBHTMLText(url, dSearch, ip = 0):
+def getTBHTMLText(url, dSearch, ip=0):
     headers = {
         "user-agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36',
         "referer": "https://s.taobao.com/",
@@ -78,9 +79,9 @@ def getTBHTMLText(url, dSearch, ip = 0):
         <RequestsCookieJar[<Cookie cookie=cookie2=17b54f4e7e5b3a136597c2c5d57e44c0; t=5b9661cda0b5e825c49d562bbebfb7f1; _tb_token_=57b73e781399b; _samesite_flag_=true; enc=4IcYQAEf6n8oYeYZDLKpWuyuMMQld6/11EcD6gmhQrw/ybZmwqhhOo45tTuOpZMXQNYfj/hoIHrzvTvg+5UuTA==; thw=cn; hng=GLOBAL|zh-CN|USD|999; alitrackid=www.taobao.com; xlly_s=1; lastalitrackid=www.taobao.com; mt=ci=0_0; cna=ghItGJbpnRQCAd73JQuwqdcQ; _m_h5_tk=258f615938a9fffd610ad420c8b6c038_1612187188554; _m_h5_tk_enc=adf4cac53165bdf2f886f6d44e09196f; JSESSIONID=CE1405197D4F86041BF290FE23160A41; l=eBaGSPBgOnge41TyBOfZhurza77TGIRfguPzaNbMiOCPOa1p5LY5W6MkobT9CnGVH62MR38KdX68B4TWsydVtSQ5uM80AC1Z3dC..; isg=BHR0od8YqLBu6QNHDIAcZcY9RTLmTZg3W5DG-A7Vc_-LeRXDNlkixwc7-bGhgdCP; tfstk=cKDPBufYZLpyLFyB68wFPQULnSPRZqa35traZXUZ4qH2xlPlik7Lmn_L0kz9n7f..; sgcookie=E1005JQj9/1cnplokvGtldOlk/RurBNfOYmf7En3q+qG0/3ENfVuDTUmdPd6ErRlZLt677g5UqtOmRtO/K7M1YbXjw==; unb=2665991651; uc1=cookie21=W5iHLLyFe3xm&cookie14=Uoe1gBpbBvXwQw==&pas=0&cookie16=W5iHLLyFPlMGbLDwA+dvAGZqLg==&existShop=false&cookie15=W5iHLLyFOGW7aA==; uc3=lg2=V32FPkk/w0dUvg==&nk2=3Rj2a800wpk=&vt3=F8dCuAbxCWMMXsmH758=&id2=UU6nRCwmzNLA9Q==; csg=339090b8; lgc=\u9152\u75AF\u72FClp; cookie17=UU6nRCwmzNLA9Q==; dnk=\u9152\u75AF\u72FClp; skt=3937ef62536f1fb6; existShop=MTYxMjE3ODU2OQ==; uc4=nk4=0@35PWOqVA3il14dduk5b6A0kRbw==&id4=0@U2xqIFo4BlQVQlqi37AO9HfxSNjE; tracknick=\u9152\u75AF\u72FClp; _cc_=VFC/uZ9ajQ==; _l_g_=Ug==; sg=p17; _nk_=\u9152\u75AF\u72FClp; cookie1=U7HwN3kxiXT7IEAcQ8eG3KkqRoGDI3P9LO+TJyuRgyU= for />]>
         '''
         if ip == 0:
-            r = reqS.get(url, timeout=3, headers=headers, params=dSearch)
+            r = reqS.get(url, timeout=0.7, headers=headers, params=dSearch)
         else:
-            r = reqS.get(url, timeout=3, headers=headers)
+            r = reqS.get(url, timeout=1, headers=headers)
         print(r.status_code, r.encoding, r.apparent_encoding)
         print(r.request.url)
         r.raise_for_status()  # 如果状态不是200 引发http error异常
@@ -89,7 +90,8 @@ def getTBHTMLText(url, dSearch, ip = 0):
         print(r.headers)
         # print(r.request.headers['cookie'])
         return r.text
-    except:
+    except Exception as e:
+        print(e)
         print("获取淘宝URL页面失败")
         return "获取淘宝URL页面失败"
 
@@ -143,22 +145,27 @@ def printGoodsList(ilt, num = 20):
             break
     print("")
 def getTaobaoProd(qName = '手机', cnt = 1):
+    use_old = 0
+    print('qName, cnt: ', qName, cnt)
     url = "https://s.taobao.com/search"
     dSearch = {'q': qName, 's': '0',
     'imgfile':'',
     'commend':'all','ssid':'s5-e','search_type':'item','sourceId':'tb.index','spm':'a21bo.2017.201856-taobao-item.1','ie':'utf8','initiative_id':'tbindexz_20170306'}
     infoList = []
-    for i in range(2):
+    for i in range(1):
         time.sleep(1)
         dSearch['s'] = str(44 * i)
         try:
-            with open("D:/iTaobaoSJ.html", "r", encoding='utf-8') as f:
-                html = f.read()
-                # html = getTBHTMLText(url, dSearch)
+            if use_old == 1:
+                with open("D:/iTaobaoSJ.html", "r", encoding='utf-8') as f:
+                    html = f.read()
+                    parsePage(infoList, html, cnt)
+            else:
+                html = getTBHTMLText(url, dSearch)
                 parsePage(infoList, html, cnt)
-                # if i == 0:
-                #     with open("D:/iTaobaoSJ.html", "w", encoding='utf-8') as f:
-                #         f.write(html)
+                if i == 0:
+                    with open("D:/iTaobaoSJ.html", "w", encoding='utf-8') as f:
+                        f.write(html)
             if len(infoList) >= cnt:
                 break
         except:
@@ -173,10 +180,23 @@ def getNewPrice(url, op):
     except:
         return op
 
+def test_dec(a_func):
+    @wraps(a_func)
+    def wrapTheFunction(*args, **kwargs):
+        start = time.perf_counter()
+        a_func(*args, **kwargs)
+        end = time.perf_counter()
+        print('Decorator: Running time: %s Seconds' % (end - start))
 
+    return wrapTheFunction
 
+@test_dec
+def my_test():
+    getTaobaoProd()
 
-
+if __name__ == '__main__':
+    # my_test()
+    pass
 
 
 

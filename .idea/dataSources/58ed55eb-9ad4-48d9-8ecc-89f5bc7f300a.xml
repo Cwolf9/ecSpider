@@ -1045,7 +1045,8 @@ pt</ColNames>
     </column>
     <column id="315" parent="281" name="platform">
       <Position>3</Position>
-      <DataType>varchar(5)|0s</DataType>
+      <Comment>平台及商品名称信息</Comment>
+      <DataType>varchar(115)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
     <column id="316" parent="281" name="nowprice">

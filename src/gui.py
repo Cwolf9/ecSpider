@@ -10,17 +10,18 @@
 im = Image.open(path)
 im.show()
 '''
+import os
+import fileinput
 import tkinter as tk
 from tkinter import Tk, Frame, Button, Label, LabelFrame, Text, PhotoImage, Entry, messagebox\
     , font, StringVar, IntVar, Checkbutton, Menu, Radiobutton
 from tkinter import filedialog, simpledialog, scrolledtext
 from tkinter import W, E, N, S, END, BOTTOM, TOP, BOTH, X, Y
 from tkinter import ttk
-import fileinput
-import os
 from PIL import Image, ImageTk
 import pickle
 import time
+from functools import wraps
 
 from src.model import Users, Goods, Watchlist
 from src import utilMysql, loginFrame
@@ -135,19 +136,18 @@ class ecSpider(Tk):
             grid(row=1, column=5, padx=4)
         Label(self.pt_frame, text='排序方式：', width=15, bg='red'). \
             grid(row=1, column=6, sticky=W, padx=20, pady=10)
-        Radiobutton(self.pt_frame, text='默认排序', variable=self.sort_var, value=1).\
+        Radiobutton(self.pt_frame, text='默认排序', variable=self.sort_var, value=1, command=self.show_search).\
             grid(row=1, column=7, padx=3)
-        Radiobutton(self.pt_frame, text='价格升序', variable=self.sort_var, value=2).\
+        Radiobutton(self.pt_frame, text='价格升序', variable=self.sort_var, value=2, command=self.show_search).\
             grid(row=1, column=8, padx=3)
-        Radiobutton(self.pt_frame, text='价格倒序', variable=self.sort_var, value=3).\
+        Radiobutton(self.pt_frame, text='价格倒序', variable=self.sort_var, value=3, command=self.show_search).\
             grid(row=1, column=9, padx=3)
         Label(self.pt_frame, text='爬取数量：', width=15, bg='red'). \
             grid(row=1, column=10, sticky=W, padx=30, pady=10)
         Entry(self.pt_frame, width=5, font=self.label_font, textvariable=self.crawl_num). \
             grid(row=1, column=11, sticky=W)
 
-        Button(self.pt_frame, text='推荐结果', command=self.watchlist). \
-            grid(row=2, column=0, sticky=W+E, padx=15)
+        Button(self.pt_frame, text='推荐结果', command=self.recommend_result).grid(row=2, column=0, sticky=W+E, padx=15)
         Button(self.pt_frame, text='关注列表', command=self.watchlist, width=15). \
             grid(row=2, column=1, sticky=W + E, padx=14, columnspan=2)
         Button(self.pt_frame, text='更新关注列表价格', command=self.upd_watchlist, width=15). \
@@ -161,10 +161,13 @@ class ecSpider(Tk):
 
         s = ttk.Style()
         s.configure('Treeview', rowheight=80)
+
+        self.which_tree = 1
         # 表格及表格滚动条
         self.tree = ttk.Treeview(self.goodslist_frame, columns=['1', '2', '3', '4', '5', '6', '7', '8'],
                                  height=7)
         self.VScroll1 = ttk.Scrollbar(self.tree, orient='vertical', command=self.tree.yview)
+        self.tree_column = ('序', 'ID', '平台', '标题', '价格', '月销量', '商铺', '链接')
         self.tree.column('#0', width=100, anchor='w')
         self.tree.heading('#0', text='图片')
         self.tree.column('1', width=25, anchor='w')
@@ -187,10 +190,15 @@ class ecSpider(Tk):
         self.tree.configure(yscrollcommand=self.VScroll1.set)
         self.tree.place(x=5, y=30)
         self.tree.bind('<ButtonRelease-1>', self.treeviewClick)
+        cnt = 1
+        for col in self.tree_column:  # 给所有标题加（循环上边的“手工”）
+            self.tree.heading(str(cnt), text=col, command=lambda _col=str(cnt): self.treeview_sort_column(self.tree, _col, False))
+            cnt += 1
 
         self.tree2 = ttk.Treeview(self.watchlist_frame, columns=['1', '2', '3', '4', '5', '6', '7'],
                                  height=7)
         self.VScroll12 = ttk.Scrollbar(self.tree2, orient='vertical', command=self.tree2.yview)
+        self.tree2_column = ('USERID', 'GOODID', '平台', '当前价格', '最低价格', '最高价格', '链接')
         self.tree2.column('#0', width=100, anchor='w')
         self.tree2.heading('#0', text='图片')
         self.tree2.column('1', width=60, anchor='w')
@@ -210,11 +218,54 @@ class ecSpider(Tk):
         self.VScroll12.place(relx=0.979, rely=0, relwidth=0.020, relheight=1)
         self.tree2.configure(yscrollcommand=self.VScroll12.set)
         self.tree2.place(x=170, y=30)
+        cnt = 1
+        for col in self.tree2_column:  # 给所有标题加（循环上边的“手工”）
+            self.tree2.heading(str(cnt), text=col,
+                              command=lambda _col=str(cnt): self.treeview2_sort_column(self.tree2, _col, False))
+            cnt += 1
+
+    def a_new_decorator(a_func):
+        @wraps(a_func)
+        def wrapTheFunction(*args, **kwargs):
+            start = time.perf_counter()
+            a_func(*args, **kwargs)
+            end = time.perf_counter()
+            print('Decorator: Running time: %s Seconds' % (end - start))
+
+        return wrapTheFunction
 
     def delTreeView(self, tree):
         x = tree.get_children()
         for item in x:
             tree.delete(item)
+
+    def treeview_sort_column(self, tv, col, reverse):  # Treeview、列名、排列方式
+        if col == '5' or col == '6':
+            l = [(float(tv.set(k, col)), k) for k in tv.get_children('')]
+        else:
+            l = [(tv.set(k, col), k) for k in tv.get_children('')]
+        print(tv.get_children(''))
+        print(l)
+        l.sort(reverse=reverse)  # 排序方式
+        # rearrange items in sorted positions
+        for index, (val, k) in enumerate(l):  # 根据排序后索引移动
+            tv.move(k, '', index)
+            print(k)
+        tv.heading(col, command=lambda: self.treeview_sort_column(tv, col, not reverse))  # 重写标题，使之成为再点倒序的标题
+
+    def treeview2_sort_column(self, tv, col, reverse):  # Treeview、列名、排列方式
+        if col == '4' or col == '5' or col == '6':
+            l = [(float(tv.set(k, col)), k) for k in tv.get_children('')]
+        else:
+            l = [(tv.set(k, col), k) for k in tv.get_children('')]
+        print(tv.get_children(''))
+        print(l)
+        l.sort(reverse=reverse)  # 排序方式
+        # rearrange items in sorted positions
+        for index, (val, k) in enumerate(l):  # 根据排序后索引移动
+            tv.move(k, '', index)
+            print(k)
+        tv.heading(col, command=lambda: self.treeview2_sort_column(tv, col, not reverse))  # 重写标题，使之成为再点倒序的标题
 
     def search(self):
         start = time.perf_counter()
@@ -222,21 +273,14 @@ class ecSpider(Tk):
         self.watchlist_frame.pack_forget()
         self.key_word.set(self.key_word.get().strip())
         print(self.key_word.get())
-        rec_que_res = utilMysql.query(utilMysql.genQuerySql('records', (USERID,), (self.usr_info['login_userid'], )))
-        if rec_que_res:
-            new_sec = rec_que_res[0][1] + " " + self.key_word.get()
-            sql = utilMysql.genUpdSql('records', (SEARCHTERM, ), (new_sec, ), (USERID, ), (self.usr_info['login_userid'], ))
-            utilMysql.update(sql)
-        else:
-            sql = utilMysql.genInsSql('records', (USERID, SEARCHTERM, WORDCLOUD, WCPATH, TAGS), (self.usr_info['login_userid'], self.key_word.get(), '', '', ''))
-            utilMysql.insert(sql)
-        for item in self.tree.get_children():
-            self.tree.delete(item)
         if not isinstance(self.crawl_num.get(), int):
             self.crawl_num.set(10)
 
+        for item in self.tree.get_children():
+            self.tree.delete(item)
         self.goodsinfo = []
         rec_que_res = utilMysql.query(utilMysql.genQuerySql('records', (SEARCHTERM,), ("%" + self.key_word.get() + "%",)))
+        print('rec_que_res: ', rec_que_res)
         if rec_que_res:
             gds_que_res = utilMysql.query(
                 utilMysql.genQuerySql('goods', (TITLE,), ("%" + self.key_word.get() + "%",)))
@@ -246,6 +290,32 @@ class ecSpider(Tk):
         else:
             if self.pf_tb.get() == 1:
                 self.search_tb()
+
+        self.goodsinfo_bkb = self.goodsinfo
+        self.show_search()
+
+        if self.goodsinfo:
+            rec_que_res = utilMysql.query(utilMysql.genQuerySql('records', (USERID,), (self.usr_info['login_userid'],)))
+            print('rec_que_res: ', rec_que_res)
+            if rec_que_res:
+                new_sec = rec_que_res[0][1] + " " + self.key_word.get()
+                print(new_sec)
+                sql = utilMysql.genUpdSql('records', (SEARCHTERM,), (new_sec,), (USERID,), (self.usr_info['login_userid'],))
+                utilMysql.update(sql)
+            else:
+                sql = utilMysql.genInsSql('records', (USERID, SEARCHTERM, WORDCLOUD, WCPATH, TAGS),
+                                          (self.usr_info['login_userid'], self.key_word.get(), '', '', ''))
+                utilMysql.insert(sql)
+        end = time.perf_counter()
+        print('Running time: %s Seconds' % (end - start))
+
+    def show_search(self):
+        if self.sort_var.get() == 1:
+            self.goodsinfo = self.goodsinfo_bkb
+        if self.sort_var.get() == 2:
+            self.goodsinfo = sorted(self.goodsinfo_bkb, key=lambda elm: elm[3])
+        if self.sort_var.get() == 3:
+            self.goodsinfo = sorted(self.goodsinfo_bkb, key=lambda elm: elm[3], reverse=True)
 
         if not self.goodsinfo:
             tk.messagebox.showinfo(title='提示', message='当前无商品信息')
@@ -264,23 +334,26 @@ class ecSpider(Tk):
                 self.tree.insert('', 'end', image=self.gdsimgs[num - 1], values=goodslist)
                 num = num + 1
 
-        end = time.perf_counter()
-        print('Running time: %s Seconds' % (end - start))
-
+    @a_new_decorator
     def search_tb(self, platform='淘宝'):
+        print(self.key_word.get(), self.crawl_num.get())
         res_info = taobao.getTaobaoProd(self.key_word.get(), self.crawl_num.get())
+        start = time.perf_counter()
         for x in res_info:
             res_good = (x[0], platform, x[3], x[1], x[5], x[4], x[2], taobao.downPic('https:'+x[6]), self.key_word.get())
             sql = utilMysql.genInsSql('goods', (GOODID, PLATFORM, TITLE, PRICE, MSALES, SHOPNAME, HREF, PICPATH, TAGS),
                                   res_good)
             utilMysql.insert(sql)
             self.goodsinfo.append(res_good)
-
+        end = time.perf_counter()
+        print('Downloading: Running time: %s Seconds' % (end - start))
 
     def treeviewClick(self, event):
         for item in self.tree.selection():
             item_text = self.tree.item(item, "values")
             print(item_text)
+            self.rt.clipboard_clear()
+            self.rt.clipboard_append("https:" + item_text[7])
 
     def watchlist(self):
         self.goodslist_frame.pack_forget()
@@ -338,6 +411,7 @@ class ecSpider(Tk):
                     utilMysql.insert(sql)
             except:
                 continue
+
     def upd_watchlist(self):
         sql = utilMysql.genQuerySql('watchlist', (USERID,), (self.usr_info['login_userid'],))
         wl_res = utilMysql.query(sql)
@@ -371,6 +445,8 @@ class ecSpider(Tk):
         pass
     def show_word_cloud(self):
         pass
+    def recommend_result(self):
+        self.show_search()
 
 
 if __name__ == "__main__":
