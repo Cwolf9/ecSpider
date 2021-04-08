@@ -14,7 +14,7 @@ import os
 import fileinput
 import tkinter as tk
 from tkinter import Tk, Frame, Button, Label, LabelFrame, Text, PhotoImage, Entry, messagebox\
-    , font, StringVar, IntVar, Checkbutton, Menu, Radiobutton
+    , font, StringVar, IntVar, Checkbutton, Menu, Radiobutton, Toplevel
 from tkinter import filedialog, simpledialog, scrolledtext
 from tkinter import W, E, N, S, END, BOTTOM, TOP, BOTH, X, Y
 from tkinter import ttk
@@ -36,14 +36,19 @@ class ecSpider(Tk):
         self.rt.title("基于爬虫的电商比价系统")
         self.change_src_size(800)
         self.login_frame = loginFrame.LoginFrame(self.rt)
-        self.login_frame.pack()
-        self.pf_all, self.pf_tb, self.pf_jd, self.pf_tmcs, self.pf_wph = IntVar(value=0), IntVar(value=1), IntVar(value=1), IntVar(value=0), IntVar(value=0)
-        # 排序方式
-        self.sort_var = tk.IntVar(value=1)
-        self.goodsinfo = []
         self.main_frame = Frame(self.rt, width=1200, height=800)
+        self.pf_frame = None
+        self.profile_frame = None
+        # 电商平台选择
+        self.pf_all, self.pf_tb, self.pf_jd, self.pf_tmcs, self.pf_wph = IntVar(value=0), IntVar(value=1), IntVar(value=1), IntVar(value=0), IntVar(value=0)
+        # 排序方式：1 默认排序，2 价格升序，3 价格降序
+        self.sort_var = tk.IntVar(value=1)
+        # 待显示商品信息
+        self.goodsinfo = []
+        self.login_frame.pack()
         self.create_main_page()
         self.show_main_window()
+
 
     def change_src_size(self, width=1200, height=800):
         screenwidth = self.rt.winfo_screenwidth()
@@ -67,6 +72,8 @@ class ecSpider(Tk):
             self.rt.title("基于爬虫的电商比价系统^.^   欢迎 " + self.usr_info['login_username'])
             print('id: ', self.usr_info['login_userid'])
             self.login_frame.pack_forget()
+            if self.pf_frame != None:
+                self.pf_frame.pack_forget()
             self.change_src_size()
             self.main_frame.pack(fill=BOTH)
         except FileNotFoundError:
@@ -75,9 +82,29 @@ class ecSpider(Tk):
 
     def update_platform_info(self, pf_id):
         print(pf_id)
+        pf_strs = ['', '淘宝', '京东', '天猫超市', '唯品会']
+        self.main_frame.pack_forget()
+        if self.pf_frame == None:
+            self.pf_frame = Frame(self.rt, width=800, height=500)
+            self.pf_label = Label(self.pf_frame, text=pf_strs[pf_id], font=self.menu_font, pady=50)
+            self.pf_label.grid(row=0, column=0, columnspan=2)
+            Label(self.pf_frame, text='cookie: ', font=self.menu_font, width=10, padx=30).grid(row=1, column=0)
+            Entry(self.pf_frame, font=self.menu_font, width=20).grid(row=1, column=1)
+            Label(self.pf_frame, text='referer: ', font=self.menu_font, width=10, padx=30).grid(row=2, column=0)
+            Entry(self.pf_frame, font=self.menu_font, width=20).grid(row=2, column=1)
+            Button(self.pf_frame, text='返回', font=self.menu_font, width=10, command=self.show_main_window, padx=30).grid(row=3, column=0, pady=80, padx=30)
+            Button(self.pf_frame, text='保存', font=self.menu_font, width=10, command=self.save_pf_info, padx=30).grid(row=3, column=1, pady=80)
+        else:
+            self.pf_label.configure(text=pf_strs[pf_id])
+        self.pf_frame.pack()
+
+    def save_pf_info(self):
+        pass
 
     def show_profile(self):
-        pass
+        if self.profile_frame == None:
+            self.profile_frame = Frame(self.rt, width=800, height=500)
+        self.profile_frame.pack()
 
     def create_main_page(self):
         self.menu_font = font.Font(family='微软雅黑', size=16)
@@ -97,7 +124,7 @@ class ecSpider(Tk):
         self.promenu.add_command(label='我的词云', command=self.show_word_cloud)
 
         self.helpmenu = Menu(self.menubar, tearoff=0)
-        self.menubar.add_cascade(label='帮助')
+        self.menubar.add_cascade(label='帮助', menu=self.helpmenu)
         self.helpmenu.add_command(label='操作说明', command=self.description)
         self.helpmenu.add_command(label='关于',  command=self.software_about)
 
@@ -112,14 +139,14 @@ class ecSpider(Tk):
         self.watchlist_frame = Frame(self.main_frame, width=1200, bg='yellow', height=700)
         # self.watchlist_frame.pack(side='bottom', fill=BOTH, expand='yes')
 
-
         self.key_word = StringVar()
         self.crawl_num = IntVar(value=10)
         self.list_id = StringVar(value='（多个序号请用空格隔开）')
         Label(self.search_frame, text='搜索关键词：', width=20, bg='red', font=self.label_font).\
             grid(row=0, column=0, sticky=W, padx=50, pady=10)
-        Entry(self.search_frame, width=88, font=self.label_font, textvariable=self.key_word).\
-            grid(row=0, column=1, sticky=W, padx=40, pady=10, ipady=5, columnspan=4)
+        search_ep = Entry(self.search_frame, width=88, font=self.label_font, textvariable=self.key_word)
+        search_ep.grid(row=0, column=1, sticky=W, padx=40, pady=10, ipady=5, columnspan=4)
+        search_ep.bind('<KeyRelease-Return>', self.search)
         Button(self.search_frame, text='search', command=self.search, font=self.label_font, width=10).\
             grid(row=0, column=5, sticky=E, padx=15)
 
@@ -206,8 +233,8 @@ class ecSpider(Tk):
         self.tree2.heading('1', text='USERID')
         self.tree2.column('2', width=120, anchor='w')
         self.tree2.heading('2', text='GOODID')
-        self.tree2.column('3', width=80, anchor='w')
-        self.tree2.heading('3', text='平台')
+        self.tree2.column('3', width=280, anchor='w')
+        self.tree2.heading('3', text='商品信息')
         self.tree2.column('4', width=60, anchor='w')
         self.tree2.heading('4', text='当前价格')
         self.tree2.column('5', width=60, anchor='w')
@@ -218,13 +245,15 @@ class ecSpider(Tk):
         self.tree2.heading('7', text='链接')
         self.VScroll12.place(relx=0.979, rely=0, relwidth=0.020, relheight=1)
         self.tree2.configure(yscrollcommand=self.VScroll12.set)
-        self.tree2.place(x=170, y=30)
+        self.tree2.place(x=70, y=30)
+        self.tree2.bind('<ButtonRelease-1>', self.treeviewClick)
         cnt = 1
         for col in self.tree2_column:  # 给所有标题加（循环上边的“手工”）
             self.tree2.heading(str(cnt), text=col,
                               command=lambda _col=str(cnt): self.treeview2_sort_column(self.tree2, _col, False))
             cnt += 1
 
+    # 计算函数运行时间的装饰器
     def a_new_decorator(a_func):
         @wraps(a_func)
         def wrapTheFunction(*args, **kwargs):
@@ -242,16 +271,20 @@ class ecSpider(Tk):
 
     def treeview_sort_column(self, tv, col, reverse):  # Treeview、列名、排列方式
         if col == '5' or col == '6':
-            l = [(float(tv.set(k, col)), k) for k in tv.get_children('')]
+            l = []
+            for k in tv.get_children(''):
+                if tv.set(k, col) == '不显示':
+                    l.append((0.0, k))
+                else:
+                    l.append((float(tv.set(k, col)), k))
+            # l = [(float(tv.set(k, col)), k) for k in tv.get_children('')]
         else:
             l = [(tv.set(k, col), k) for k in tv.get_children('')]
-        print(tv.get_children(''))
-        print(l)
+        print(tv.get_children(''), '\n', l)
         l.sort(reverse=reverse)  # 排序方式
         # rearrange items in sorted positions
         for index, (val, k) in enumerate(l):  # 根据排序后索引移动
             tv.move(k, '', index)
-            print(k)
         tv.heading(col, command=lambda: self.treeview_sort_column(tv, col, not reverse))  # 重写标题，使之成为再点倒序的标题
 
     def treeview2_sort_column(self, tv, col, reverse):  # Treeview、列名、排列方式
@@ -268,7 +301,7 @@ class ecSpider(Tk):
             print(k)
         tv.heading(col, command=lambda: self.treeview2_sort_column(tv, col, not reverse))  # 重写标题，使之成为再点倒序的标题
 
-    def search(self):
+    def search(self, event=None):
         start = time.perf_counter()
         self.goodslist_frame.pack(side='bottom', fill=BOTH, expand='yes')
         self.watchlist_frame.pack_forget()
@@ -294,7 +327,6 @@ class ecSpider(Tk):
         else:
             if self.pf_tb.get() == 1:
                 self.search_tb()
-
         self.goodsinfo_bkb = self.goodsinfo
         self.show_search()
 
@@ -331,6 +363,8 @@ class ecSpider(Tk):
             for goods in self.goodsinfo:
                 good = Goods.Goods.genGoods(goods)
                 goodslist = [num, *good.showItem()]
+                if goodslist[5] == 0:
+                    goodslist[5] = '不显示'
                 self.gdsimg = Image.open(DATA_ROOT_PATH + good.picpath)
                 self.gdsimg = self.gdsimg.resize((80, 80))
                 self.gdsimg = ImageTk.PhotoImage(self.gdsimg)
@@ -373,6 +407,11 @@ class ecSpider(Tk):
             print(item_text)
             self.rt.clipboard_clear()
             self.rt.clipboard_append("https:" + item_text[7])
+        for item in self.tree2.selection():
+            item_text = self.tree2.item(item, "values")
+            print(item_text)
+            self.rt.clipboard_clear()
+            self.rt.clipboard_append("https:" + item_text[6])
 
     def watchlist(self):
         self.goodslist_frame.pack_forget()
@@ -459,11 +498,35 @@ class ecSpider(Tk):
         self.watchlist()
 
     def description(self):
-        pass
+        tl = Toplevel()
+        screenwidth = self.rt.winfo_screenwidth()
+        screenheight = self.rt.winfo_screenheight()
+        size = '%dx%d+%d+%d' % (400, 300, (screenwidth - 400) / 2, (screenheight - 300) / 2)
+        tl.geometry(size)
+        tl.title('ecSpider1.0')
+        Label(tl, text='    在搜索框输入待搜索的关键词即可在您选定的电商平台中搜索相关信息.\n'
+                       '    默认按综合评价来排序，可选按价格排序。\n'
+                       '    支持的电商平台有淘宝，京东，天猫超市，唯品会。\n'
+                       '    对于您感兴趣的商品，可以添加到您的关注列表中，并可以随时更新关注列表中商品的价格。', font=self.label_font, wraplength=300, justify='left', padx=60).pack()
+        Label(tl, text='    在个人中心中可以查看您的专属词云哦~\n'
+                       '    为了方便您的使用，建议不定期更新您的电商信息，如：cookie等。', font=self.label_font, wraplength=300,
+              justify='left', padx=10).pack()
+
+
     def software_about(self):
-        pass
+        tl = Toplevel()
+        screenwidth = self.rt.winfo_screenwidth()
+        screenheight = self.rt.winfo_screenheight()
+        size = '%dx%d+%d+%d' % (400, 300, (screenwidth - 400) / 2, (screenheight - 300) / 2)
+        tl.geometry(size)
+        tl.title('ecSpider 1.0')
+        Label(tl, text='基于Python爬虫的电商比价系统\n'
+                       'python3.6版本，数据库使用MySQL8，爬虫基于requests库定制。', font=self.label_font, wraplength=280,
+              justify='left', padx=60).pack()
+
     def show_word_cloud(self):
         pass
+
     def recommend_result(self):
         self.show_search()
 

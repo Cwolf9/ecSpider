@@ -22,8 +22,7 @@ def music(songs):
     global text  # 故意的，注意与movie的区别
     for s in songs:
         text.insert(tk.END, "听歌曲：%s \t-- %s\n" % (s, time.ctime()))
-        break
-        # time.sleep(2)
+        time.sleep(2)
 
 
 def movie(movies, text):
@@ -35,6 +34,8 @@ def movie(movies, text):
 def thread_it(func, *args):
     '''将函数打包进线程'''
     # 创建
+    print('args: ', args)
+    print(*args)
     t = threading.Thread(target=func, args=args)
     # 守护 !!!
     t.setDaemon(True)
@@ -56,4 +57,20 @@ tk.Button(root, text='音乐', command=lambda: thread_it(music, songs)).pack()
 bt2 = tk.Button(root, text='电影', command=lambda: thread_it(movie, movies, text))
 bt2.pack()
 
-root.mainloop()
+# root.mainloop()
+
+
+import random
+
+
+def pf(x):
+    time.sleep(random.randint(1, 3))
+    print(x)
+
+
+for i in range(10):
+    t = threading.Thread(target=pf, args=(i, ))
+    t.setDaemon(True)
+    t.start()
+    t.join()
+time.sleep(3)

@@ -22,7 +22,7 @@ def getHTMLText(url, code='utf-8'):
         'Cookie': 'dasgfagda'
     }
     try:
-        r = requests.get(url, timeout=30, headers=head)
+        r = requests.get(url, timeout=1, headers=head)
         r.raise_for_status()
         r.encoding = r.apparent_encoding
         return r.text
@@ -35,6 +35,8 @@ def parsePage(ilt, html):
         soup = BeautifulSoup(html, 'html.parser')
         nameInfo = soup.find_all('div', attrs={'class': 'p-name'})
         priceInfo = soup.find_all('div', attrs={'class': 'p-price'})
+        shopInfo = soup.find_all('div', attrs={'class': 'p-shop'})
+        imgInfo = soup.find_all('div', attrs={'class': 'p-img'})
         # print(nameInfo)
         # print(priceInfo)
         for i in range(len(nameInfo)):
@@ -54,34 +56,41 @@ def parsePage(ilt, html):
             ilt.append([price.strip(), glink.strip(), name.strip()])
     except:
         print("解析京东HTML内容失败")
+
 def printGoodsList(ilt, num = 20):
     tplt = "{:4}\t{:8}\t{:20}\t{:20}"
     print(tplt.format("序号","价格","链接","商品名称"))
-    count=0
+    count = 0
     for g in ilt:
-        count=count+1
-        print(tplt.format(count,g[0],g[1],g[2]))
+        count = count+1
+        print(tplt.format(count, g[0], g[1], g[2]))
         if count == num:
             break
     print("")
 def getJDProd(qName = '手机', depth = 1):
+    use_old = 0
     timeID = '%.5f' % time.time()  # 时间戳保留后五位
     infoList = []
     for i in range(depth):
+        time.sleep(1)
         try:
-            with open("D:/iJDSJ.html", "r", encoding='utf-8') as f:
-                html = f.read()
+            if use_old == 1:
+                with open("D:/iJDSJ.html", "r", encoding='utf-8') as f:
+                    html = f.read()
+                    parsePage(infoList, html)
+            else:
                 url = 'https://search.jd.com/Search?keyword=' + qName + '&enc=utf-8&qrst=1&rt=1&stop=1&vt=2&wq=' + qName + '&cid2=653&cid3=655&page=' + str(
                     (i + 1) * 2 - 1) + '&click=0'  # 此处注意 应该给i加1，注意细节
-                # html = getHTMLText(url)
-                # if i == 0:
-                #     with open("D:/iJDSJ.html", "w", encoding='utf-8') as f:
-                #         f.write(html)
+                html = getHTMLText(url)
+                if i == 0:
+                    with open("D:/iJDSJ.html", "w", encoding='utf-8') as f:
+                        f.write(html)
                 parsePage(infoList, html)
-                time.sleep(1)
         except:
             print("获取京东商品产生异常")
     return infoList
+
+
 jd_comment_path = 'jd_comment.txt'
 def reqProdComments(url, csv_writer, num = 10):
     if num > 20: num = 20
@@ -168,10 +177,12 @@ def getJDProdComments():
         ilist = reqProdComments('https://item.jd.com/30191153091.html', writer)
     printComments(ilist)
 
+
 def main():
     time.sleep(1)
     infoList = getJDProd()
     printGoodsList(infoList)
+
 
 if __name__ == '__main__':
     print('hello')
