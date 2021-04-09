@@ -7,6 +7,10 @@
 @desc:
 """
 import re
+from src import utilMysql
+from src.conf_win import *
+
+
 class Users:
     def __init__(self, userid, username, password, email='xxx@qq.com', phonenumber='12345678901', nickname='李某', sex='X'):
         self.userid, self.username, self.password, self.email, self.phonenumber, self.nickname, self.sex = \
@@ -40,6 +44,17 @@ class Users:
     def genUsers(cls, tup: tuple):
         userid, username, password, email, phonenumber, nickname, sex = tup[0], tup[1], tup[2], tup[3], tup[4], tup[5], tup[6]
         return Users(userid, username, password, email, phonenumber, nickname, sex)
+
+    @classmethod
+    def queryWithUserid(cls, userid):
+        sql = utilMysql.genQuerySql('users', (USERID,), (userid,))
+        return Users.genUsers(utilMysql.query(sql)[0])
+
+    @classmethod
+    def updateUsers1(cls, f1, v1, f2, v2):
+        sql = utilMysql.genUpdSql('users', f1, v1, f2, v2)
+        print(sql)
+        return utilMysql.update(sql)
 
 if __name__ == "__main__":
     user = Users(0, 'zs', 'zs')

@@ -26,6 +26,12 @@ class Searchinfo:
         userid, pt, cookie, referer, state = tup[0], tup[1], tup[2], tup[3], tup[4]
         return Searchinfo(userid, pt, cookie, referer, state)
 
+    @classmethod
+    def insert(cls, tup):
+        sql = utilMysql.genInsSql('searchinfo', (USERID, PT, COOKIE, REFERER, STATE), (*tup, 0))
+        return utilMysql.insert(sql)
+
+
 if __name__ == "__main__":
     searchinfo = Searchinfo(1,  '淘宝',  '44', 'Og', 0)
     print(searchinfo)

@@ -977,12 +977,12 @@
       <DataType>varchar(50)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <key id="302" parent="279" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>userid
-pt</ColNames>
-      <Primary>1</Primary>
-    </key>
+    <column id="302" parent="279" name="state">
+      <Position>5</Position>
+      <DataType>int|0s</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>0</DefaultExpression>
+    </column>
     <column id="303" parent="280" name="userid">
       <Position>1</Position>
       <DataType>int|0s</DataType>
