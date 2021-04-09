@@ -20,7 +20,7 @@ class Users:
         return (self.username, self.password, self.email, self.phonenumber, self.nickname, self.sex)
 
     def __str__(self):
-        return "userid: %s, username: %s, password: %s" % (self.userid, self.username, self.password)
+        return "userid: %s, username: %s, password: %s, %s, %s, %s, %s" % (self.userid, self.username, self.password, self.email, self.phonenumber, self.nickname, self.sex)
 
     def self_check(self):
         invalid_symbols = ['\\', '/', ',', '<', '>', '?', ':', ';', '\'', '\"', '[', ']', '{', '}', '|', ' ', '\n',
@@ -28,7 +28,7 @@ class Users:
         for c in self.username + self.password + self.nickname:
             if c in invalid_symbols:
                 return -1
-        if min(len(self.username), len(self.password)) < 5:
+        if min(len(self.username)+4, len(self.password)) < 5:
             return -2
         reg = r'^([\w]{1,19}@[0-9a-zA-Z]{2,10}.(com)|(cn)|(net))$'
         reg2 = r'^([\d]{11})$'
@@ -53,7 +53,6 @@ class Users:
     @classmethod
     def updateUsers1(cls, f1, v1, f2, v2):
         sql = utilMysql.genUpdSql('users', f1, v1, f2, v2)
-        print(sql)
         return utilMysql.update(sql)
 
 if __name__ == "__main__":

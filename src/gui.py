@@ -89,10 +89,10 @@ class ecSpider(Tk):
         pf_strs = ['', '淘宝', '京东', '天猫超市', '唯品会']
         self.main_frame.pack_forget()
         if self.profile_frame: self.profile_frame.pack_forget()
-        self.pf_ck_e = StringVar()
-        self.pf_re_e = StringVar()
         if self.pf_frame == None:
             self.pf_frame = Frame(self.rt, width=1200, height=800)
+            self.pf_ck_e = StringVar()
+            self.pf_re_e = StringVar()
             self.pf_label = Label(self.pf_frame, text=pf_strs[pf_id], font=self.menu_font, pady=50)
             self.pf_label.grid(row=0, column=0, columnspan=2)
             Label(self.pf_frame, text='cookie: ', font=self.menu_font, width=10, padx=30).grid(row=1, column=0)
@@ -111,17 +111,17 @@ class ecSpider(Tk):
 
     def show_profile(self):
         self.main_frame.pack_forget()
-        self.pf_frame.pack_forget()
+        if self.pf_frame: self.pf_frame.pack_forget()
         self.cg_username = StringVar(value=self.login_username)
         login_user = Users.Users.queryWithUserid(self.login_userid)
-        self.cg_password = StringVar()
-        self.cg_repassword = StringVar()
-        self.cg_email = StringVar(value=login_user.email)
-        self.cg_phonenumber = StringVar(value=login_user.phonenumber)
-        self.cg_nickname = StringVar(value=login_user.nickname)
-        self.cg_sex = StringVar(value=login_user.sex)
         if self.profile_frame == None:
             self.profile_frame = Frame(self.rt, width=800, height=500)
+            self.cg_password = StringVar()
+            self.cg_repassword = StringVar()
+            self.cg_email = StringVar(value=login_user.email)
+            self.cg_phonenumber = StringVar(value=login_user.phonenumber)
+            self.cg_nickname = StringVar(value=login_user.nickname)
+            self.cg_sex = StringVar(value=login_user.sex)
             self.pf_label = Label(self.profile_frame, text='欢迎用户：' + self.login_username, font=self.menu_font, pady=50)
             self.pf_label.grid(row=0, column=0, columnspan=2)
             label_font = self.label_font
@@ -159,13 +159,23 @@ class ecSpider(Tk):
                         width=6).grid(row=7, column=1, stick=W, pady=12)
             Checkbutton(self.profile_frame, text='女', variable=self.cg_sex, onvalue='女', offvalue='男', font=entry_font,
                         width=8).grid(row=7, column=2, stick=W, pady=12)
-            Button(self.profile_frame, text="返回", command=self.show_main_window, font=entry_font, width=5).grid(row=8, pady=10)
-            Button(self.profile_frame, text="确认修改", command=self.save_profile, font=entry_font, width=5).grid(row=8, column=1,
+            Button(self.profile_frame, text="返回", command=self.show_main_window, font=entry_font, width=6).grid(row=8, pady=10)
+            Button(self.profile_frame, text="确认修改", command=self.save_profile, font=entry_font, width=6).grid(row=8, column=1,
                                                                                                    columnspan=2)
+        else:
+            self.cg_email.set(login_user.email)
+            self.cg_phonenumber.set(login_user.phonenumber)
+            self.cg_nickname.set(login_user.nickname)
+            self.cg_sex.set(login_user.sex)
         self.profile_frame.pack()
 
     def save_profile(self):
+        print(Users.Users.genUsers((self.login_userid, self.cg_username.get(), self.cg_password.get(), self.cg_email.get(), self.cg_phonenumber.get(), self.cg_nickname.get(), self.cg_sex.get())))
+        if self.cg_password.get() != self.cg_repassword.get():
+            messagebox.showerror(title='提示', message='两次密码输入不一致')
+            return
         if Users.Users.genUsers((self.login_userid, self.cg_username.get(), self.cg_password.get(), self.cg_email.get(), self.cg_phonenumber.get(), self.cg_nickname.get(), self.cg_sex.get())).self_check() < 0:
+            messagebox.showerror(title='提示', message='请检查输入信息是否合法')
             return
         f1 = (USERNAME, PASSWORD, EMAIL, PHONENUMBER, NICKNAME, SEX)
         v1 = (self.cg_username.get(), self.cg_password.get(), self.cg_email.get(), self.cg_phonenumber.get(), self.cg_nickname.get(), self.cg_sex.get())
