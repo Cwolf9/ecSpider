@@ -27,7 +27,7 @@ from functools import wraps
 from src.model import Users, Goods, Watchlist, Searchinfo, Records
 from src import utilMysql, loginFrame, my_wordcloud
 from src.conf_win import *
-from src.spiders import taobao, jingdong
+from src.spiders import taobao, jingdong, tmcs
 
 class ecSpider(Tk):
     def __init__(self):
@@ -399,20 +399,40 @@ class ecSpider(Tk):
             self.tree.delete(item)
         self.goodsinfo = []
         rec_que_res = utilMysql.query(utilMysql.genQuerySql('records', (SEARCHTERM,), ("%" + self.key_word.get() + "%",)))
-        print('rec_que_res: ', rec_que_res)
-        if not rec_que_res:
-            if self.pf_tb.get() == 1:
+        if self.pf_tb.get() == 1:
+            rec_que_res = utilMysql.query(
+                utilMysql.genQuerySql('goods', (PLATFORM, TAGS), ('淘宝', "%" + self.key_word.get() + "%")))
+            if not rec_que_res:
                 self.search_tb()
-            if self.pf_jd.get() == 1:
+        if self.pf_jd.get() == 1:
+            rec_que_res = utilMysql.query(
+                utilMysql.genQuerySql('goods', (PLATFORM, TAGS), ('京东', "%" + self.key_word.get() + "%")))
+            if not rec_que_res:
                 self.search_jd()
-            if self.pf_tmcs.get() == 1:
+        if self.pf_tmcs.get() == 1:
+            rec_que_res = utilMysql.query(
+                utilMysql.genQuerySql('goods', (PLATFORM, TAGS), ('天猫超市', "%" + self.key_word.get() + "%")))
+            if not rec_que_res:
                 self.search_tmcs()
+
         # 获取商品待显示列表
-        gds_que_res = utilMysql.query(
-            utilMysql.genQuerySql('goods', (TAGS,), ("%" + self.key_word.get() + "%",)))
-        print('gds: ', gds_que_res)
+        gds_que_res = []
+        if self.pf_tb.get() == 1:
+            rec_que_res = utilMysql.query(
+                utilMysql.genQuerySql('goods', (PLATFORM, TAGS), ('淘宝', "%" + self.key_word.get() + "%")))
+            gds_que_res.extend(rec_que_res)
+        if self.pf_jd.get() == 1:
+            rec_que_res = utilMysql.query(
+                utilMysql.genQuerySql('goods', (PLATFORM, TAGS), ('京东', "%" + self.key_word.get() + "%")))
+            gds_que_res.extend(rec_que_res)
+        if self.pf_tmcs.get() == 1:
+            rec_que_res = utilMysql.query(
+                utilMysql.genQuerySql('goods', (PLATFORM, TAGS), ('天猫超市', "%" + self.key_word.get() + "%")))
+            gds_que_res.extend(rec_que_res)
+
         for gd in gds_que_res:
             self.goodsinfo.append(gd)
+
         self.goodsinfo_bkb = self.goodsinfo
         self.show_search()
         # 如果成功搜索到数据，将key word添入搜索记录
@@ -513,9 +533,9 @@ class ecSpider(Tk):
 
     @a_new_decorator
     def search_tmcs(self, platform='天猫超市'):
-        print(self.key_word.get(), self.crawl_num.get())
+        print('天猫超市', self.key_word.get(), self.crawl_num.get())
         # 注意res_info的排列
-        res_info = jingdong.getJDProd(self.key_word.get(), self.crawl_num.get())
+        res_info = tmcs.getTMCSProd(self.key_word.get(), self.crawl_num.get())
         start = time.perf_counter()
         # 多线程异步存取商品（下载缩略图）
         t = None

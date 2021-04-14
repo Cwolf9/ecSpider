@@ -47,8 +47,8 @@ def bytesToStr(bs) :
     bss = codecs.escape_decode(bs, 'hex-escape')[0]
     bss = bss.decode('utf-8')
     return bss
-
-tmcs_cookie = r'dnk=\u9152\u75AF\u72FClp; tracknick=\u9152\u75AF\u72FClp; lid=%BE%C6%B7%E8%C0%C7lp; lgc=\u9152\u75AF\u72FClp; cookie2=17b54f4e7e5b3a136597c2c5d57e44c0; t=5b9661cda0b5e825c49d562bbebfb7f1; enc=4IcYQAEf6n8oYeYZDLKpWuyuMMQld6/11EcD6gmhQrw/ybZmwqhhOo45tTuOpZMXQNYfj/hoIHrzvTvg+5UuTA==; _tb_token_=57b73e781399b; cna=ghItGJbpnRQCAd73JQuwqdcQ; uc1=cookie16=V32FPkk/xXMk5UvIbNtImtMfJQ==&existShop=false&cookie14=Uoe1gBpZqGHGQg==&cookie15=VFC/uZ9ayeYq2g==&cookie21=WqG3DMC9FxUx&pas=0; uc3=lg2=U+GCWk/75gdr5Q==&id2=UU6nRCwmzNLA9Q==&nk2=3Rj2a800wpk=&vt3=F8dCuAbxCoj4v7atgv8=; uc4=nk4=0@35PWOqVA3il14dduk5b4ZJJJiw==&id4=0@U2xqIFo4BlQVQlqi37AO9HXTIQFc; sgcookie=E100WCK/GES0f1rWEWqgef+IoX8ChYTi9mK5iueuasqbLeyLH5lWoq4meqqwtyvqCrbG7oFJsFY0G0sWYP2HEwZQHA==; csg=d97e4d29; sm4=430100; _m_h5_tk=96442ef8a65eae8c60d10b85ae5099b4_{}; _m_h5_tk_enc=30999bc0c642402eb7f9e7701dfcf9e2; xlly_s=1; _med=dw:1228.8&dh:691.2&pw:1536&ph:864&ist:0; cq=ccp=1; _uab_collina=161836826412845621368136; csa=0_0_0.0; x5sec=7b22746d616c6c7365617263683b32223a223962333939626163363238643762303362363236383538326161333538363163434e6a6b32594d47454e664837706a2b3339443938674561444449324e6a55354f5445324e5445374d54446a316f536d2b662f2f2f2f3842227d; res=scroll:1442*5354-client:1442*706-offset:1442*5354-screen:1536*864; pnm_cku822=098#E1hvm9vUvbpvUvCkvvvvvjiWPLLWzjtUPFzpzjD2PmPOtjE8P2S9AjDRRFq96jrPi9hvChCvCCpgvpvhphvvvvvCvvXvppvvvvmgvpvIphvvvvvvpvtvpCL8vvCm9hCvVvvvvhWFphvZA9vvpAnvpCL8vvC2UT9Cvv3vpvL3XliqVI9CvvXmp99hjCQUvpCWp9ZHv8WwfCISBiVvVE6FpFn79RpaRoxBnZJt9boJEcttEPmxdX3QbcYRAWAOVciUa6L9+2Kz8Zl9ZRAn+byDCcHCTWeARFxjb9TxfpgCvvpvvPMM; tfstk=c8PGB0bJWRk_gND3F1G_5BdPQRjdZr6ZfSPUTSv537mzSyPFiApeUOTO-cEgMK1..; l=eBOiGEpqjNZKyM69BOfwourza77OSIRAguPzaNbMiOCPt_Ce5u4CW6arN5YwCnGVhsiyJ3zWDma6BeYBqCDXrVmstBALurkmn; isg=BHNzIiHtF2zCqttZm7r4cZqFAnedqAdqyalFyCUQzxLJJJPGrHiXutG-3lTKhF9i'
+# %BE%C6%B7%E8%C0%C7lp
+tmcs_cookie = r'dnk=\u9152\u75AF\u72FClp; tracknick=\u9152\u75AF\u72FClp; lid=%BE%C6%B7%E8%C0%C7lp; lgc=\u9152\u75AF\u72FClp; cookie2=17b54f4e7e5b3a136597c2c5d57e44c0; t=5b9661cda0b5e825c49d562bbebfb7f1; enc=4IcYQAEf6n8oYeYZDLKpWuyuMMQld6/11EcD6gmhQrw/ybZmwqhhOo45tTuOpZMXQNYfj/hoIHrzvTvg+5UuTA==; _tb_token_=57b73e781399b; cna=ghItGJbpnRQCAd73JQuwqdcQ; uc1=cookie16=V32FPkk/xXMk5UvIbNtImtMfJQ==&existShop=false&cookie14=Uoe1gBpZqGHGQg==&cookie15=VFC/uZ9ayeYq2g==&cookie21=WqG3DMC9FxUx&pas=0; uc3=lg2=U+GCWk/75gdr5Q==&id2=UU6nRCwmzNLA9Q==&nk2=3Rj2a800wpk=&vt3=F8dCuAbxCoj4v7atgv8=; uc4=nk4=0@35PWOqVA3il14dduk5b4ZJJJiw==&id4=0@U2xqIFo4BlQVQlqi37AO9HXTIQFc; sgcookie=E100WCK/GES0f1rWEWqgef+IoX8ChYTi9mK5iueuasqbLeyLH5lWoq4meqqwtyvqCrbG7oFJsFY0G0sWYP2HEwZQHA==; csg=d97e4d29; sm4=430100; _m_h5_tk=96442ef8a65eae8c60d10b85ae5099b4_{}; _m_h5_tk_enc=30999bc0c642402eb7f9e7701dfcf9e2; xlly_s=1; _med=dw:1228.8&dh:691.2&pw:1536&ph:864&ist:0; cq=ccp=1; _uab_collina=161836826412845621368136; csa=0_0_0.0; x5sec=7b22746d616c6c7365617263683b32223a223838316139386365643035363236333064336538396135313430393931313033434e6e3532594d47454e4b793034547a7037623270414561444449324e6a55354f5445324e5445374d54446a316f536d2b662f2f2f2f3842227d; res=scroll:1442*5354-client:1442*762-offset:1442*5354-screen:1536*864; pnm_cku822=098#E1hvxpvUvbpvUvCkvvvvvjiWPLLWzjnmPFMWzjthPmP9Aj3PPLqWgjtRPszw1jtUi9hvCvvvpZpvvpvVvUCvpvvvuvhvmvvvpLyq4spgkvhvC9hvpyP9gb9Cvm9vvhCvvvvvEQvvBNwvvvHYvvCVB9vv9LvvvhczvvmCWvvvBNwvvUhQmvhvLUmNQWvag8TJ+ulgE4AUKfu1h7QEfJmK5d8rJm7+kbwshBODN+3l5d8rjC6sswh0r2IZOymy+b8re4tYVVzUd3wt+FXLAw0AHEp7EcgRvpvhvv2MMs9CvvpvvhCv; tfstk=cc7RBFDZJ-2urJRA_gEmOGoRE9QRZZcJKb9KJ7UEL6JjkL3di27GWGtgVBkJkSC..; l=eBOiGEpqjNZKySXoBOfZnurza77TsIRAguPzaNbMiOCPO25e5bSVW6arsjTwCnGVhsgMR3zWDma6BeYBqID6rVmstBALuzkmn; isg=BMvLGoeDL-Q0KHNRowLQiXJdWm-1YN_iUeGtwD3IrYphXOu-xTJvMvj-Mlyy_Dfa'
 
 def downPic(url = "https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/3063905773/O1CN01qXLQ231sW59J818ds_!!0-item_pic.jpg"):
     """
@@ -142,14 +142,15 @@ def getTMCSHTMLText(url, dSearch, ip=0):
         "Accept-Language": "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2",
         "Cache-Control": "max-age=0",
         "Connection": "keep-alive",
-        "user-agent": random.choice(user_agent_list),
+        "user-agent": user_agent_list[0],
+            #random.choice(user_agent_list),
         "Host": "list.tmall.com",
         "referer": "https://list.tmall.com/",
         'upgrade-insecure-requests': '1',
         'cookie': tmcs_cookie.format(time2)
     }
     cookie_dict = {
-        'cookie': tmcs_cookie
+        'cookie': tmcs_cookie.format(time2)
     }
     try:
         reqS = requests.Session()
@@ -178,17 +179,14 @@ def getTMCSHTMLText(url, dSearch, ip=0):
 def parsePage(ilt, html, cnt):
     try:
         soup = BeautifulSoup(html, 'html.parser')
-        nameInfo = soup.find_all('div', attrs={'class': 'productTitle'})
-        priceInfo = soup.find_all('div', attrs={'class': 'productPrice'})
+        nameInfo = soup.find_all('p', attrs={'class': 'productTitle'})
+        priceInfo = soup.find_all('p', attrs={'class': 'productPrice'})
         shopInfo = soup.find_all('div', attrs={'class': 'productShop'})
         imgInfo = soup.find_all('a', attrs={'class': 'productImg'})
-        print(nameInfo)
-        print(priceInfo)
         for i in range(len(nameInfo)):
             glink = nameInfo[i].find('a')['href'].split('&')[0][2:]
             titlelst = nameInfo[i].find('a').text.split()
             name = ""
-            print(glink)
             for j in range(len(titlelst)):  # 此处要注意循环变量不能混淆，与JS不同
                 # 注意！！！此处之前是选择了截取长度，但是截取长度导致了后几个页面有些数据丢失，不知道为什么 :TODO
                 name = name + titlelst[j]
@@ -196,15 +194,13 @@ def parsePage(ilt, html, cnt):
                     break
                 if j != len(titlelst) - 1:
                     name += " "
-            print(glink, name)
             price = priceInfo[i].find('em').text[1:]
             if (not price):  # 特殊情况，特殊处理
                 price = priceInfo[i].find('em')['title']
             shop_name = shopInfo[i].find('a').text
             picpath = imgInfo[i].find('img')['src'][2:]
-            itemId = glink.strip().split('/')[-1].split('.')[0]
-            itemId = 'JD' + itemId
-
+            itemId = re.search(r'id\=(\d+)', glink).group(1)
+            itemId = 'TM' + itemId
             ilt.append(
                 [itemId, name.strip(), price.strip(), str(random.randint(1, 1000)), shop_name.strip(), glink.strip(),
                  picpath.strip()])
@@ -214,7 +210,7 @@ def parsePage(ilt, html, cnt):
         print("解析HTML内容失败")
 
 
-def printGoodsList(ilt, num = 20):
+def printGoodsList(ilt, num=20):
     tplt = "{:4}\t{:8}\t{:8}\t{:16}\t{:16}\t{:16}\t{:8}\t{:16}"
     print(tplt.format("序号", "goodID", "商品名称", "价格", "月销量", "店铺", "链接", "图片url"))
     count = 0
@@ -226,8 +222,8 @@ def printGoodsList(ilt, num = 20):
     print("")
 
 
-def getTMCSProd(qName='手机', cnt=1):
-    use_old = 0
+def getTMCSProd(qName='手机', cnt=3):
+    use_old = 1
     print('qName, cnt: ', qName, cnt)
     url = "https://list.tmall.com/search_product.htm"
     dSearch = {'q': qName, 's': '0' }
@@ -250,7 +246,9 @@ def getTMCSProd(qName='手机', cnt=1):
                 break
         except:
             print("获取商品产生异常")
+    printGoodsList(infoList)
     return infoList
+
 
 def getNewPrice(url, op):
     html = getTMCSHTMLText(url, None, 1)
@@ -259,6 +257,7 @@ def getNewPrice(url, op):
         return float(eval(plt[0].split(":")[1]))
     except:
         return op
+
 
 def test_dec(a_func):
     @wraps(a_func)
@@ -270,9 +269,11 @@ def test_dec(a_func):
 
     return wrapTheFunction
 
+
 @test_dec
 def my_test():
     getTMCSProd()
+
 
 if __name__ == '__main__':
     my_test()
