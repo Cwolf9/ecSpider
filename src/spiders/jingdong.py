@@ -115,7 +115,7 @@ def getJDProd(qName = '手机', cnt = 1):
         html = None
         try:
             if use_old == 1:
-                with open("D:/iJDSJ.html", "r", encoding='utf-8') as f:
+                with open(DATA_ROOT_PATH+"iJDSJ.html", "r", encoding='utf-8') as f:
                     html = f.read()
             else:
                 url = 'https://search.jd.com/Search?keyword=' + qName + '&enc=utf-8&qrst=1&rt=1&stop=1&vt=2&wq=' + qName + '&cid2=653&cid3=655&page=' + str(

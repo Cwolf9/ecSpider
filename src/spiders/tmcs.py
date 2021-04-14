@@ -32,6 +32,12 @@ def getMD5(s) :
     md5.update(s.encode('utf-8'))
     return md5.hexdigest()
 def bytesToStr(bs) :
+    """
+    手机gb2312编码 %CA%D6%BB%FA
+    笔记本utf-8编码 \xE7\xAC\x94\xE8\xAE\xB0\xE6\x9C\xAC
+    :param bs:
+    :return:
+    """
     # s = "%E7%AC%94%E8%AE%B0%E6%9C%AC" #笔记本
     # s = s.replace('%', '\\x')
     # '\xE7\xAC\x94\xE8\xAE\xB0\xE6\x9C\xAC'
@@ -42,7 +48,7 @@ def bytesToStr(bs) :
     bss = bss.decode('utf-8')
     return bss
 
-tmcs_cookie = r'dnk=\u9152\u75AF\u72FClp; tracknick=\u9152\u75AF\u72FClp; lid=酒疯狼lp; lgc=\u9152\u75AF\u72FClp; cookie2=17b54f4e7e5b3a136597c2c5d57e44c0; t=5b9661cda0b5e825c49d562bbebfb7f1; enc=4IcYQAEf6n8oYeYZDLKpWuyuMMQld6/11EcD6gmhQrw/ybZmwqhhOo45tTuOpZMXQNYfj/hoIHrzvTvg+5UuTA==; _tb_token_=57b73e781399b; cna=ghItGJbpnRQCAd73JQuwqdcQ; uc1=cookie16=V32FPkk/xXMk5UvIbNtImtMfJQ==&existShop=false&cookie14=Uoe1gBpZqGHGQg==&cookie15=VFC/uZ9ayeYq2g==&cookie21=WqG3DMC9FxUx&pas=0; uc3=lg2=U+GCWk/75gdr5Q==&id2=UU6nRCwmzNLA9Q==&nk2=3Rj2a800wpk=&vt3=F8dCuAbxCoj4v7atgv8=; uc4=nk4=0@35PWOqVA3il14dduk5b4ZJJJiw==&id4=0@U2xqIFo4BlQVQlqi37AO9HXTIQFc; sgcookie=E100WCK/GES0f1rWEWqgef+IoX8ChYTi9mK5iueuasqbLeyLH5lWoq4meqqwtyvqCrbG7oFJsFY0G0sWYP2HEwZQHA==; csg=d97e4d29; sm4=430100; _m_h5_tk=96442ef8a65eae8c60d10b85ae5099b4_1618375282310; _m_h5_tk_enc=30999bc0c642402eb7f9e7701dfcf9e2; xlly_s=1; csa=0_0_0.0; cq=ccp=1; isg=BKKiExKJNovXgCo2klG5NtP-8ygE86YNUGKUZ-w_EpXAv0M51IL6HVh96_tDrx6l; l=eBOiGEpqjNZKyKjLBO5aFurza77tzCRb8sPzaNbMiInca63RNFt8GNCQzcZwldtjgtfj1etzPnnb5RUD-Tzdg6j3FLLHkRopQxJ6-; tfstk=c7v5B2MgRz4WY_hUU3i4Lhj4pkWRaE3fmb_JVC62age8XkIdksXuQNs4qB40H1If.'
+tmcs_cookie = r'dnk=\u9152\u75AF\u72FClp; tracknick=\u9152\u75AF\u72FClp; lid=%BE%C6%B7%E8%C0%C7lp; lgc=\u9152\u75AF\u72FClp; cookie2=17b54f4e7e5b3a136597c2c5d57e44c0; t=5b9661cda0b5e825c49d562bbebfb7f1; enc=4IcYQAEf6n8oYeYZDLKpWuyuMMQld6/11EcD6gmhQrw/ybZmwqhhOo45tTuOpZMXQNYfj/hoIHrzvTvg+5UuTA==; _tb_token_=57b73e781399b; cna=ghItGJbpnRQCAd73JQuwqdcQ; uc1=cookie16=V32FPkk/xXMk5UvIbNtImtMfJQ==&existShop=false&cookie14=Uoe1gBpZqGHGQg==&cookie15=VFC/uZ9ayeYq2g==&cookie21=WqG3DMC9FxUx&pas=0; uc3=lg2=U+GCWk/75gdr5Q==&id2=UU6nRCwmzNLA9Q==&nk2=3Rj2a800wpk=&vt3=F8dCuAbxCoj4v7atgv8=; uc4=nk4=0@35PWOqVA3il14dduk5b4ZJJJiw==&id4=0@U2xqIFo4BlQVQlqi37AO9HXTIQFc; sgcookie=E100WCK/GES0f1rWEWqgef+IoX8ChYTi9mK5iueuasqbLeyLH5lWoq4meqqwtyvqCrbG7oFJsFY0G0sWYP2HEwZQHA==; csg=d97e4d29; sm4=430100; _m_h5_tk=96442ef8a65eae8c60d10b85ae5099b4_{}; _m_h5_tk_enc=30999bc0c642402eb7f9e7701dfcf9e2; xlly_s=1; _med=dw:1228.8&dh:691.2&pw:1536&ph:864&ist:0; cq=ccp=1; _uab_collina=161836826412845621368136; csa=0_0_0.0; x5sec=7b22746d616c6c7365617263683b32223a223962333939626163363238643762303362363236383538326161333538363163434e6a6b32594d47454e664837706a2b3339443938674561444449324e6a55354f5445324e5445374d54446a316f536d2b662f2f2f2f3842227d; res=scroll:1442*5354-client:1442*706-offset:1442*5354-screen:1536*864; pnm_cku822=098#E1hvm9vUvbpvUvCkvvvvvjiWPLLWzjtUPFzpzjD2PmPOtjE8P2S9AjDRRFq96jrPi9hvChCvCCpgvpvhphvvvvvCvvXvppvvvvmgvpvIphvvvvvvpvtvpCL8vvCm9hCvVvvvvhWFphvZA9vvpAnvpCL8vvC2UT9Cvv3vpvL3XliqVI9CvvXmp99hjCQUvpCWp9ZHv8WwfCISBiVvVE6FpFn79RpaRoxBnZJt9boJEcttEPmxdX3QbcYRAWAOVciUa6L9+2Kz8Zl9ZRAn+byDCcHCTWeARFxjb9TxfpgCvvpvvPMM; tfstk=c8PGB0bJWRk_gND3F1G_5BdPQRjdZr6ZfSPUTSv537mzSyPFiApeUOTO-cEgMK1..; l=eBOiGEpqjNZKyM69BOfwourza77OSIRAguPzaNbMiOCPt_Ce5u4CW6arN5YwCnGVhsiyJ3zWDma6BeYBqCDXrVmstBALurkmn; isg=BHNzIiHtF2zCqttZm7r4cZqFAnedqAdqyalFyCUQzxLJJJPGrHiXutG-3lTKhF9i'
 
 def downPic(url = "https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/3063905773/O1CN01qXLQ231sW59J818ds_!!0-item_pic.jpg"):
     """
@@ -59,7 +65,7 @@ def downPic(url = "https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/306390577
         if not os.path.exists(path):  # 文件不存在则开始爬取保存
             headers = {
                 "user-agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36',
-                "referer": "https://chaoshi.tmall.com/",
+                "referer": "https://list.tmall.com/",
                 'cookie': tmcs_cookie
             }
             r = requests.get(url, headers=headers, timeout=0.7)
@@ -75,9 +81,11 @@ def downPic(url = "https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/306390577
     print(path.split('\\')[-1])
     return path.split('\\')[-1]
 
+
 #UA池，更多UA头部可参考 http://www.useragentstring.com/pages/useragentstring.php
 user_agent_list = [
-      "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 ",
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36',
+    "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 ",
       "(KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1",
       "Mozilla/5.0 (X11; CrOS i686 2268.111.0) AppleWebKit/536.11 ",
       "(KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11",
@@ -114,15 +122,31 @@ user_agent_list = [
       "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 ",
       "(KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24",
 ]
+import datetime
+import time
 def getTMCSHTMLText(url, dSearch, ip=0):
+    # 获取当前时间
+    d1 = datetime.datetime.now()
+    # 时间计算 加2小时05分钟
+    d3 = d1 + datetime.timedelta(hours=2, minutes=5)
+    # 转字符串
+    a = d3.strftime("%Y-%m-%d %H:%M:%S")
+    # 转数组
+    b = time.strptime(a, "%Y-%m-%d %H:%M:%S")
+    # 转时间戳
+    time2 = int(time.mktime(b) * 1000)
+    print(time2)
     headers = {
+        "Accept": "text/plain, */*; q=0.01",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Language": "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2",
+        "Cache-Control": "max-age=0",
+        "Connection": "keep-alive",
         "user-agent": random.choice(user_agent_list),
-            # 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36',
-        "referer": "https://chaoshi.tmall.com/",
+        "Host": "list.tmall.com",
+        "referer": "https://list.tmall.com/",
         'upgrade-insecure-requests': '1',
-        # 'accept - encoding': 'gzip, deflate, br',
-        # 'accept - language': 'zh - CN, zh;q = 0.9, en;q = 0.8',
-        'cookie': tmcs_cookie
+        'cookie': tmcs_cookie.format(time2)
     }
     cookie_dict = {
         'cookie': tmcs_cookie
@@ -132,7 +156,7 @@ def getTMCSHTMLText(url, dSearch, ip=0):
         # reqS.cookies.update(cookie_dict)
         cookies = requests.utils.cookiejar_from_dict(cookie_dict, cookiejar=None, overwrite=True)
         reqS.cookies = cookies
-        print(cookies)
+        # print(cookies)
         if ip == 0:
             r = reqS.get(url, timeout=1, headers=headers, params=dSearch, allow_redirects=False)
         else:
@@ -150,44 +174,45 @@ def getTMCSHTMLText(url, dSearch, ip=0):
         print("获取URL页面失败")
         return "获取URL页面失败"
 
+
 def parsePage(ilt, html, cnt):
     try:
-        plt = re.findall(r'\"view_price\"\:\"[\d\.]*\"', html)
-        tlt = re.findall(r'\"raw_title\"\:\".*?\"', html)
-        urllt = re.findall(r'\"detail_url\"\:\".*?\"', html)
-        shoplt = re.findall(r'\"nick\"\:\".*?\"', html)
-        msaleslt = re.findall(r'\"view_sales\"\:\".*?\"', html)
-        pic_urllt = re.findall(r'\"pic_url\"\:\".*?\"', html)
-        for i in range(len(plt)):
-            price = eval(plt[i].split(":")[1])
-            title = eval(tlt[i].split(":")[1])
-            urllt[i] = re.sub(r'https:', "", urllt[i])
-            urlLink = eval(urllt[i].split(":")[1])
-            urlLink = urlLink.encode('utf-8').decode('utf-8')
-            if len(urlLink) > 120 or urlLink[2] != 'd':
-                continue
-            urlLink = urlLink.split('&')[0]
-            shop_name = eval(shoplt[i].split(":")[1])
-            pic_url = eval(pic_urllt[i].split(":")[1])
+        soup = BeautifulSoup(html, 'html.parser')
+        nameInfo = soup.find_all('div', attrs={'class': 'productTitle'})
+        priceInfo = soup.find_all('div', attrs={'class': 'productPrice'})
+        shopInfo = soup.find_all('div', attrs={'class': 'productShop'})
+        imgInfo = soup.find_all('a', attrs={'class': 'productImg'})
+        print(nameInfo)
+        print(priceInfo)
+        for i in range(len(nameInfo)):
+            glink = nameInfo[i].find('a')['href'].split('&')[0][2:]
+            titlelst = nameInfo[i].find('a').text.split()
+            name = ""
+            print(glink)
+            for j in range(len(titlelst)):  # 此处要注意循环变量不能混淆，与JS不同
+                # 注意！！！此处之前是选择了截取长度，但是截取长度导致了后几个页面有些数据丢失，不知道为什么 :TODO
+                name = name + titlelst[j]
+                if len(name) >= 68:
+                    break
+                if j != len(titlelst) - 1:
+                    name += " "
+            print(glink, name)
+            price = priceInfo[i].find('em').text[1:]
+            if (not price):  # 特殊情况，特殊处理
+                price = priceInfo[i].find('em')['title']
+            shop_name = shopInfo[i].find('a').text
+            picpath = imgInfo[i].find('img')['src'][2:]
+            itemId = glink.strip().split('/')[-1].split('.')[0]
+            itemId = 'JD' + itemId
 
-            def py_to_num(s):
-                if s[-1] == '+':
-                    s = s[:-1]
-                if s[-1] == '万':
-                    return int(float(s[:-1]) * 10000)
-                else:
-                    return int(s)
-
-            msales = msaleslt[i].split(":")[1].strip()[1:-4]
-            msales = py_to_num(msales)
-            itemId = re.search(r'id\=(\d+)', urlLink).group(1)
-            itemId = 'TB' + itemId
-            # print("itemId:", itemId)
-            ilt.append([itemId, title, price, msales, shop_name, urlLink, pic_url])
+            ilt.append(
+                [itemId, name.strip(), price.strip(), str(random.randint(1, 1000)), shop_name.strip(), glink.strip(),
+                 picpath.strip()])
             if len(ilt) >= cnt:
                 break
     except:
         print("解析HTML内容失败")
+
 
 def printGoodsList(ilt, num = 20):
     tplt = "{:4}\t{:8}\t{:8}\t{:16}\t{:16}\t{:16}\t{:8}\t{:16}"
@@ -199,20 +224,17 @@ def printGoodsList(ilt, num = 20):
         if count == num:
             break
     print("")
-def getTMCSProd(qName = '%CA%D6%BB%FA', cnt = 1):
+
+
+def getTMCSProd(qName='手机', cnt=1):
     use_old = 0
     print('qName, cnt: ', qName, cnt)
     url = "https://list.tmall.com/search_product.htm"
-    print(qName.encode('utf-8').decode('latin1'))
-    dSearch = {'q': qName, 's': '0',
-              'user_id': '725677994',
-               'type': 'p',
-               'spm': 'a3204.7933263.a2227oh.d100'
-    }
+    dSearch = {'q': qName, 's': '0' }
     infoList = []
     for i in range(1):
         time.sleep(1)
-        dSearch['s'] = str(40 * i)
+        dSearch['s'] = str(60 * i)
         html = None
         try:
             if use_old == 1:
@@ -223,9 +245,7 @@ def getTMCSProd(qName = '%CA%D6%BB%FA', cnt = 1):
                 if i == 0:
                     with open(DATA_ROOT_PATH+"iTmcsSJ.html", "w", encoding='utf-8') as f:
                         f.write(html)
-            # parsePage(infoList, html, cnt)
-            print(html)
-            break
+            parsePage(infoList, html, cnt)
             if len(infoList) >= cnt:
                 break
         except:

@@ -163,7 +163,7 @@ def getTaobaoProd(qName = '手机', cnt = 1):
         html = None
         try:
             if use_old == 1:
-                with open("D:/iTaobaoSJ.html", "r", encoding='utf-8') as f:
+                with open(DATA_ROOT_PATH+"iTaobaoSJ.html", "r", encoding='utf-8') as f:
                     html = f.read()
             else:
                 html = getTBHTMLText(url, dSearch)
