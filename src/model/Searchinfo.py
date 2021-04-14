@@ -31,6 +31,12 @@ class Searchinfo:
         sql = utilMysql.genInsSql('searchinfo', (USERID, PT, COOKIE, REFERER, STATE), (*tup, 0))
         return utilMysql.insert(sql)
 
+    @classmethod
+    def getSearchInfo(cls, userid, pt):
+        f1 = (USERID, PT)
+        v1 = (userid, pt)
+        sql = utilMysql.genQuerySql('searchinfo', f1, v1)
+        return utilMysql.query(sql)
 
 if __name__ == "__main__":
     searchinfo = Searchinfo(1,  '淘宝',  '44', 'Og', 0)

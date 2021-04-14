@@ -27,7 +27,7 @@ from functools import wraps
 from src.model import Users, Goods, Watchlist, Searchinfo, Records
 from src import utilMysql, loginFrame, my_wordcloud
 from src.conf_win import *
-from src.spiders import taobao
+from src.spiders import taobao, jingdong
 
 class ecSpider(Tk):
     def __init__(self):
@@ -184,6 +184,10 @@ class ecSpider(Tk):
         Users.Users.updateUsers1(f1, v1, f2, v2)
 
     def create_main_page(self):
+        """
+        创建界面主视图
+        :return:
+        """
         self.menu_font = font.Font(family='微软雅黑', size=16)
         self.label_font = font.Font(family='微软雅黑', size=10)
         self.menubar = Menu(self.rt, tearoff=0)
@@ -217,7 +221,7 @@ class ecSpider(Tk):
         # self.watchlist_frame.pack(side='bottom', fill=BOTH, expand='yes')
 
         self.key_word = StringVar()
-        self.crawl_num = IntVar(value=10)
+        self.crawl_num = IntVar(value=3)
         self.list_id = StringVar(value='（多个序号请用空格隔开）')
         Label(self.search_frame, text='搜索关键词：', width=20, bg='red', font=self.label_font).\
             grid(row=0, column=0, sticky=W, padx=50, pady=10)
@@ -379,6 +383,7 @@ class ecSpider(Tk):
         tv.heading(col, command=lambda: self.treeview2_sort_column(tv, col, not reverse))  # 重写标题，使之成为再点倒序的标题
 
     def search(self, event=None):
+        # 统计搜索+显示总用时
         start = time.perf_counter()
         self.goodslist_frame.pack(side='bottom', fill=BOTH, expand='yes')
         self.watchlist_frame.pack_forget()
@@ -395,24 +400,26 @@ class ecSpider(Tk):
         self.goodsinfo = []
         rec_que_res = utilMysql.query(utilMysql.genQuerySql('records', (SEARCHTERM,), ("%" + self.key_word.get() + "%",)))
         print('rec_que_res: ', rec_que_res)
-        if rec_que_res:
-            gds_que_res = utilMysql.query(
-                utilMysql.genQuerySql('goods', (TAGS,), ("%" + self.key_word.get() + "%",)))
-            print('gds: ', gds_que_res)
-            for gd in gds_que_res:
-                self.goodsinfo.append(gd)
-        else:
+        if not rec_que_res:
             if self.pf_tb.get() == 1:
                 self.search_tb()
+            if self.pf_jd.get() == 1:
+                self.search_jd()
+            if self.pf_tmcs.get() == 1:
+                self.search_tmcs()
+        # 获取商品待显示列表
+        gds_que_res = utilMysql.query(
+            utilMysql.genQuerySql('goods', (TAGS,), ("%" + self.key_word.get() + "%",)))
+        print('gds: ', gds_que_res)
+        for gd in gds_que_res:
+            self.goodsinfo.append(gd)
         self.goodsinfo_bkb = self.goodsinfo
         self.show_search()
-
+        # 如果成功搜索到数据，将key word添入搜索记录
         if self.goodsinfo:
             rec_que_res = utilMysql.query(utilMysql.genQuerySql('records', (USERID,), (self.usr_info['login_userid'],)))
-            print('rec_que_res: ', rec_que_res)
             if rec_que_res:
                 new_sec = rec_que_res[0][1] + " " + self.key_word.get()
-                print(new_sec)
                 sql = utilMysql.genUpdSql('records', (SEARCHTERM,), (new_sec,), (USERID,), (self.usr_info['login_userid'],))
                 utilMysql.update(sql)
             else:
@@ -420,9 +427,13 @@ class ecSpider(Tk):
                                           (self.usr_info['login_userid'], self.key_word.get(), '', '', ''))
                 utilMysql.insert(sql)
         end = time.perf_counter()
-        print('Running time: %s Seconds' % (end - start))
+        print('Search+show Running time: %s Seconds' % (end - start))
 
     def show_search(self):
+        """
+        显示搜索结果
+        :return:
+        """
         if self.sort_var.get() == 1:
             self.goodsinfo = self.goodsinfo_bkb
         if self.sort_var.get() == 2:
@@ -450,9 +461,19 @@ class ecSpider(Tk):
                 num = num + 1
 
     def my_single_down(self, platform, x, key_word):
+        """
+        将爬取到的结果存入数据库和商品待显示列表
+        根据picpath获取商品缩略图
+        TODO：爬取图片效率有待提高
+        :param platform:
+        :param x:
+        :param key_word:
+        :return:
+        """
         picpath = 'img_huaban.gif'
-        # picpath = taobao.downPic('https:' + x[6])
-        res_good = (x[0], platform, x[3], x[1], x[5], x[4], x[2], picpath, key_word)
+        # if platform == '淘宝':
+        #     picpath = taobao.downPic('https:' + x[6])
+        res_good = (x[0], platform, x[1], x[2], x[3], x[4], x[5], picpath, key_word)
         sql = utilMysql.genInsSql('goods', (GOODID, PLATFORM, TITLE, PRICE, MSALES, SHOPNAME, HREF, PICPATH, TAGS),
                                   res_good)
         print(sql)
@@ -463,22 +484,54 @@ class ecSpider(Tk):
     @a_new_decorator
     def search_tb(self, platform='淘宝'):
         print(self.key_word.get(), self.crawl_num.get())
+        # 注意res_info的排列
         res_info = taobao.getTaobaoProd(self.key_word.get(), self.crawl_num.get())
         start = time.perf_counter()
+        # 多线程异步存取商品（下载缩略图）
         t = None
         for x in res_info:
             t = threading.Thread(target=self.my_single_down, args=(platform, x, self.key_word.get()))
             t.start()
             t.join()
-        gds_que_res = utilMysql.query(
-            utilMysql.genQuerySql('goods', (TAGS,), ("%" + self.key_word.get() + "%",)))
-        print('gds: ', gds_que_res)
-        for gd in gds_que_res:
-            self.goodsinfo.append(gd)
         end = time.perf_counter()
-        print('Downloading: Running time: %s Seconds' % (end - start))
+        print('tb Downloading: Running time: %s Seconds' % (end - start))
+
+    @a_new_decorator
+    def search_jd(self, platform='京东'):
+        print(self.key_word.get(), self.crawl_num.get())
+        # 注意res_info的排列
+        res_info = jingdong.getJDProd(self.key_word.get(), self.crawl_num.get())
+        start = time.perf_counter()
+        # 多线程异步存取商品（下载缩略图）
+        t = None
+        for x in res_info:
+            t = threading.Thread(target=self.my_single_down, args=(platform, x, self.key_word.get()))
+            t.start()
+            t.join()
+        end = time.perf_counter()
+        print('jd Downloading: Running time: %s Seconds' % (end - start))
+
+    @a_new_decorator
+    def search_tmcs(self, platform='天猫超市'):
+        print(self.key_word.get(), self.crawl_num.get())
+        # 注意res_info的排列
+        res_info = jingdong.getJDProd(self.key_word.get(), self.crawl_num.get())
+        start = time.perf_counter()
+        # 多线程异步存取商品（下载缩略图）
+        t = None
+        for x in res_info:
+            t = threading.Thread(target=self.my_single_down, args=(platform, x, self.key_word.get()))
+            t.start()
+            t.join()
+        end = time.perf_counter()
+        print('tmcs Downloading: Running time: %s Seconds' % (end - start))
 
     def treeviewClick(self, event):
+        """
+        点击列表任意一行时复制商品连接
+        :param event:
+        :return:
+        """
         for item in self.tree.selection():
             item_text = self.tree.item(item, "values")
             print(item_text)
@@ -491,6 +544,10 @@ class ecSpider(Tk):
             self.rt.clipboard_append("https:" + item_text[6])
 
     def watchlist(self):
+        """
+        显示关注列表
+        :return:
+        """
         self.goodslist_frame.pack_forget()
         self.watchlist_frame.pack(side='bottom', fill=BOTH, expand='yes')
         sql = utilMysql.genQuerySql('watchlist', (USERID, ), (self.usr_info['login_userid'], ))
@@ -516,6 +573,10 @@ class ecSpider(Tk):
                 num = num + 1
 
     def add_watchlist(self):
+        """
+        添加搜索到的某些商品进入关注列表，同时更新商品的历史最低最高价格
+        :return:
+        """
         print('list_id: ', self.list_id.get())
         for item_id in self.list_id.get().split():
             try:
@@ -548,6 +609,10 @@ class ecSpider(Tk):
                 continue
 
     def upd_watchlist(self):
+        """
+        更新关注列表历史最低最高价格
+        :return:
+        """
         sql = utilMysql.genQuerySql('watchlist', (USERID,), (self.usr_info['login_userid'],))
         wl_res = utilMysql.query(sql)
         for iwl in wl_res:
@@ -575,6 +640,10 @@ class ecSpider(Tk):
         self.watchlist()
 
     def description(self):
+        """
+        软件使用简介
+        :return:
+        """
         tl = Toplevel()
         screenwidth = self.rt.winfo_screenwidth()
         screenheight = self.rt.winfo_screenheight()
@@ -591,6 +660,10 @@ class ecSpider(Tk):
 
 
     def software_about(self):
+        """
+        关于系统
+        :return:
+        """
         tl = Toplevel()
         screenwidth = self.rt.winfo_screenwidth()
         screenheight = self.rt.winfo_screenheight()
@@ -602,9 +675,19 @@ class ecSpider(Tk):
               justify='left', padx=60).pack()
 
     def show_word_cloud(self):
+        """
+        显示用户专属词云
+        TODO: 词云
+        :return:
+        """
         pass
 
     def recommend_result(self):
+        """
+        展示推荐结果
+        TODO: 推荐
+        :return:
+        """
         self.show_search()
 
 

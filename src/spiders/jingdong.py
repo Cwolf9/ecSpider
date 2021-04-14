@@ -15,11 +15,43 @@ import time
 import html
 import csv
 import json
+from src.conf_win import *
+import random
+import os
+
+# 爬取图片
+jd_cookie = r'dasgfagda'
+def downPic(url = "https://img13.360buyimg.com/n7/jfs/t1/136205/10/7310/56308/5f3dee56E034ab78c/ffc11f69acf791e5.jpg"):
+    root = DATA_ROOT_PATH
+    path = root + url.split('/')[-1]  # 新建文件名为root路径之后加上地址最后以“/”分割的部分
+    path = path.replace('jpg', 'png')
+    try:
+        if not os.path.exists(root):  # 判断括号里的文件是否存在的意思，括号内的可以是文件路径
+            os.mkdir(root)  # 不存在则创建目录
+        if not os.path.exists(path):  # 文件不存在则开始爬取保存
+            headers = {
+                "user-agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36',
+                "referer": "https://s.taobao.com/",
+                'cookie': jd_cookie
+            }
+            r = requests.get(url, headers=headers, timeout=0.7)
+            with open(path, 'wb') as f:
+                # 保存为二进制格式
+                f.write(r.content)
+                f.close()
+                print("文件保存成功")
+        else:
+            print("文件已经存在")
+    except:
+        print("爬取失败")
+    print(path.split('\\')[-1])
+    return path.split('\\')[-1]
+
 def getHTMLText(url, code='utf-8'):
     head = {
         'referer': 'https://search.jd.com/',  # 每个页面的后半部分数据，是通过下拉然后再次请求，会做来源检查。
         'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36',
-        'Cookie': 'dasgfagda'
+        'cookie': jd_cookie
     }
     try:
         r = requests.get(url, timeout=1, headers=head)
@@ -30,7 +62,7 @@ def getHTMLText(url, code='utf-8'):
         print("获取京东URL页面失败")
         return "获取京东URL页面失败"
 
-def parsePage(ilt, html):
+def parsePage(ilt, html, cnt):
     try:
         soup = BeautifulSoup(html, 'html.parser')
         nameInfo = soup.find_all('div', attrs={'class': 'p-name'})
@@ -50,48 +82,57 @@ def parsePage(ilt, html):
                     break
                 if j != len(titlelst) - 1:
                     name += " "
-            price = priceInfo[i].find('strong').text
-            if (price == '￥'):  # 特殊情况，特殊处理
-                price = '￥' + priceInfo[i].find('strong')['data-price']
-            ilt.append([price.strip(), glink.strip(), name.strip()])
+            price = priceInfo[i].find('strong').find('i').text
+            if (not price): # 特殊情况，特殊处理
+                price = priceInfo[i].find('strong')['data-price']
+            shop_name = shopInfo[i].find('a').text
+            picpath = imgInfo[i].find('img')['data-lazy-img'][2:]
+            itemId = glink.strip().split('/')[-1].split('.')[0]
+            itemId = 'JD' + itemId
+
+            ilt.append([itemId, name.strip(), price.strip(), str(random.randint(1, 1000)), shop_name.strip(), glink.strip(), picpath.strip()])
+            if len(ilt) >= cnt:
+                break
     except:
         print("解析京东HTML内容失败")
 
 def printGoodsList(ilt, num = 20):
-    tplt = "{:4}\t{:8}\t{:20}\t{:20}"
-    print(tplt.format("序号","价格","链接","商品名称"))
+    tplt = "{:4}\t{:8}\t{:8}\t{:20}\t{:20}\t{:20}\t{:20}\t{:16}"
+    print(tplt.format("序号", 'ID', "商品名称", "价格", '月销量', '店铺', "链接", 'picpath'))
     count = 0
     for g in ilt:
         count = count+1
-        print(tplt.format(count, g[0], g[1], g[2]))
+        print(tplt.format(count, g[0], g[1], g[2], g[3], g[4], g[5], g[6]))
         if count == num:
             break
     print("")
-def getJDProd(qName = '手机', depth = 1):
+def getJDProd(qName = '手机', cnt = 1):
     use_old = 0
     timeID = '%.5f' % time.time()  # 时间戳保留后五位
     infoList = []
-    for i in range(depth):
+    for i in range(1):
         time.sleep(1)
+        html = None
         try:
             if use_old == 1:
                 with open("D:/iJDSJ.html", "r", encoding='utf-8') as f:
                     html = f.read()
-                    parsePage(infoList, html)
             else:
                 url = 'https://search.jd.com/Search?keyword=' + qName + '&enc=utf-8&qrst=1&rt=1&stop=1&vt=2&wq=' + qName + '&cid2=653&cid3=655&page=' + str(
                     (i + 1) * 2 - 1) + '&click=0'  # 此处注意 应该给i加1，注意细节
                 html = getHTMLText(url)
                 if i == 0:
-                    with open("D:/iJDSJ.html", "w", encoding='utf-8') as f:
+                    with open(DATA_ROOT_PATH+"iJDSJ.html", "w", encoding='utf-8') as f:
                         f.write(html)
-                parsePage(infoList, html)
+            parsePage(infoList, html, cnt)
+            if len(infoList) >= cnt:
+                break
         except:
             print("获取京东商品产生异常")
     return infoList
 
 
-jd_comment_path = 'jd_comment.txt'
+jd_comment_path = DATA_ROOT_PATH + 'jd_comment.txt'
 def reqProdComments(url, csv_writer, num = 10):
     if num > 20: num = 20
     if num <= 0: num = 10

@@ -2,6 +2,14 @@
 
 """
 @author: Cwolf9
+@file: tmcs
+@date: 2021-04-14 10:33
+@desc:
+"""
+# -*- coding: UTF-8 -*-
+
+"""
+@author: Cwolf9
 @file: taobao
 @date: 2021-03-17 22:00
 @desc:
@@ -19,12 +27,10 @@ import codecs
 import random
 from src.conf_win import *
 
-
 def getMD5(s) :
     md5 = hashlib.md5()
     md5.update(s.encode('utf-8'))
     return md5.hexdigest()
-
 def bytesToStr(bs) :
     # s = "%E7%AC%94%E8%AE%B0%E6%9C%AC" #笔记本
     # s = s.replace('%', '\\x')
@@ -35,9 +41,15 @@ def bytesToStr(bs) :
     bss = codecs.escape_decode(bs, 'hex-escape')[0]
     bss = bss.decode('utf-8')
     return bss
-# 爬取图片
-tb_cookie = r'cookie2=17b54f4e7e5b3a136597c2c5d57e44c0; t=5b9661cda0b5e825c49d562bbebfb7f1; _tb_token_=57b73e781399b; _samesite_flag_=true; enc=4IcYQAEf6n8oYeYZDLKpWuyuMMQld6/11EcD6gmhQrw/ybZmwqhhOo45tTuOpZMXQNYfj/hoIHrzvTvg+5UuTA==; thw=cn; hng=GLOBAL|zh-CN|USD|999; alitrackid=www.taobao.com; cna=ghItGJbpnRQCAd73JQuwqdcQ; sgcookie=E100NOFdbUuG0giKiCqGPLgbiPtWrrW/OFH3Z9DCpT97yY5fs/u8mDnDG+D89/SoRX1DpyqxtIWGfmWRUoM1Ls8Sxw==; csg=b906308a; dnk=\u9152\u75AF\u72FClp; skt=2ebe208bc2b09887; existShop=MTYxMzgwMTMyNQ==; tracknick=\u9152\u75AF\u72FClp; _cc_=WqG3DMC9EA==; lastalitrackid=www.taobao.com; uc1=cookie14=Uoe1hMdgoW8i/w==&cookie21=UIHiLt3xTIkz&existShop=false&pas=0&cookie16=VFC/uZ9az08KUQ56dCrZDlbNdA==; _m_h5_tk=553690f7010ce23a4379d64136340b18_1617693966434; _m_h5_tk_enc=1e9e3b9c9c4d6489af80f26138802352; xlly_s=1; _uab_collina=161768533207166644258734; x5sec=7b227365617263686170703b32223a226238386663313738363332353139613762386636646666636636393566336236434e545772344d47455050786872795a2b72436f68774561444449324e6a55354f5445324e5445374d5367434d4b6546677037382f2f2f2f2f77453d227d; JSESSIONID=D65450676072829B396C2FE92DC27E9E; isg=BMrKpvtGnm6b2S0FNjYKhywjG7Bsu04VSKrM71QBS52DB2jBO0omJSs1E3Pb8sat; l=eBaGSPBgOnge4zIBBO5Cnurza77OwQAbzPVzaNbMiInca61h_hQINNCQjsLM8dtjgtCvuF-zPnnb5RFk8padg2HvCbKrCyConxvO.; tfstk=cWfABuiE6uqc9J8R8teo5XF5AFIAazuvjqtt6rnb-aL3amGt1sYNt6BBK-TZDQUR.'
+
+tmcs_cookie = r'dnk=\u9152\u75AF\u72FClp; tracknick=\u9152\u75AF\u72FClp; lid=酒疯狼lp; lgc=\u9152\u75AF\u72FClp; cookie2=17b54f4e7e5b3a136597c2c5d57e44c0; t=5b9661cda0b5e825c49d562bbebfb7f1; enc=4IcYQAEf6n8oYeYZDLKpWuyuMMQld6/11EcD6gmhQrw/ybZmwqhhOo45tTuOpZMXQNYfj/hoIHrzvTvg+5UuTA==; _tb_token_=57b73e781399b; cna=ghItGJbpnRQCAd73JQuwqdcQ; uc1=cookie16=V32FPkk/xXMk5UvIbNtImtMfJQ==&existShop=false&cookie14=Uoe1gBpZqGHGQg==&cookie15=VFC/uZ9ayeYq2g==&cookie21=WqG3DMC9FxUx&pas=0; uc3=lg2=U+GCWk/75gdr5Q==&id2=UU6nRCwmzNLA9Q==&nk2=3Rj2a800wpk=&vt3=F8dCuAbxCoj4v7atgv8=; uc4=nk4=0@35PWOqVA3il14dduk5b4ZJJJiw==&id4=0@U2xqIFo4BlQVQlqi37AO9HXTIQFc; sgcookie=E100WCK/GES0f1rWEWqgef+IoX8ChYTi9mK5iueuasqbLeyLH5lWoq4meqqwtyvqCrbG7oFJsFY0G0sWYP2HEwZQHA==; csg=d97e4d29; sm4=430100; _m_h5_tk=96442ef8a65eae8c60d10b85ae5099b4_1618375282310; _m_h5_tk_enc=30999bc0c642402eb7f9e7701dfcf9e2; xlly_s=1; csa=0_0_0.0; cq=ccp=1; isg=BKKiExKJNovXgCo2klG5NtP-8ygE86YNUGKUZ-w_EpXAv0M51IL6HVh96_tDrx6l; l=eBOiGEpqjNZKyKjLBO5aFurza77tzCRb8sPzaNbMiInca63RNFt8GNCQzcZwldtjgtfj1etzPnnb5RUD-Tzdg6j3FLLHkRopQxJ6-; tfstk=c7v5B2MgRz4WY_hUU3i4Lhj4pkWRaE3fmb_JVC62age8XkIdksXuQNs4qB40H1If.'
+
 def downPic(url = "https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/3063905773/O1CN01qXLQ231sW59J818ds_!!0-item_pic.jpg"):
+    """
+    爬取图片
+    :param url:
+    :return:
+    """
     root = DATA_ROOT_PATH
     path = root + url.split('/')[-1]  # 新建文件名为root路径之后加上地址最后以“/”分割的部分
     path = path.replace('jpg', 'png')
@@ -47,8 +59,8 @@ def downPic(url = "https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/306390577
         if not os.path.exists(path):  # 文件不存在则开始爬取保存
             headers = {
                 "user-agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36',
-                "referer": "https://s.taobao.com/",
-                'cookie': tb_cookie
+                "referer": "https://chaoshi.tmall.com/",
+                'cookie': tmcs_cookie
             }
             r = requests.get(url, headers=headers, timeout=0.7)
             with open(path, 'wb') as f:
@@ -63,28 +75,66 @@ def downPic(url = "https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/306390577
     print(path.split('\\')[-1])
     return path.split('\\')[-1]
 
-
-def getTBHTMLText(url, dSearch, ip=0):
+#UA池，更多UA头部可参考 http://www.useragentstring.com/pages/useragentstring.php
+user_agent_list = [
+      "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 ",
+      "(KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1",
+      "Mozilla/5.0 (X11; CrOS i686 2268.111.0) AppleWebKit/536.11 ",
+      "(KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11",
+      "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.6 ",
+      "(KHTML, like Gecko) Chrome/20.0.1092.0 Safari/536.6",
+      "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.6 ",
+      "(KHTML, like Gecko) Chrome/20.0.1090.0 Safari/536.6",
+      "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.1 ",
+      "(KHTML, like Gecko) Chrome/19.77.34.5 Safari/537.1",
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 ",
+      "(KHTML, like Gecko) Chrome/19.0.1084.9 Safari/536.5",
+      "Mozilla/5.0 (Windows NT 6.0) AppleWebKit/536.5 ",
+      "(KHTML, like Gecko) Chrome/19.0.1084.36 Safari/536.5",
+      "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 ",
+      "(KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3",
+      "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/536.3 ",
+      "(KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3",
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_0) AppleWebKit/536.3 ",
+      "(KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3",
+      "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 ",
+      "(KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3",
+      "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 ",
+      "(KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3",
+      "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 ",
+      "(KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3",
+      "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 ",
+      "(KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3",
+      "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.3 ",
+      "(KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3",
+      "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 ",
+      "(KHTML, like Gecko) Chrome/19.0.1061.0 Safari/536.3",
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.24 ",
+      "(KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24",
+      "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 ",
+      "(KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24",
+]
+def getTMCSHTMLText(url, dSearch, ip=0):
     headers = {
-        "user-agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36',
-        "referer": "https://s.taobao.com/",
-        'cookie': tb_cookie
+        "user-agent": random.choice(user_agent_list),
+            # 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36',
+        "referer": "https://chaoshi.tmall.com/",
+        'upgrade-insecure-requests': '1',
+        # 'accept - encoding': 'gzip, deflate, br',
+        # 'accept - language': 'zh - CN, zh;q = 0.9, en;q = 0.8',
+        'cookie': tmcs_cookie
     }
     cookie_dict = {
-        'cookie': tb_cookie
+        'cookie': tmcs_cookie
     }
     try:
         reqS = requests.Session()
         # reqS.cookies.update(cookie_dict)
-
         cookies = requests.utils.cookiejar_from_dict(cookie_dict, cookiejar=None, overwrite=True)
         reqS.cookies = cookies
         print(cookies)
-        '''
-        <RequestsCookieJar[<Cookie cookie=cookie2=17b54f4e7e5b3a136597c2c5d57e44c0; t=5b9661cda0b5e825c49d562bbebfb7f1; _tb_token_=57b73e781399b; _samesite_flag_=true; enc=4IcYQAEf6n8oYeYZDLKpWuyuMMQld6/11EcD6gmhQrw/ybZmwqhhOo45tTuOpZMXQNYfj/hoIHrzvTvg+5UuTA==; thw=cn; hng=GLOBAL|zh-CN|USD|999; alitrackid=www.taobao.com; xlly_s=1; lastalitrackid=www.taobao.com; mt=ci=0_0; cna=ghItGJbpnRQCAd73JQuwqdcQ; _m_h5_tk=258f615938a9fffd610ad420c8b6c038_1612187188554; _m_h5_tk_enc=adf4cac53165bdf2f886f6d44e09196f; JSESSIONID=CE1405197D4F86041BF290FE23160A41; l=eBaGSPBgOnge41TyBOfZhurza77TGIRfguPzaNbMiOCPOa1p5LY5W6MkobT9CnGVH62MR38KdX68B4TWsydVtSQ5uM80AC1Z3dC..; isg=BHR0od8YqLBu6QNHDIAcZcY9RTLmTZg3W5DG-A7Vc_-LeRXDNlkixwc7-bGhgdCP; tfstk=cKDPBufYZLpyLFyB68wFPQULnSPRZqa35traZXUZ4qH2xlPlik7Lmn_L0kz9n7f..; sgcookie=E1005JQj9/1cnplokvGtldOlk/RurBNfOYmf7En3q+qG0/3ENfVuDTUmdPd6ErRlZLt677g5UqtOmRtO/K7M1YbXjw==; unb=2665991651; uc1=cookie21=W5iHLLyFe3xm&cookie14=Uoe1gBpbBvXwQw==&pas=0&cookie16=W5iHLLyFPlMGbLDwA+dvAGZqLg==&existShop=false&cookie15=W5iHLLyFOGW7aA==; uc3=lg2=V32FPkk/w0dUvg==&nk2=3Rj2a800wpk=&vt3=F8dCuAbxCWMMXsmH758=&id2=UU6nRCwmzNLA9Q==; csg=339090b8; lgc=\u9152\u75AF\u72FClp; cookie17=UU6nRCwmzNLA9Q==; dnk=\u9152\u75AF\u72FClp; skt=3937ef62536f1fb6; existShop=MTYxMjE3ODU2OQ==; uc4=nk4=0@35PWOqVA3il14dduk5b6A0kRbw==&id4=0@U2xqIFo4BlQVQlqi37AO9HfxSNjE; tracknick=\u9152\u75AF\u72FClp; _cc_=VFC/uZ9ajQ==; _l_g_=Ug==; sg=p17; _nk_=\u9152\u75AF\u72FClp; cookie1=U7HwN3kxiXT7IEAcQ8eG3KkqRoGDI3P9LO+TJyuRgyU= for />]>
-        '''
         if ip == 0:
-            r = reqS.get(url, timeout=0.7, headers=headers, params=dSearch)
+            r = reqS.get(url, timeout=1, headers=headers, params=dSearch, allow_redirects=False)
         else:
             r = reqS.get(url, timeout=1, headers=headers)
         print(r.status_code, r.encoding, r.apparent_encoding)
@@ -97,8 +147,8 @@ def getTBHTMLText(url, dSearch, ip=0):
         return r.text
     except Exception as e:
         print(e)
-        print("获取淘宝URL页面失败")
-        return "获取淘宝URL页面失败"
+        print("获取URL页面失败")
+        return "获取URL页面失败"
 
 def parsePage(ilt, html, cnt):
     try:
@@ -137,7 +187,7 @@ def parsePage(ilt, html, cnt):
             if len(ilt) >= cnt:
                 break
     except:
-        print("解析淘宝HTML内容失败")
+        print("解析HTML内容失败")
 
 def printGoodsList(ilt, num = 20):
     tplt = "{:4}\t{:8}\t{:8}\t{:16}\t{:16}\t{:16}\t{:8}\t{:16}"
@@ -149,36 +199,41 @@ def printGoodsList(ilt, num = 20):
         if count == num:
             break
     print("")
-def getTaobaoProd(qName = '手机', cnt = 1):
+def getTMCSProd(qName = '%CA%D6%BB%FA', cnt = 1):
     use_old = 0
     print('qName, cnt: ', qName, cnt)
-    url = "https://s.taobao.com/search"
+    url = "https://list.tmall.com/search_product.htm"
+    print(qName.encode('utf-8').decode('latin1'))
     dSearch = {'q': qName, 's': '0',
-    'imgfile':'',
-    'commend':'all','ssid':'s5-e','search_type':'item','sourceId':'tb.index','spm':'a21bo.2017.201856-taobao-item.1','ie':'utf8','initiative_id':'tbindexz_20170306'}
+              'user_id': '725677994',
+               'type': 'p',
+               'spm': 'a3204.7933263.a2227oh.d100'
+    }
     infoList = []
     for i in range(1):
         time.sleep(1)
-        dSearch['s'] = str(44 * i)
+        dSearch['s'] = str(40 * i)
         html = None
         try:
             if use_old == 1:
-                with open("D:/iTaobaoSJ.html", "r", encoding='utf-8') as f:
+                with open(DATA_ROOT_PATH+"iTmcsSJ.html", "r", encoding='utf-8') as f:
                     html = f.read()
             else:
-                html = getTBHTMLText(url, dSearch)
+                html = getTMCSHTMLText(url, dSearch)
                 if i == 0:
-                    with open(DATA_ROOT_PATH+"iTaobaoSJ.html", "w", encoding='utf-8') as f:
+                    with open(DATA_ROOT_PATH+"iTmcsSJ.html", "w", encoding='utf-8') as f:
                         f.write(html)
-            parsePage(infoList, html, cnt)
+            # parsePage(infoList, html, cnt)
+            print(html)
+            break
             if len(infoList) >= cnt:
                 break
         except:
-            print("获取淘宝商品产生异常")
+            print("获取商品产生异常")
     return infoList
 
 def getNewPrice(url, op):
-    html = getTBHTMLText(url, None, 1)
+    html = getTMCSHTMLText(url, None, 1)
     plt = re.findall(r'\"price\"\:\"[\d\.]*\"', html)
     try:
         return float(eval(plt[0].split(":")[1]))
@@ -197,10 +252,10 @@ def test_dec(a_func):
 
 @test_dec
 def my_test():
-    getTaobaoProd()
+    getTMCSProd()
 
 if __name__ == '__main__':
-    # my_test()
+    my_test()
     pass
 
 
@@ -219,9 +274,9 @@ def reqProdComments(url, csv_writer, num = 10):
     if num <= 0: num = 10
     result = []
     head = {
-        "referer": "https://detail.tmall.com/item.htm",
+        "referer": "https://chaoshi.detail.tmall.com/item.htm",
         'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36',
-        'cookie': tb_cookie
+        'cookie': tmcs_cookie
     }
     itemId = re.search(r'id\=(\d+)', url).group(1)
     print("itemId:", itemId)
@@ -266,13 +321,13 @@ def reqProdComments(url, csv_writer, num = 10):
                     break
             dSearch['currentPage'] = str(int(dSearch['currentPage']) + 1)
     except:
-        print("获取淘宝评论出现bug2")
+        print("获取tmcs评论出现bug2")
     return result
 
-def getTBProdComments(url):
+def getTMCSProdComments(url):
     time.sleep(1)
     ilist = []
-    with open('tbData.csv', 'a+', newline='', encoding='gb18030') as f:
+    with open(DATA_ROOT_PATH+'tmcsData.csv', 'a+', newline='', encoding='gb18030') as f:
         writer = csv.writer(f)
         writer.writerow(("用户昵称", "商品型号", "评论时间", "评论内容"))
         ilist = reqProdComments(url, writer)
