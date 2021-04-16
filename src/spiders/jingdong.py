@@ -19,8 +19,10 @@ from src.conf_win import *
 import random
 import os
 
-# 爬取图片
+
 jd_cookie = r'dasgfagda'
+
+
 def downPic(url = "https://img13.360buyimg.com/n7/jfs/t1/136205/10/7310/56308/5f3dee56E034ab78c/ffc11f69acf791e5.jpg"):
     root = DATA_ROOT_PATH
     path = root + url.split('/')[-1]  # 新建文件名为root路径之后加上地址最后以“/”分割的部分
@@ -47,6 +49,7 @@ def downPic(url = "https://img13.360buyimg.com/n7/jfs/t1/136205/10/7310/56308/5f
     print(path.split('\\')[-1])
     return path.split('\\')[-1]
 
+
 def getHTMLText(url, code='utf-8'):
     head = {
         'referer': 'https://search.jd.com/',  # 每个页面的后半部分数据，是通过下拉然后再次请求，会做来源检查。
@@ -61,6 +64,7 @@ def getHTMLText(url, code='utf-8'):
     except:
         print("获取京东URL页面失败")
         return "获取京东URL页面失败"
+
 
 def parsePage(ilt, html, cnt):
     try:
@@ -96,6 +100,7 @@ def parsePage(ilt, html, cnt):
     except:
         print("解析京东HTML内容失败")
 
+
 def printGoodsList(ilt, num = 20):
     tplt = "{:4}\t{:8}\t{:8}\t{:20}\t{:20}\t{:20}\t{:20}\t{:16}"
     print(tplt.format("序号", 'ID', "商品名称", "价格", '月销量', '店铺', "链接", 'picpath'))
@@ -106,6 +111,8 @@ def printGoodsList(ilt, num = 20):
         if count == num:
             break
     print("")
+
+
 def getJDProd(qName = '手机', cnt = 1):
     use_old = 0
     timeID = '%.5f' % time.time()  # 时间戳保留后五位
@@ -132,7 +139,40 @@ def getJDProd(qName = '手机', cnt = 1):
     return infoList
 
 
+def getJsonData(html):
+    start = html.index('{')
+    end = html.index('})') + 1
+    return json.loads(html[start:end])
+
+
+def getNewPrice(url, op):
+    try:
+        pid = re.search('/(\w*).html', url).group(1)
+        url = f'https://item-soa.jd.com/getWareBusiness?callback=jQuery2423859&skuId={pid}'
+        html = getHTMLText(url)
+        json_data = getJsonData(html)['price']
+        print(json_data)
+        return float(json_data['p'])
+    except:
+        return op
+
+
+def main():
+    time.sleep(1)
+    infoList = getJDProd()
+    printGoodsList(infoList)
+
+
+if __name__ == '__main__':
+    print('hello')
+    # main()
+    x = getNewPrice('https://item.jd.com/100014348492.html', 12333.0)
+    print(x)
+    # getJDProdComments()
+
 jd_comment_path = DATA_ROOT_PATH + 'jd_comment.txt'
+
+
 def reqProdComments(url, csv_writer, num = 10):
     if num > 20: num = 20
     if num <= 0: num = 10
@@ -217,15 +257,3 @@ def getJDProdComments():
         writer.writerow(('留言时间', '评分', '回复数', '点赞数', '图片数', '评论内容'))
         ilist = reqProdComments('https://item.jd.com/30191153091.html', writer)
     printComments(ilist)
-
-
-def main():
-    time.sleep(1)
-    infoList = getJDProd()
-    printGoodsList(infoList)
-
-
-if __name__ == '__main__':
-    print('hello')
-    main()
-    # getJDProdComments()

@@ -50,6 +50,18 @@ class ecSpider(Tk):
         self.show_main_window()
 
 
+    # 计算函数运行时间的装饰器
+    def a_new_decorator(a_func):
+        @wraps(a_func)
+        def wrapTheFunction(*args, **kwargs):
+            start = time.perf_counter()
+            a_func(*args, **kwargs)
+            end = time.perf_counter()
+            print('Decorator: Running time: %s Seconds' % (end - start))
+
+        return wrapTheFunction
+
+
     def change_src_size(self, width=1200, height=800):
         screenwidth = self.rt.winfo_screenwidth()
         screenheight = self.rt.winfo_screenheight()
@@ -299,6 +311,7 @@ class ecSpider(Tk):
         self.tree.configure(yscrollcommand=self.VScroll1.set)
         self.tree.place(x=5, y=30)
         self.tree.bind('<ButtonRelease-1>', self.treeviewClick)
+        self.tree.bind('<Double-Button-1>', self.double_click)
         cnt = 1
         for col in self.tree_column:  # 给所有标题加（循环上边的“手工”）
             self.tree.heading(str(cnt), text=col, command=lambda _col=str(cnt): self.treeview_sort_column(self.tree, _col, False))
@@ -328,27 +341,50 @@ class ecSpider(Tk):
         self.tree2.configure(yscrollcommand=self.VScroll12.set)
         self.tree2.place(x=70, y=30)
         self.tree2.bind('<ButtonRelease-1>', self.treeviewClick)
+        self.tree2.bind('<Double-Button-1>', self.double_click)
         cnt = 1
         for col in self.tree2_column:  # 给所有标题加（循环上边的“手工”）
             self.tree2.heading(str(cnt), text=col,
                               command=lambda _col=str(cnt): self.treeview2_sort_column(self.tree2, _col, False))
             cnt += 1
 
-    # 计算函数运行时间的装饰器
-    def a_new_decorator(a_func):
-        @wraps(a_func)
-        def wrapTheFunction(*args, **kwargs):
-            start = time.perf_counter()
-            a_func(*args, **kwargs)
-            end = time.perf_counter()
-            print('Decorator: Running time: %s Seconds' % (end - start))
+    def double_click(self, event):
+        print('double click')
+        for item in self.tree.selection():
+            item_text = self.tree.item(item, "values")
+            print('double: ', item_text)
+            self.rt.clipboard_clear()
+            self.rt.clipboard_append("https://" + item_text[7])
+        for item in self.tree2.selection():
+            item_text = self.tree2.item(item, "values")
+            print('double: ', item_text)
+            self.rt.clipboard_clear()
+            self.rt.clipboard_append("https://" + item_text[6])
 
-        return wrapTheFunction
 
     def delTreeView(self, tree):
         x = tree.get_children()
         for item in x:
             tree.delete(item)
+
+
+    def treeviewClick(self, event):
+        """
+        点击列表任意一行时复制商品连接
+        :param event:
+        :return:
+        """
+        for item in self.tree.selection():
+            item_text = self.tree.item(item, "values")
+            print(item_text)
+            self.rt.clipboard_clear()
+            self.rt.clipboard_append("https://" + item_text[7])
+        for item in self.tree2.selection():
+            item_text = self.tree2.item(item, "values")
+            print(item_text)
+            self.rt.clipboard_clear()
+            self.rt.clipboard_append("https://" + item_text[6])
+
 
     def treeview_sort_column(self, tv, col, reverse):  # Treeview、列名、排列方式
         if col == '5' or col == '6':
@@ -546,22 +582,6 @@ class ecSpider(Tk):
         end = time.perf_counter()
         print('tmcs Downloading: Running time: %s Seconds' % (end - start))
 
-    def treeviewClick(self, event):
-        """
-        点击列表任意一行时复制商品连接
-        :param event:
-        :return:
-        """
-        for item in self.tree.selection():
-            item_text = self.tree.item(item, "values")
-            print(item_text)
-            self.rt.clipboard_clear()
-            self.rt.clipboard_append("https:" + item_text[7])
-        for item in self.tree2.selection():
-            item_text = self.tree2.item(item, "values")
-            print(item_text)
-            self.rt.clipboard_clear()
-            self.rt.clipboard_append("https:" + item_text[6])
 
     def watchlist(self):
         """

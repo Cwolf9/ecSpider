@@ -116,7 +116,7 @@ def parsePage(ilt, html, cnt):
             urlLink = urlLink.encode('utf-8').decode('utf-8')
             if len(urlLink) > 120 or urlLink[2] != 'd':
                 continue
-            urlLink = urlLink.split('&')[0]
+            urlLink = urlLink.split('&')[0][2:]
             shop_name = eval(shoplt[i].split(":")[1])
             pic_url = eval(pic_urllt[i].split(":")[1])
 
@@ -139,7 +139,8 @@ def parsePage(ilt, html, cnt):
     except:
         print("解析淘宝HTML内容失败")
 
-def printGoodsList(ilt, num = 20):
+
+def printGoodsList(ilt, num=5):
     tplt = "{:4}\t{:8}\t{:8}\t{:16}\t{:16}\t{:16}\t{:8}\t{:16}"
     print(tplt.format("序号", "goodID", "商品名称", "价格", "月销量", "店铺", "链接", "图片url"))
     count = 0
@@ -149,6 +150,8 @@ def printGoodsList(ilt, num = 20):
         if count == num:
             break
     print("")
+
+
 def getTaobaoProd(qName = '手机', cnt = 1):
     use_old = 0
     print('qName, cnt: ', qName, cnt)
@@ -175,6 +178,7 @@ def getTaobaoProd(qName = '手机', cnt = 1):
                 break
         except:
             print("获取淘宝商品产生异常")
+    printGoodsList(infoList)
     return infoList
 
 def getNewPrice(url, op):
@@ -200,7 +204,7 @@ def my_test():
     getTaobaoProd()
 
 if __name__ == '__main__':
-    # my_test()
+    my_test()
     pass
 
 

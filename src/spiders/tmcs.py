@@ -135,7 +135,8 @@ def getTMCSHTMLText(url, dSearch, ip=0):
     b = time.strptime(a, "%Y-%m-%d %H:%M:%S")
     # 转时间戳
     time2 = int(time.mktime(b) * 1000)
-    print(time2)
+    print('时间戳 ', time2)
+    host = ["list.tmall.com", 'detail.tmall.com']
     headers = {
         "Accept": "text/plain, */*; q=0.01",
         "Accept-Encoding": "gzip, deflate, br",
@@ -144,7 +145,7 @@ def getTMCSHTMLText(url, dSearch, ip=0):
         "Connection": "keep-alive",
         "user-agent": user_agent_list[0],
             #random.choice(user_agent_list),
-        "Host": "list.tmall.com",
+        "Host": host[ip],
         "referer": "https://list.tmall.com/",
         'upgrade-insecure-requests': '1',
         'cookie': tmcs_cookie.format(time2)
@@ -210,7 +211,7 @@ def parsePage(ilt, html, cnt):
         print("解析HTML内容失败")
 
 
-def printGoodsList(ilt, num=20):
+def printGoodsList(ilt, num=5):
     tplt = "{:4}\t{:8}\t{:8}\t{:16}\t{:16}\t{:16}\t{:8}\t{:16}"
     print(tplt.format("序号", "goodID", "商品名称", "价格", "月销量", "店铺", "链接", "图片url"))
     count = 0
@@ -226,7 +227,7 @@ def getTMCSProd(qName='手机', cnt=3):
     use_old = 1
     print('qName, cnt: ', qName, cnt)
     url = "https://list.tmall.com/search_product.htm"
-    dSearch = {'q': qName, 's': '0' }
+    dSearch = {'q': qName, 's': '0'}
     infoList = []
     for i in range(1):
         time.sleep(1)
@@ -251,12 +252,22 @@ def getTMCSProd(qName='手机', cnt=3):
 
 
 def getNewPrice(url, op):
-    html = getTMCSHTMLText(url, None, 1)
+    """
+    HTTPSConnectionPool(host='detail.tmall.com', port=443): Read timed out. (read timeout=5)
+    :param url:
+    :param op:
+    :return:
+    """
+    html = getTMCSHTMLText(url+'&sku_properties=5919063:6536025;122216431:27772', None, 1)
     plt = re.findall(r'\"price\"\:\"[\d\.]*\"', html)
+    ans = 1000000000.0
     try:
-        return float(eval(plt[0].split(":")[1]))
+        for pli in plt:
+            min_val = float(eval(pli.split(":")[1]))
+            ans = min(ans, min_val)
+        return ans
     except:
-        return op
+        return min(ans, op)
 
 
 def test_dec(a_func):
@@ -277,6 +288,8 @@ def my_test():
 
 if __name__ == '__main__':
     my_test()
+    x = getNewPrice('https://detail.tmall.com/item.htm?id=639142927098', 12.3)
+    print(x)
     pass
 
 
