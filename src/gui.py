@@ -27,7 +27,7 @@ from functools import wraps
 from src.model import Users, Goods, Watchlist, Searchinfo, Records
 from src import utilMysql, loginFrame, my_wordcloud
 from src.conf_win import *
-from src.spiders import taobao, jingdong, tmcs
+from src.spiders import taobao, jingdong, tmcs, wph
 
 class ecSpider(Tk):
     def __init__(self):
@@ -419,7 +419,11 @@ class ecSpider(Tk):
         tv.heading(col, command=lambda: self.treeview2_sort_column(tv, col, not reverse))  # 重写标题，使之成为再点倒序的标题
 
     def search(self, event=None):
-        # 统计搜索+显示总用时
+        """
+        统计搜索+显示总用时
+        :param event:
+        :return:
+        """
         start = time.perf_counter()
         self.goodslist_frame.pack(side='bottom', fill=BOTH, expand='yes')
         self.watchlist_frame.pack_forget()
@@ -583,6 +587,21 @@ class ecSpider(Tk):
         print('tmcs Downloading: Running time: %s Seconds' % (end - start))
 
 
+    @a_new_decorator
+    def search_wph(self, platform='唯品会'):
+        print('唯品会', self.key_word.get(), self.crawl_num.get())
+        # 注意res_info的排列
+        res_info = wph.getWPHProd(self.key_word.get(), self.crawl_num.get())
+        start = time.perf_counter()
+        # 多线程异步存取商品（下载缩略图）
+        t = None
+        for x in res_info:
+            t = threading.Thread(target=self.my_single_down, args=(platform, x, self.key_word.get()))
+            t.start()
+            t.join()
+        end = time.perf_counter()
+        print('wph Downloading: Running time: %s Seconds' % (end - start))
+
     def watchlist(self):
         """
         显示关注列表
@@ -720,6 +739,7 @@ class ecSpider(Tk):
         TODO: 词云
         :return:
         """
+
         pass
 
     def recommend_result(self):

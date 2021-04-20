@@ -19,36 +19,17 @@ import requests
 import os
 import re
 from bs4 import BeautifulSoup
-import time
 import json
 import csv
-import hashlib
-import codecs
+import datetime
+import time
 import random
 from src.conf_win import *
 
-def getMD5(s) :
-    md5 = hashlib.md5()
-    md5.update(s.encode('utf-8'))
-    return md5.hexdigest()
-def bytesToStr(bs) :
-    """
-    手机gb2312编码 %CA%D6%BB%FA
-    笔记本utf-8编码 \xE7\xAC\x94\xE8\xAE\xB0\xE6\x9C\xAC
-    :param bs:
-    :return:
-    """
-    # s = "%E7%AC%94%E8%AE%B0%E6%9C%AC" #笔记本
-    # s = s.replace('%', '\\x')
-    # '\xE7\xAC\x94\xE8\xAE\xB0\xE6\x9C\xAC'
-    # ss = codecs.escape_decode(s, 'hex-escape')[0]
-    # print(ss.decode('utf-8'))
-    bs = bs.replace('%', '\\x')
-    bss = codecs.escape_decode(bs, 'hex-escape')[0]
-    bss = bss.decode('utf-8')
-    return bss
+
 # %BE%C6%B7%E8%C0%C7lp
 tmcs_cookie = r'dnk=\u9152\u75AF\u72FClp; tracknick=\u9152\u75AF\u72FClp; lid=%BE%C6%B7%E8%C0%C7lp; lgc=\u9152\u75AF\u72FClp; cookie2=17b54f4e7e5b3a136597c2c5d57e44c0; t=5b9661cda0b5e825c49d562bbebfb7f1; enc=4IcYQAEf6n8oYeYZDLKpWuyuMMQld6/11EcD6gmhQrw/ybZmwqhhOo45tTuOpZMXQNYfj/hoIHrzvTvg+5UuTA==; _tb_token_=57b73e781399b; cna=ghItGJbpnRQCAd73JQuwqdcQ; uc1=cookie16=V32FPkk/xXMk5UvIbNtImtMfJQ==&existShop=false&cookie14=Uoe1gBpZqGHGQg==&cookie15=VFC/uZ9ayeYq2g==&cookie21=WqG3DMC9FxUx&pas=0; uc3=lg2=U+GCWk/75gdr5Q==&id2=UU6nRCwmzNLA9Q==&nk2=3Rj2a800wpk=&vt3=F8dCuAbxCoj4v7atgv8=; uc4=nk4=0@35PWOqVA3il14dduk5b4ZJJJiw==&id4=0@U2xqIFo4BlQVQlqi37AO9HXTIQFc; sgcookie=E100WCK/GES0f1rWEWqgef+IoX8ChYTi9mK5iueuasqbLeyLH5lWoq4meqqwtyvqCrbG7oFJsFY0G0sWYP2HEwZQHA==; csg=d97e4d29; sm4=430100; _m_h5_tk=96442ef8a65eae8c60d10b85ae5099b4_{}; _m_h5_tk_enc=30999bc0c642402eb7f9e7701dfcf9e2; xlly_s=1; _med=dw:1228.8&dh:691.2&pw:1536&ph:864&ist:0; cq=ccp=1; _uab_collina=161836826412845621368136; csa=0_0_0.0; x5sec=7b22746d616c6c7365617263683b32223a223838316139386365643035363236333064336538396135313430393931313033434e6e3532594d47454e4b793034547a7037623270414561444449324e6a55354f5445324e5445374d54446a316f536d2b662f2f2f2f3842227d; res=scroll:1442*5354-client:1442*762-offset:1442*5354-screen:1536*864; pnm_cku822=098#E1hvxpvUvbpvUvCkvvvvvjiWPLLWzjnmPFMWzjthPmP9Aj3PPLqWgjtRPszw1jtUi9hvCvvvpZpvvpvVvUCvpvvvuvhvmvvvpLyq4spgkvhvC9hvpyP9gb9Cvm9vvhCvvvvvEQvvBNwvvvHYvvCVB9vv9LvvvhczvvmCWvvvBNwvvUhQmvhvLUmNQWvag8TJ+ulgE4AUKfu1h7QEfJmK5d8rJm7+kbwshBODN+3l5d8rjC6sswh0r2IZOymy+b8re4tYVVzUd3wt+FXLAw0AHEp7EcgRvpvhvv2MMs9CvvpvvhCv; tfstk=cc7RBFDZJ-2urJRA_gEmOGoRE9QRZZcJKb9KJ7UEL6JjkL3di27GWGtgVBkJkSC..; l=eBOiGEpqjNZKySXoBOfZnurza77TsIRAguPzaNbMiOCPO25e5bSVW6arsjTwCnGVhsgMR3zWDma6BeYBqID6rVmstBALuzkmn; isg=BMvLGoeDL-Q0KHNRowLQiXJdWm-1YN_iUeGtwD3IrYphXOu-xTJvMvj-Mlyy_Dfa'
+
 
 def downPic(url = "https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/3063905773/O1CN01qXLQ231sW59J818ds_!!0-item_pic.jpg"):
     """
@@ -122,8 +103,7 @@ user_agent_list = [
       "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 ",
       "(KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24",
 ]
-import datetime
-import time
+
 def getTMCSHTMLText(url, dSearch, ip=0):
     # 获取当前时间
     d1 = datetime.datetime.now()

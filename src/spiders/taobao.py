@@ -14,30 +14,19 @@ from bs4 import BeautifulSoup
 import time
 import json
 import csv
-import hashlib
-import codecs
 import random
 from src.conf_win import *
 
 
-def getMD5(s) :
-    md5 = hashlib.md5()
-    md5.update(s.encode('utf-8'))
-    return md5.hexdigest()
-
-def bytesToStr(bs) :
-    # s = "%E7%AC%94%E8%AE%B0%E6%9C%AC" #笔记本
-    # s = s.replace('%', '\\x')
-    # '\xE7\xAC\x94\xE8\xAE\xB0\xE6\x9C\xAC'
-    # ss = codecs.escape_decode(s, 'hex-escape')[0]
-    # print(ss.decode('utf-8'))
-    bs = bs.replace('%', '\\x')
-    bss = codecs.escape_decode(bs, 'hex-escape')[0]
-    bss = bss.decode('utf-8')
-    return bss
-# 爬取图片
 tb_cookie = r'cookie2=17b54f4e7e5b3a136597c2c5d57e44c0; t=5b9661cda0b5e825c49d562bbebfb7f1; _tb_token_=57b73e781399b; _samesite_flag_=true; enc=4IcYQAEf6n8oYeYZDLKpWuyuMMQld6/11EcD6gmhQrw/ybZmwqhhOo45tTuOpZMXQNYfj/hoIHrzvTvg+5UuTA==; thw=cn; hng=GLOBAL|zh-CN|USD|999; alitrackid=www.taobao.com; cna=ghItGJbpnRQCAd73JQuwqdcQ; sgcookie=E100NOFdbUuG0giKiCqGPLgbiPtWrrW/OFH3Z9DCpT97yY5fs/u8mDnDG+D89/SoRX1DpyqxtIWGfmWRUoM1Ls8Sxw==; csg=b906308a; dnk=\u9152\u75AF\u72FClp; skt=2ebe208bc2b09887; existShop=MTYxMzgwMTMyNQ==; tracknick=\u9152\u75AF\u72FClp; _cc_=WqG3DMC9EA==; lastalitrackid=www.taobao.com; uc1=cookie14=Uoe1hMdgoW8i/w==&cookie21=UIHiLt3xTIkz&existShop=false&pas=0&cookie16=VFC/uZ9az08KUQ56dCrZDlbNdA==; _m_h5_tk=553690f7010ce23a4379d64136340b18_1617693966434; _m_h5_tk_enc=1e9e3b9c9c4d6489af80f26138802352; xlly_s=1; _uab_collina=161768533207166644258734; x5sec=7b227365617263686170703b32223a226238386663313738363332353139613762386636646666636636393566336236434e545772344d47455050786872795a2b72436f68774561444449324e6a55354f5445324e5445374d5367434d4b6546677037382f2f2f2f2f77453d227d; JSESSIONID=D65450676072829B396C2FE92DC27E9E; isg=BMrKpvtGnm6b2S0FNjYKhywjG7Bsu04VSKrM71QBS52DB2jBO0omJSs1E3Pb8sat; l=eBaGSPBgOnge4zIBBO5Cnurza77OwQAbzPVzaNbMiInca61h_hQINNCQjsLM8dtjgtCvuF-zPnnb5RFk8padg2HvCbKrCyConxvO.; tfstk=cWfABuiE6uqc9J8R8teo5XF5AFIAazuvjqtt6rnb-aL3amGt1sYNt6BBK-TZDQUR.'
-def downPic(url = "https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/3063905773/O1CN01qXLQ231sW59J818ds_!!0-item_pic.jpg"):
+
+
+def downPic(url="https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/3063905773/O1CN01qXLQ231sW59J818ds_!!0-item_pic.jpg"):
+    """
+    爬取图片
+    :param url:
+    :return:
+    """
     root = DATA_ROOT_PATH
     path = root + url.split('/')[-1]  # 新建文件名为root路径之后加上地址最后以“/”分割的部分
     path = path.replace('jpg', 'png')
@@ -81,7 +70,7 @@ def getTBHTMLText(url, dSearch, ip=0):
         reqS.cookies = cookies
         print(cookies)
         '''
-        <RequestsCookieJar[<Cookie cookie=cookie2=17b54f4e7e5b3a136597c2c5d57e44c0; t=5b9661cda0b5e825c49d562bbebfb7f1; _tb_token_=57b73e781399b; _samesite_flag_=true; enc=4IcYQAEf6n8oYeYZDLKpWuyuMMQld6/11EcD6gmhQrw/ybZmwqhhOo45tTuOpZMXQNYfj/hoIHrzvTvg+5UuTA==; thw=cn; hng=GLOBAL|zh-CN|USD|999; alitrackid=www.taobao.com; xlly_s=1; lastalitrackid=www.taobao.com; mt=ci=0_0; cna=ghItGJbpnRQCAd73JQuwqdcQ; _m_h5_tk=258f615938a9fffd610ad420c8b6c038_1612187188554; _m_h5_tk_enc=adf4cac53165bdf2f886f6d44e09196f; JSESSIONID=CE1405197D4F86041BF290FE23160A41; l=eBaGSPBgOnge41TyBOfZhurza77TGIRfguPzaNbMiOCPOa1p5LY5W6MkobT9CnGVH62MR38KdX68B4TWsydVtSQ5uM80AC1Z3dC..; isg=BHR0od8YqLBu6QNHDIAcZcY9RTLmTZg3W5DG-A7Vc_-LeRXDNlkixwc7-bGhgdCP; tfstk=cKDPBufYZLpyLFyB68wFPQULnSPRZqa35traZXUZ4qH2xlPlik7Lmn_L0kz9n7f..; sgcookie=E1005JQj9/1cnplokvGtldOlk/RurBNfOYmf7En3q+qG0/3ENfVuDTUmdPd6ErRlZLt677g5UqtOmRtO/K7M1YbXjw==; unb=2665991651; uc1=cookie21=W5iHLLyFe3xm&cookie14=Uoe1gBpbBvXwQw==&pas=0&cookie16=W5iHLLyFPlMGbLDwA+dvAGZqLg==&existShop=false&cookie15=W5iHLLyFOGW7aA==; uc3=lg2=V32FPkk/w0dUvg==&nk2=3Rj2a800wpk=&vt3=F8dCuAbxCWMMXsmH758=&id2=UU6nRCwmzNLA9Q==; csg=339090b8; lgc=\u9152\u75AF\u72FClp; cookie17=UU6nRCwmzNLA9Q==; dnk=\u9152\u75AF\u72FClp; skt=3937ef62536f1fb6; existShop=MTYxMjE3ODU2OQ==; uc4=nk4=0@35PWOqVA3il14dduk5b6A0kRbw==&id4=0@U2xqIFo4BlQVQlqi37AO9HfxSNjE; tracknick=\u9152\u75AF\u72FClp; _cc_=VFC/uZ9ajQ==; _l_g_=Ug==; sg=p17; _nk_=\u9152\u75AF\u72FClp; cookie1=U7HwN3kxiXT7IEAcQ8eG3KkqRoGDI3P9LO+TJyuRgyU= for />]>
+        <RequestsCookieJar[<Cookie cookie=7b54f4e7e5b3a136597c2c5d57e44c0; t=5b9661cda0b5e825c49d562bbebfb7f1; _tb_token_=57b73e781399b; _samesite_flag_=true; enc=4IcYQAEf6n8oYeYZDLKpWuyuMMQld6/11EcD6gmhQrw/ybZmwqhhOo45tTuOpZMXQNYfj/hoIHrzvTvg+5UuTA==; thw=cn; hng=GLOBAL|zh-CN|USD|999; alitrackid=www.taobao.com; xlly_s=1; lastalitrackid=www.taobao.com; mt=ci=0_0; cna=ghItGJbpnRQCAd73JQuwqdcQ; _m_h5_tk=258f615938a9fffd610ad420c8b6c038_1612187188554; _m_h5_tk_enc=adf4cac53165bdf2f886f6d44e09196f; JSESSIONID=CE1405197D4F86041BF290FE23160A41; l=eBaGSPBgOnge41TyBOfZhurza77TGIRfguPzaNbMiOCPOa1p5LY5W6MkobT9CnGVH62MR38KdX68B4TWsydVtSQ5uM80AC1Z3dC..; isg=BHR0od8YqLBu6QNHDIAcZcY9RTLmTZg3W5DG-A7Vc_-LeRXDNlkixwc7-bGhgdCP; tfstk=cKDPBufYZLpyLFyB68wFPQULnSPRZqa35traZXUZ4qH2xlPlik7Lmn_L0kz9n7f..; sgcookie=E1005JQj9/1cnplokvGtldOlk/RurBNfOYmf7En3q+qG0/3ENfVuDTUmdPd6ErRlZLt677g5UqtOmRtO/K7M1YbXjw==; unb=2665991651; uc1=cookie21=W5iHLLyFe3xm&cookie14=Uoe1gBpbBvXwQw==&pas=0&cookie16=W5iHLLyFPlMGbLDwA+dvAGZqLg==&existShop=false&cookie15=W5iHLLyFOGW7aA==; uc3=lg2=V32FPkk/w0dUvg==&nk2=3Rj2a800wpk=&vt3=F8dCuAbxCWMMXsmH758=&id2=UU6nRCwmzNLA9Q==; csg=339090b8; lgc=\u9152\u75AF\u72FClp; cookie17=UU6nRCwmzNLA9Q==; dnk=\u9152\u75AF\u72FClp; skt=3937ef62536f1fb6; existShop=MTYxMjE3ODU2OQ==; uc4=nk4=0@35PWOqVA3il14dduk5b6A0kRbw==&id4=0@U2xqIFo4BlQVQlqi37AO9HfxSNjE; tracknick=\u9152\u75AF\u72FClp; _cc_=VFC/uZ9ajQ==; _l_g_=Ug==; sg=p17; _nk_=\u9152\u75AF\u72FClp; cookie1=U7HwN3kxiXT7IEAcQ8eG3KkqRoGDI3P9LO+TJyuRgyU= for />]>
         '''
         if ip == 0:
             r = reqS.get(url, timeout=0.7, headers=headers, params=dSearch)
@@ -99,6 +88,7 @@ def getTBHTMLText(url, dSearch, ip=0):
         print(e)
         print("获取淘宝URL页面失败")
         return "获取淘宝URL页面失败"
+
 
 def parsePage(ilt, html, cnt):
     try:
@@ -181,6 +171,7 @@ def getTaobaoProd(qName = '手机', cnt = 1):
     printGoodsList(infoList)
     return infoList
 
+
 def getNewPrice(url, op):
     html = getTBHTMLText(url, None, 1)
     plt = re.findall(r'\"price\"\:\"[\d\.]*\"', html)
@@ -188,6 +179,7 @@ def getNewPrice(url, op):
         return float(eval(plt[0].split(":")[1]))
     except:
         return op
+
 
 def test_dec(a_func):
     @wraps(a_func)
@@ -199,16 +191,15 @@ def test_dec(a_func):
 
     return wrapTheFunction
 
+
 @test_dec
 def my_test():
     getTaobaoProd()
 
+
 if __name__ == '__main__':
     my_test()
     pass
-
-
-
 
 
 def printComments(ilist):
@@ -217,6 +208,8 @@ def printComments(ilist):
         print(cnt, x[0], x[1], x[2], x[3])
         cnt += 1
     print("")
+
+
 # https://rate.tmall.com/list_detail_rate.htm?itemId=629748003807&spuId=1846540591&sellerId=268451883&order=3&currentPage=1&append=0&content=1&tagId=&posi=&picture=&groupId=&ua=098%23E1hvl9vnvPOvUpCkvvvvvjiWPLqZ1jEHRLFhAjthPmPhsjYbPLF9ljn2n2SOQjiRROvCvCLwjUYJDrMwznAa9lS5FMsJzVD448QCvvyvmCQmFgGvbvTVvpvhvvpvv29Cvvpvvvvv29hvCvvvMMGvvpvVvvpvvhCvKvhv8vvvvvCvpvvtvvmm7ZCvmR%2BvvvWvphvW9pvv9DDvpvACvvmm7ZCv2UVUvpvVmvvC9j3vuvhvmvvv9b%2B1eAw0mvhvLvCrpQvjn%2BkQ0f06WeCpqU0HsfUpwyjIAXcBKFyK2ixrQj7JVVQHYnFhAEI7nDeDyO2vSdtIjbmYSW94P5CXqU5EDfmlJ1kHsX7veEkevpvhvvmv9uQCvvyvmH9mKdIv8EQgvpvhvvvvvv%3D%3D&needFold=0&_ksTS=1612519758221_703&callback=jsonp704
 def reqProdComments(url, csv_writer, num = 10):
     if num > 20: num = 20
@@ -272,6 +265,7 @@ def reqProdComments(url, csv_writer, num = 10):
     except:
         print("获取淘宝评论出现bug2")
     return result
+
 
 def getTBProdComments(url):
     time.sleep(1)

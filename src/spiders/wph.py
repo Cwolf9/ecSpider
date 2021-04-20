@@ -22,43 +22,9 @@ from bs4 import BeautifulSoup
 import time
 import json
 import csv
-import hashlib
-import codecs
 import random
 from src.conf_win import *
 
-
-def getMD5(s) :
-    md5 = hashlib.md5()
-    md5.update(s.encode('utf-8'))
-    return md5.hexdigest()
-
-
-def utf_8ToStr(bs):
-    """
-    将utf-8内容的字符串格式还原decode成utf-8编码的字符串
-    :param bs:
-    :return:
-    """
-    # s = "%E7%AC%94%E8%AE%B0%E6%9C%AC" #笔记本
-    # s = s.replace('%', '\\x')
-    # '\xE7\xAC\x94\xE8\xAE\xB0\xE6\x9C\xAC'
-    # ss = codecs.escape_decode(s, 'hex-escape')[0]
-    # print(ss.decode('utf-8'))
-    bs = bs.replace('%', '\\x')
-    bss = codecs.escape_decode(bs, 'hex-escape')[0]
-    bss = bss.decode('utf-8')
-    return bss
-
-def strToBytes(bs, code='utf-8'):
-    """
-    将字符串变成其utf-8/gb2312编码内容,并把\\x转换成%
-    :param bs:
-    :return:
-    """
-    bs = str(bs.encode(code))[2:-1]
-    bss = bs.replace('\\x', '%').upper()
-    return bss
 
 wph_cookie = r'vip_first_visitor=1; vip_address=%7B%22pid%22%3A%22104103%22%2C%22cid%22%3A%22104103101%22%2C%22pname%22%3A%22%5Cu6e56%5Cu5357%5Cu7701%22%2C%22cname%22%3A%22%5Cu957f%5Cu6c99%5Cu5e02%22%7D; vip_province=104103; vip_province_name=湖南省; vip_city_name=长沙市; vip_city_code=104103101; vip_wh=VIP_HZ; vip_ipver=31; user_class=a; mars_sid=d9ba74d2ab2a708b352299bab1ffe926; PHPSESSID=jp60fjfc21l8989847tc69ui76; mars_pid=0; VIP_QR_FIRST=1; VipUINFO=luc:a|suc:a|bct:c_new|hct:c_new|bdts:0|bcts:0|kfts:0|c10:0|rcabt:0|p2:0|p3:1|p4:0|p5:0|ul:3105; visit_id=A331AA75C7B816A95F8736F13E2E8213; vipshop_passport_src=https://detail.vip.com/; pg_session_no=15; vip_tracker_source_from={"activity_data":"%7B%22common_set%22%3A%7B%22title%22%3A%22%E5%9C%A8%E5%94%AE%E5%95%86%E5%93%81%E5%88%86%E7%B1%BB%E3%80%90%E5%93%81%E7%89%8C%20%E6%AD%A3%E5%93%81%20%E4%BD%8E%E4%BB%B7%E3%80%91_%E5%94%AF%E5%93%81%E4%BC%9A%22%7D%7D","activity_ext":"%7B%22keyword%22%3A%22%E6%89%8B%E6%9C%BA%22%7D","activity_id":"0003","activity_type":"tap"}; mars_cid=1618403676827_7b4c75a702230ee07b1059bc10307c31; vip_access_times={"list":5,"detail":0}'
 wph_cookie = strToBytes(wph_cookie)
