@@ -118,7 +118,7 @@ class ecSpider(Tk):
         self.pf_frame.pack()
 
     def save_pf_info(self):
-        tup = (int(self.login_userid), self.pf_label['text'], self.pf_ck_e.get(), self.pf_re_e.get())
+        tup = (int(self.login_userid), self.pf_label['text'], self.pf_ck_e.get(), self.pf_re_e.get(), 0)
         Searchinfo.Searchinfo.insert(tup)
 
     def show_profile(self):

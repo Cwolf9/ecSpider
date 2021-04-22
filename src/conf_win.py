@@ -31,6 +31,7 @@ NOWPRICE, LOWPRICE, HIGHPRICE, HREF, PICPATH = 'nowprice', 'lowprice', 'highpric
 
 USERID, PT, COOKIE, REFERER, STATE = 'userid', 'pt', 'cookie', 'referer', 'state'
 
+GOODID, COMMENT, CTIME = 'goodid', 'comment', 'ctime'
 
 def getMD5(s) :
     md5 = hashlib.md5()
