@@ -136,6 +136,7 @@ def getJDProd(qName = '手机', cnt = 1):
                 break
         except:
             print("获取京东商品产生异常")
+    printGoodsList(infoList)
     return infoList
 
 

@@ -24,7 +24,7 @@ import time
 import threading
 from functools import wraps
 
-from src.model import Users, Goods, Watchlist, Searchinfo, Records
+from src.model import Users, Goods, Watchlist, Searchinfo, Records, Comments
 from src import utilMysql, loginFrame, my_wordcloud
 from src.conf_win import *
 from src.spiders import taobao, jingdong, tmcs, wph
@@ -469,6 +469,10 @@ class ecSpider(Tk):
             rec_que_res = utilMysql.query(
                 utilMysql.genQuerySql('goods', (PLATFORM, TAGS), ('天猫超市', "%" + self.key_word.get() + "%")))
             gds_que_res.extend(rec_que_res)
+        if self.pf_wph.get() == 1:
+            rec_que_res = utilMysql.query(
+                utilMysql.genQuerySql('goods', (PLATFORM, TAGS), ('唯品会', "%" + self.key_word.get() + "%")))
+            gds_que_res.extend(rec_que_res)
 
         for gd in gds_que_res:
             self.goodsinfo.append(gd)
@@ -488,6 +492,7 @@ class ecSpider(Tk):
                 utilMysql.insert(sql)
         end = time.perf_counter()
         print('Search+show Running time: %s Seconds' % (end - start))
+
 
     def show_search(self):
         """
@@ -519,6 +524,7 @@ class ecSpider(Tk):
                 self.gdsimgs.append(self.gdsimg)
                 self.tree.insert('', 'end', image=self.gdsimgs[num - 1], values=goodslist)
                 num = num + 1
+
 
     def my_single_down(self, platform, x, key_word):
         """
@@ -739,8 +745,15 @@ class ecSpider(Tk):
         TODO: 词云
         :return:
         """
-
-        pass
+        record = Records.Records.getRecords(self.login_userid)
+        if record:
+            my_words_list = [record[0][1]]
+        for goods in self.goodsinfo:
+            goodid = goods[0]
+            comments = Comments.Comments.getComments(goodid)
+            for comment in comments:
+                my_words_list.append(comment[1])
+        my_wordcloud.create_word_cloud(my_words_list)
 
     def recommend_result(self):
         """

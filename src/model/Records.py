@@ -27,6 +27,14 @@ class Records:
             tup[0], tup[1], tup[2], tup[3], tup[4]
         return Records(userid, searchterm, wordcloud, wcpath, tags)
 
+    @classmethod
+    def getRecords(cls, userid):
+        f1 = (USERID, )
+        v1 = (userid, )
+        sql = utilMysql.genQuerySql('records', f1, v1)
+        return utilMysql.query(sql)
+
+
 if __name__ == "__main__":
     record = Records(1, '手机', '', '', '')
     print(record)

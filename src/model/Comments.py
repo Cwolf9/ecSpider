@@ -33,6 +33,13 @@ class Comments:
         sql = utilMysql.genInsSql('comments', (GOODID, COMMENT, CTIME), tup)
         return utilMysql.insert(sql)
 
+    @classmethod
+    def getComments(cls, goodid):
+        f1 = (GOODID, )
+        v1 = (goodid, )
+        sql = utilMysql.genQuerySql('comments', f1, v1)
+        return utilMysql.query(sql)
+
 
 if __name__ == "__main__":
     comments = Comments('TB13612371112',  'good', '2021-01-01 00:00:00')

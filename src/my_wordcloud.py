@@ -43,7 +43,7 @@ def get_cut_word(wordlist):
     return wl
 
 
-def create_word_cloud(my_words=None):
+def create_word_cloud(my_words_list=None):
     # https://pig66.blog.csdn.net/article/details/95198791
     # 设置词云形状图片
     wc_mask = np.array(Image.open(WC_MASK_IMG))
@@ -51,7 +51,7 @@ def create_word_cloud(my_words=None):
     wc = WordCloud(background_color="white", max_words=2000, mask=wc_mask, scale=4,
                    max_font_size=50, random_state=42, font_path=WC_FONT_PATH)
     # 生成词云
-    word_cloud = wc.generate(get_cut_word(my_words))
+    word_cloud = wc.generate(get_cut_word(my_words_list))
     # word_cloud.to_file(WC_IMG)
     # 在只设置mask的情况下,你将会得到一个拥有图片形状的词云
     plt.imshow(wc, interpolation="bilinear")
@@ -62,5 +62,5 @@ def create_word_cloud(my_words=None):
 
 if __name__ == '__main__':
     print('hello')
-    my_words = get_word_list()
-    create_word_cloud(my_words)
+    my_words_list = get_word_list()
+    create_word_cloud(my_words_list)
