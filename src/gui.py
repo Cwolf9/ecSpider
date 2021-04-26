@@ -23,11 +23,11 @@ import pickle
 import time
 import threading
 from functools import wraps
-
 from src.model import Users, Goods, Watchlist, Searchinfo, Records, Comments
 from src import utilMysql, loginFrame, my_wordcloud
 from src.conf_win import *
 from src.spiders import taobao, jingdong, tmcs, wph
+
 
 class ecSpider(Tk):
     def __init__(self):
@@ -39,6 +39,7 @@ class ecSpider(Tk):
         self.main_frame = Frame(self.rt, width=1200, height=800)
         self.pf_frame = None
         self.profile_frame = None
+        self.comment_frame = Frame(self.rt, width=1200, height=800)
         # 电商平台选择
         self.pf_all, self.pf_tb, self.pf_jd, self.pf_tmcs, self.pf_wph = IntVar(value=0), IntVar(value=1), IntVar(value=1), IntVar(value=0), IntVar(value=0)
         # 排序方式：1 默认排序，2 价格升序，3 价格降序
@@ -48,10 +49,70 @@ class ecSpider(Tk):
         self.login_frame.pack()
         self.create_main_page()
         # self.show_main_window()
+        self.create_comment_page()
 
+    def create_comment_page(self):
+        entry_font = font.Font(family='微软雅黑', size=14)
+        self.good_comment_frame = Frame(self.comment_frame, width=1200, bg='pink', height=700)
+        self.good_photo = PhotoImage(file="data\\img_hds.gif")
+        self.good_logo = Label(self.comment_frame, image=self.good_photo, height=300, width=300)
+        self.good_logo.grid(row=0, rowspan=3, columnspan=3)
+        self.good_title = Label(self.comment_frame, text='text')
+        self.good_title.grid(row=0, column=3, columnspan=3)
+        self.good_price = Label(self.comment_frame, text='text')
+        self.good_price.grid(row=1, column=3)
+        self.good_msales = Label(self.comment_frame, text='text')
+        self.good_msales.grid(row=1, column=4)
+        self.good_shopname = Label(self.comment_frame, text='text')
+        self.good_shopname.grid(row=1, column=5)
+        Button(self.comment_frame, text="返回", command=self.show_main_window, font=entry_font, width=6).grid(row=2, column=3)
+        Button(self.comment_frame, text="查看评论", command=self.show_good_comment, font=entry_font, width=6).grid(row=2, column=4)
+        self.good_comment_frame.grid(row=3, columnspan=6)
+        self.cm_tree = ttk.Treeview(self.good_comment_frame, columns=['1', '2', '3'], height=5, show='headings')
+        self.cm_VScroll = ttk.Scrollbar(self.cm_tree, orient='vertical', command=self.cm_tree.yview)
+        self.cm_tree_column = ('序', '时间', '内容')
+        self.cm_tree.column('1', width=30, anchor='w')
+        self.cm_tree.heading('1', text='序')
+        self.cm_tree.column('2', width=150, anchor='w')
+        self.cm_tree.heading('2', text='时间')
+        self.cm_tree.column('3', width=800, anchor='w', stretch=True)
+        self.cm_tree.heading('3', text='内容')
+        self.cm_VScroll.place(relx=0.979, rely=0, relwidth=0.020, relheight=1)
+        self.cm_tree.configure(yscrollcommand=self.cm_VScroll.set)
+        self.cm_tree.place(x=120, y=30)
+        ft = tk.font.Font(font='TkDefaultFont')
+        # print(ft.configure())
+        # print(ft.measure('哈'), 800/12)
 
-    # 计算函数运行时间的装饰器
+    def printComments(self, ilist):
+        cnt = 0
+        for x in ilist:
+            print(cnt, x[0], x[1], x[2], x[3])
+            cnt += 1
+        print("")
+
+    def show_good_comment(self):
+        good_url = self.rt.clipboard_get()
+        print(good_url)
+        print(self.good_shopname.cget('text'))
+        self.comments_list = []
+        if self.good_shopname.cget('text')[:2] == '淘宝':
+            cm_list = taobao.getTBProdComments(good_url)
+            for cm in cm_list:
+                self.comments_list.append(cm[-2:])
+        self.delTreeView(self.cm_tree)
+        num = 1
+        for cm in self.comments_list:
+            cm.insert(0, num)
+            cm[2] = changeStrSize(cm[2], 800)
+            self.cm_tree.insert('', 'end', values=cm)
+            num = num + 1
+
     def a_new_decorator(a_func):
+        """
+        计算函数运行时间的装饰器
+        :return:
+        """
         @wraps(a_func)
         def wrapTheFunction(*args, **kwargs):
             start = time.perf_counter()
@@ -60,7 +121,6 @@ class ecSpider(Tk):
             print('Decorator: Running time: %s Seconds' % (end - start))
 
         return wrapTheFunction
-
 
     def change_src_size(self, width=1200, height=800):
         screenwidth = self.rt.winfo_screenwidth()
@@ -71,6 +131,7 @@ class ecSpider(Tk):
     def goto_login(self):
         self.rt.config(menu=Menu())
         self.main_frame.pack_forget()
+        self.comment_frame.pack_forget()
         if self.pf_frame != None:
             self.pf_frame.pack_forget()
         if self.profile_frame != None:
@@ -90,6 +151,7 @@ class ecSpider(Tk):
             self.rt.title("基于爬虫的电商比价系统^.^   欢迎 " + self.usr_info['login_username'])
             print('id: ', self.usr_info['login_userid'])
             self.login_frame.pack_forget()
+            self.comment_frame.pack_forget()
             if self.pf_frame != None:
                 self.pf_frame.pack_forget()
             if self.profile_frame != None:
@@ -99,7 +161,6 @@ class ecSpider(Tk):
         except FileNotFoundError:
             messagebox.showerror(title='错误提示！', message='系统出错，请重新登录！')
             self.goto_login()
-
 
     def create_main_page(self):
         """
@@ -256,23 +317,39 @@ class ecSpider(Tk):
 
     def double_click(self, event):
         print('double click')
-        for item in self.tree.selection():
-            item_text = self.tree.item(item, "values")
-            print('double: ', item_text)
-            self.rt.clipboard_clear()
-            self.rt.clipboard_append("https://" + item_text[7])
-        for item in self.tree2.selection():
-            item_text = self.tree2.item(item, "values")
-            print('double: ', item_text)
-            self.rt.clipboard_clear()
-            self.rt.clipboard_append("https://" + item_text[6])
-
+        self.rt.clipboard_clear()
+        good = None
+        if self.which_tree == 1:
+            for item in self.tree.selection():
+                item_text = self.tree.item(item, "values")
+                print('double: ', item_text)
+                good = Goods.Goods.genGoods((*item_text[1:], ''))
+        if self.which_tree == 2:
+            for item in self.tree2.selection():
+                item_text = self.tree2.item(item, "values")
+                print('double: ', item_text)
+                good = Goods.Goods.queryWithGoodid(item_text[1])
+        print(good)
+        self.rt.clipboard_append("https://" + good.href)
+        self.good_photo = Image.open(DATA_ROOT_PATH + good.picpath)
+        # 修改photo大小以适应界面
+        if max(self.good_photo.width, self.good_photo.height) > 300:
+            print(self.good_photo.height, self.good_photo.width, max(self.good_photo.height, self.good_photo.width))
+            k = 300 / max(self.good_photo.width, self.good_photo.height)
+            self.good_photo = self.good_photo.resize((int(self.good_photo.width * k), int(self.good_photo.height * k)))
+        self.good_photo = ImageTk.PhotoImage(self.good_photo)
+        self.good_logo.configure(image=self.good_photo)
+        self.good_title.configure(text=good.title)
+        self.good_price.configure(text='价格：'+str(good.price))
+        self.good_msales.configure(text='月销量：'+str(good.msales))
+        self.good_shopname.configure(text=good.platform+'：'+good.shopname)
+        self.main_frame.pack_forget()
+        self.comment_frame.pack()
 
     def delTreeView(self, tree):
         x = tree.get_children()
         for item in x:
             tree.delete(item)
-
 
     def treeviewClick(self, event):
         """
@@ -291,7 +368,6 @@ class ecSpider(Tk):
             self.rt.clipboard_clear()
             self.rt.clipboard_append("https://" + item_text[6])
 
-
     def change_sort(self):
         if self.which_tree == 1:
             if self.sort_var.get() == 1:
@@ -307,7 +383,6 @@ class ecSpider(Tk):
                 self.treeview2_sort_column(self.tree2, '4', False)
             if self.sort_var.get() == 3:
                 self.treeview2_sort_column(self.tree2, '4', True)
-
 
     def treeview_sort_column(self, tv, col, reverse):  # Treeview、列名、排列方式
         if col == '1' or col == '5' or col == '6':
@@ -341,10 +416,10 @@ class ecSpider(Tk):
             print(k)
         tv.heading(col, command=lambda: self.treeview2_sort_column(tv, col, not reverse))  # 重写标题，使之成为再点倒序的标题
 
-
     def update_platform_info(self, pf_id):
         print(pf_id)
         pf_strs = ['', '淘宝', '京东', '天猫超市', '唯品会']
+        self.comment_frame.pack_forget()
         self.main_frame.pack_forget()
         if self.profile_frame: self.profile_frame.pack_forget()
         if self.pf_frame == None:
@@ -369,6 +444,7 @@ class ecSpider(Tk):
 
     def show_profile(self):
         self.main_frame.pack_forget()
+        self.comment_frame.pack_forget()
         if self.pf_frame: self.pf_frame.pack_forget()
         self.cg_username = StringVar(value=self.login_username)
         login_user = Users.Users.queryWithUserid(self.login_userid)
@@ -521,7 +597,6 @@ class ecSpider(Tk):
         end = time.perf_counter()
         print('Search+show Running time: %s Seconds' % (end - start))
 
-
     def show_search(self):
         """
         显示搜索结果
@@ -543,7 +618,7 @@ class ecSpider(Tk):
             self.gdsimgs = []
             for goods in self.goodsinfo:
                 good = Goods.Goods.genGoods(goods)
-                goodslist = [num, *good.showItem()]
+                goodslist = [num, *good.showItem(), good.picpath]
                 if goodslist[5] == 0:
                     goodslist[5] = '不显示'
                 self.gdsimg = Image.open(DATA_ROOT_PATH + good.picpath)
@@ -552,7 +627,6 @@ class ecSpider(Tk):
                 self.gdsimgs.append(self.gdsimg)
                 self.tree.insert('', 'end', image=self.gdsimgs[num - 1], values=goodslist)
                 num = num + 1
-
 
     def my_single_down(self, platform, x, key_word):
         """
@@ -620,7 +694,6 @@ class ecSpider(Tk):
         end = time.perf_counter()
         print('tmcs Downloading: Running time: %s Seconds' % (end - start))
 
-
     @a_new_decorator
     def search_wph(self, platform='唯品会'):
         print('唯品会', self.key_word.get(), self.crawl_num.get())
@@ -657,7 +730,7 @@ class ecSpider(Tk):
             for iwl in wl_res:
                 wl = Watchlist.Watchlist.genWatchlist(iwl)
                 print(wl)
-                wlslist = [*wl.showItem()]
+                wlslist = [*wl.showItem(), wl.picpath]
                 print(wlslist)
                 self.gdsimg = Image.open(DATA_ROOT_PATH + wl.picpath)
                 self.gdsimg = self.gdsimg.resize((80, 80))
@@ -793,7 +866,7 @@ class ecSpider(Tk):
         TODO: 推荐
         :return:
         """
-        self.show_search()
+        pass
 
 
 if __name__ == "__main__":

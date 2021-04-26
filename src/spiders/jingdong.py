@@ -20,10 +20,10 @@ import random
 import os
 
 
-jd_cookie = r'dasgfagda'
+jd_cookie = r'__jdu=16117310176871406427129; shshshfpa=dee6d79e-ffb8-a320-e9a3-f4480a9d7fce-1611731020; shshshfpb=w8shDykhS2FrhhTT zWdgyA==; rkv=1.0; qrsc=3; pinId=vFWcniFLl1Uf8axLOC0-K7V9-x-f3wj7; TrackID=1tOYZgdgNPivwxW_dsIJjenFEsWQ7hzLh0jqbNqpqELaDl5k0dbrj43q2k0tkXghULsoCET3-hglvt2Iz20csoP4KFqGkSJ5QRygi3_Y7XX0; __jdv=76161171|direct|-|none|-|1619426867875; areaId=18; ipLoc-djd=18-1482-48939-0; PCSYCityID=CN_430000_430100_0; __jdb=122270672.2.16117310176871406427129|26.1619429071; __jdc=122270672; __jda=122270672.16117310176871406427129.1611731018.1619426868.1619429071.26; shshshfp=9217dafd13ebff4ae5418395e2de5a8c; shshshsID=7fcd14e639c7f8386d3804f73e443cd1_2_1619429076882; 3AB9D23F7A4B3C9B=H4JKAUHLDON5RAUTUQQCCKVZAIOC3QYU6GNCZI65J2ZMPNAMZMU6WUW53EIVIOS573UYQMRSJ7HFGZMSFTGBYLV5DU'
 
 
-def downPic(url = "https://img13.360buyimg.com/n7/jfs/t1/136205/10/7310/56308/5f3dee56E034ab78c/ffc11f69acf791e5.jpg"):
+def downPic(url="https://img13.360buyimg.com/n7/jfs/t1/136205/10/7310/56308/5f3dee56E034ab78c/ffc11f69acf791e5.jpg"):
     root = DATA_ROOT_PATH
     path = root + url.split('/')[-1]  # 新建文件名为root路径之后加上地址最后以“/”分割的部分
     path = path.replace('jpg', 'png')
@@ -79,8 +79,7 @@ def parsePage(ilt, html, cnt):
             glink = nameInfo[i].find('a')['href'][2:]
             titlelst = nameInfo[i].find('em').text.split()
             name = ""
-            for j in range(len(titlelst)):  # 此处要注意循环变量不能混淆，与JS不同
-                # 注意！！！此处之前是选择了截取长度，但是截取长度导致了后几个页面有些数据丢失，不知道为什么 :TODO
+            for j in range(len(titlelst)):  # 此处要注意循环变量不能混淆
                 name = name + titlelst[j]
                 if len(name) >= 68:
                     break
@@ -125,12 +124,12 @@ def getJDProd(qName = '手机', cnt = 1):
                 with open(DATA_ROOT_PATH+"iJDSJ.html", "r", encoding='utf-8') as f:
                     html = f.read()
             else:
-                url = 'https://search.jd.com/Search?keyword=' + qName + '&enc=utf-8&qrst=1&rt=1&stop=1&vt=2&wq=' + qName + '&cid2=653&cid3=655&page=' + str(
-                    (i + 1) * 2 - 1) + '&click=0'  # 此处注意 应该给i加1，注意细节
+                url = 'https://search.jd.com/Search?keyword=' + qName + '&enc=utf-8&wq=' + qName + '&page=' + str((i + 1) * 2 - 1) + '&click=0'
                 html = getHTMLText(url)
                 if i == 0:
                     with open(DATA_ROOT_PATH+"iJDSJ.html", "w", encoding='utf-8') as f:
                         f.write(html)
+
             parsePage(infoList, html, cnt)
             if len(infoList) >= cnt:
                 break

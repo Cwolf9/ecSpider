@@ -18,8 +18,8 @@ import random
 from src.conf_win import *
 
 
-tb_cookie = r'cookie2=17b54f4e7e5b3a136597c2c5d57e44c0; t=5b9661cda0b5e825c49d562bbebfb7f1; _tb_token_=57b73e781399b; _samesite_flag_=true; enc=4IcYQAEf6n8oYeYZDLKpWuyuMMQld6/11EcD6gmhQrw/ybZmwqhhOo45tTuOpZMXQNYfj/hoIHrzvTvg+5UuTA==; thw=cn; hng=GLOBAL|zh-CN|USD|999; alitrackid=www.taobao.com; cna=ghItGJbpnRQCAd73JQuwqdcQ; sgcookie=E100NOFdbUuG0giKiCqGPLgbiPtWrrW/OFH3Z9DCpT97yY5fs/u8mDnDG+D89/SoRX1DpyqxtIWGfmWRUoM1Ls8Sxw==; csg=b906308a; dnk=\u9152\u75AF\u72FClp; skt=2ebe208bc2b09887; existShop=MTYxMzgwMTMyNQ==; tracknick=\u9152\u75AF\u72FClp; _cc_=WqG3DMC9EA==; lastalitrackid=www.taobao.com; uc1=cookie14=Uoe1hMdgoW8i/w==&cookie21=UIHiLt3xTIkz&existShop=false&pas=0&cookie16=VFC/uZ9az08KUQ56dCrZDlbNdA==; _m_h5_tk=553690f7010ce23a4379d64136340b18_1617693966434; _m_h5_tk_enc=1e9e3b9c9c4d6489af80f26138802352; xlly_s=1; _uab_collina=161768533207166644258734; x5sec=7b227365617263686170703b32223a226238386663313738363332353139613762386636646666636636393566336236434e545772344d47455050786872795a2b72436f68774561444449324e6a55354f5445324e5445374d5367434d4b6546677037382f2f2f2f2f77453d227d; JSESSIONID=D65450676072829B396C2FE92DC27E9E; isg=BMrKpvtGnm6b2S0FNjYKhywjG7Bsu04VSKrM71QBS52DB2jBO0omJSs1E3Pb8sat; l=eBaGSPBgOnge4zIBBO5Cnurza77OwQAbzPVzaNbMiInca61h_hQINNCQjsLM8dtjgtCvuF-zPnnb5RFk8padg2HvCbKrCyConxvO.; tfstk=cWfABuiE6uqc9J8R8teo5XF5AFIAazuvjqtt6rnb-aL3amGt1sYNt6BBK-TZDQUR.'
-
+tb_cookie = r'cookie2=17b54f4e7e5b3a136597c2c5d57e44c0; t=5b9661cda0b5e825c49d562bbebfb7f1; _tb_token_=57b73e781399b; _samesite_flag_=true; enc=4IcYQAEf6n8oYeYZDLKpWuyuMMQld6/11EcD6gmhQrw/ybZmwqhhOo45tTuOpZMXQNYfj/hoIHrzvTvg+5UuTA==; thw=cn; hng=GLOBAL|zh-CN|USD|999; alitrackid=www.taobao.com; cna=ghItGJbpnRQCAd73JQuwqdcQ; dnk=\u9152\u75AF\u72FClp; tracknick=\u9152\u75AF\u72FClp; _cc_=WqG3DMC9EA==; _uab_collina=161768533207166644258734; _m_h5_tk=3b919bf24789a06013f058698392078f_1619435602621; _m_h5_tk_enc=f1fc0ae1227bbd5664ee4b62a1995df6; xlly_s=1; sgcookie=E100p5Ci4wiEDo0AaBvjLO3gOnvOiSwtqawP6sKWQPZOTGGrEYI93WxxIhvw5UR8PXKFtwrE9dZb6tkNHQfHTdFSyg==; unb=2665991651; uc3=nk2=3Rj2a800wpk=&lg2=WqG3DMC9VAQiUQ==&id2=UU6nRCwmzNLA9Q==&vt3=F8dCuwlHfpGnFA8EOl0=; csg=686e847f; lgc=\u9152\u75AF\u72FClp; cookie17=UU6nRCwmzNLA9Q==; skt=6a618d9371376c20; existShop=MTYxOTQyODgxMw==; uc4=id4=0@U2xqIFo4BlQVQlqi37AF6RfgnbLU&nk4=0@35PWOqVA3il14ddumIOz6n16uQ==; _l_g_=Ug==; sg=p17; _nk_=\u9152\u75AF\u72FClp; cookie1=U7HwN3kxiXT7IEAcQ8eG3KkqRoGDI3P9LO+TJyuRgyU=; JSESSIONID=63E8CFB3B1B653044EBF3B5A34E8A7D6; lastalitrackid=login.taobao.com; mt=ci=24_1; uc1=pas=0&cookie21=WqG3DMC9FxUx&existShop=false&cookie16=U+GCWk/74Mx5tgzv3dWpnhjPaQ==&cookie14=Uoe1i6vj5YWaGw==&cookie15=UIHiLt3xD8xYTw==; isg=BJSUR7yliMEv0CMnbCB8BaZdZdIG7bjX8oRCTS50GZ-iGTZjVv5zZwLbHRGB5vAv; l=eBaGSPBgOnge47DtBO5ahurza77tyIObz1PzaNbMiInca6Od1FgBpNCCaj2pRdtjgtfAYetzPnnb5RhJ7Mzdg2HvCbKrCyCk6xJ6-; tfstk=co-1BAmuG5V_-Su4bdMU7dgvNaSRZghCKV19CUEIES5LPtJ1itqPN9yMoWqdy91..'
+tb_cm_cookie = r'dnk=\u9152\u75AF\u72FClp; tracknick=\u9152\u75AF\u72FClp; lid=%BE%C6%B7%E8%C0%C7lp; lgc=\u9152\u75AF\u72FClp; cookie2=17b54f4e7e5b3a136597c2c5d57e44c0; t=5b9661cda0b5e825c49d562bbebfb7f1; enc=4IcYQAEf6n8oYeYZDLKpWuyuMMQld6/11EcD6gmhQrw/ybZmwqhhOo45tTuOpZMXQNYfj/hoIHrzvTvg+5UuTA==; _tb_token_=57b73e781399b; cna=ghItGJbpnRQCAd73JQuwqdcQ; uc1=cookie16=V32FPkk/xXMk5UvIbNtImtMfJQ==&existShop=false&cookie14=Uoe1gBpZqGHGQg==&cookie15=VFC/uZ9ayeYq2g==&cookie21=WqG3DMC9FxUx&pas=0; uc3=lg2=U+GCWk/75gdr5Q==&id2=UU6nRCwmzNLA9Q==&nk2=3Rj2a800wpk=&vt3=F8dCuAbxCoj4v7atgv8=; uc4=nk4=0@35PWOqVA3il14dduk5b4ZJJJiw==&id4=0@U2xqIFo4BlQVQlqi37AO9HXTIQFc; sgcookie=E100WCK/GES0f1rWEWqgef+IoX8ChYTi9mK5iueuasqbLeyLH5lWoq4meqqwtyvqCrbG7oFJsFY0G0sWYP2HEwZQHA==; csg=d97e4d29; sm4=430100; csa=0_0_0.0; xlly_s=1; x5sec=7b22726174656d616e616765723b32223a226438613930393335306131323635326164313638356164666630663834393564434a36716d6f5147454b66542f645443317676464b44447475662f632f762f2f2f2f3842227d; l=eBOiGEpqjNZKyomwBO5alurza77TCIOb81PzaNbMiInca661aE_84NCCaxv9udtjgtCbpeKzPnnb5RHH8wzdgZqhuJ1REpZabxvO.; isg=BBMTSWtRd7zE2Tt5O5oYUXqlopc9yKeKacnl6MUxBjJ4RDLmTJnX2inSerQqY_-C; tfstk=cfdlBPgTyLW7LOXDCb1Wysq4zgKhZCHPVBR2gBWZdBvAFMRViwe4QYa-ogKk9J1..'
 
 def downPic(url="https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/3063905773/O1CN01qXLQ231sW59J818ds_!!0-item_pic.jpg"):
     """
@@ -211,7 +211,7 @@ def printComments(ilist):
 
 
 # https://rate.tmall.com/list_detail_rate.htm?itemId=629748003807&spuId=1846540591&sellerId=268451883&order=3&currentPage=1&append=0&content=1&tagId=&posi=&picture=&groupId=&ua=098%23E1hvl9vnvPOvUpCkvvvvvjiWPLqZ1jEHRLFhAjthPmPhsjYbPLF9ljn2n2SOQjiRROvCvCLwjUYJDrMwznAa9lS5FMsJzVD448QCvvyvmCQmFgGvbvTVvpvhvvpvv29Cvvpvvvvv29hvCvvvMMGvvpvVvvpvvhCvKvhv8vvvvvCvpvvtvvmm7ZCvmR%2BvvvWvphvW9pvv9DDvpvACvvmm7ZCv2UVUvpvVmvvC9j3vuvhvmvvv9b%2B1eAw0mvhvLvCrpQvjn%2BkQ0f06WeCpqU0HsfUpwyjIAXcBKFyK2ixrQj7JVVQHYnFhAEI7nDeDyO2vSdtIjbmYSW94P5CXqU5EDfmlJ1kHsX7veEkevpvhvvmv9uQCvvyvmH9mKdIv8EQgvpvhvvvvvv%3D%3D&needFold=0&_ksTS=1612519758221_703&callback=jsonp704
-def reqProdComments(url, csv_writer, num = 10):
+def reqProdComments(url, csv_writer, num=5):
     if num > 20: num = 20
     if num <= 0: num = 10
     result = []
@@ -224,8 +224,7 @@ def reqProdComments(url, csv_writer, num = 10):
     print("itemId:", itemId)
     sellerId = "268451883"
     try:
-        url = "https:" + url
-        r = requests.get(url, timeout=3, headers=head)
+        r = requests.get(url, timeout=1, headers=head)
         r.raise_for_status()
         sellerId = re.search(r'sellerId\:\"(\d+)\"', r.text).group(1)
         print("sellerId: ", sellerId)
@@ -233,17 +232,19 @@ def reqProdComments(url, csv_writer, num = 10):
         print("获取淘宝评论出现bug1")
         return result
     dSearch = {
-        "itemId":itemId,
-        "sellerId": "196993935",
-        "currentPage":"1",
+        "itemId": itemId,
+        "sellerId": sellerId,
+        "currentPage": "1",
         "callback": "jsonp704"
     }
     url = 'https://rate.tmall.com/list_detail_rate.htm'
     attris = ["displayUserNick", "auctionSku", "rateDate", "rateContent"]
+    head['cookie'] = tb_cm_cookie
     try:
         while len(result) < num:
-            r = requests.get(url, timeout=3, headers=head, params = dSearch)
+            r = requests.get(url, timeout=1, headers=head, params=dSearch)
             r.raise_for_status()
+            print(r.url)
             if r.text == "":
                 break
             rtext = r.text[11:-1]
@@ -262,7 +263,8 @@ def reqProdComments(url, csv_writer, num = 10):
                 if len(result) == num:
                     break
             dSearch['currentPage'] = str(int(dSearch['currentPage']) + 1)
-    except:
+    except Exception as e:
+        print(e)
         print("获取淘宝评论出现bug2")
     return result
 
@@ -274,4 +276,5 @@ def getTBProdComments(url):
         writer = csv.writer(f)
         writer.writerow(("用户昵称", "商品型号", "评论时间", "评论内容"))
         ilist = reqProdComments(url, writer)
-    printComments(ilist)
+    # printComments(ilist)
+    return ilist

@@ -33,6 +33,7 @@ USERID, PT, COOKIE, REFERER, STATE = 'userid', 'pt', 'cookie', 'referer', 'state
 
 GOODID, COMMENT, CTIME = 'goodid', 'comment', 'ctime'
 
+
 def getMD5(s) :
     md5 = hashlib.md5()
     md5.update(s.encode('utf-8'))
@@ -57,6 +58,7 @@ def utf_8ToStr(bs):
     bss = bss.decode('utf-8')
     return bss
 
+
 def strToBytes(bs, code='utf-8'):
     """
     将字符串变成其utf-8/gb2312编码内容,并把\\x转换成%
@@ -66,6 +68,16 @@ def strToBytes(bs, code='utf-8'):
     bs = str(bs.encode(code))[2:-1]
     bss = bs.replace('\\x', '%').upper()
     return bss
+
+
+def changeStrSize(s, width, wordSize=12):
+    num = int(width/wordSize)
+    nstr = ''
+    for i in range(int(len(s) / num)):
+        nstr += s[i * num: (i + 1) * num] + '\n'
+    nstr += s[int(len(s) / num) * num:]
+    return nstr
+
 
 if __name__ == "__main__":
     print("conf_win")
