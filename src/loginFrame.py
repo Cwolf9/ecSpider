@@ -25,7 +25,7 @@ class LoginFrame(Frame):
 
         print(id(self.master), id(master))
         self.login_page = Frame(self)
-        self.reg_page = Frame(self)
+        self.reg_page = LabelFrame(self, text='信息登记')
         self.username = StringVar()
         self.password = StringVar()
         self.re_un = IntVar(value=0)
@@ -40,6 +40,12 @@ class LoginFrame(Frame):
         self.login_photo, self.login_frame = None, None
         self.create_page()
         self.create_reg_page()
+
+    def change_src_size(self, width=1200, height=800):
+        screenwidth = self.master.winfo_screenwidth()
+        screenheight = self.master.winfo_screenheight()
+        size = '%dx%d+%d+%d' % (width, height, (screenwidth - width) / 2, (screenheight - height) / 2)
+        self.master.geometry(size)
 
     def create_page(self):
         try:
@@ -103,6 +109,8 @@ class LoginFrame(Frame):
                 query_res = utilMysql.query(query_sql)
                 if query_res:
                     with open('data\\info.pickle', 'wb') as f:
+                        if self.re_un.get() == 0:
+                            self.re_pw.set(0)
                         usr_info = {'login_userid': query_res[0][0],
                                     'login_username': query_res[0][1],
                                     'login_password': query_res[0][2],
@@ -121,6 +129,7 @@ class LoginFrame(Frame):
             messagebox.showerror(title='错误提示！', message=error_mes[-errorno])
 
     def show_register(self):
+        self.change_src_size(600, 600)
         self.username.set("")
         self.password.set("")
         self.repassword.set("")
@@ -132,6 +141,7 @@ class LoginFrame(Frame):
         self.reg_page.pack()
 
     def re_login(self):
+        self.change_src_size(800, 700)
         try:
             with open('data\\info.pickle', 'rb') as f:
                 usr_info = pickle.load(f)
@@ -139,9 +149,9 @@ class LoginFrame(Frame):
                 self.re_pw.set(usr_info['login_re_pw'])
                 self.username.set("")
                 self.password.set("")
-                if self.re_un == 1:
+                if self.re_un.get() == 1:
                     self.username.set(usr_info['login_username'])
-                if self.re_pw == 1:
+                if self.re_pw.get() == 1:
                     self.password.set(usr_info['login_password'])
         except:
             pass
@@ -157,25 +167,26 @@ class LoginFrame(Frame):
         label_font = font.Font(family='微软雅黑', size=16)
         label_font2 = font.Font(family='微软雅黑', size=18)
         entry_font = font.Font(family='微软雅黑', size=14)
-        Label(self.reg_page, text="注册页面", font=label_font2).grid(row=0, sticky=E, pady=15)
+        Label(self.reg_page, text="注册页面", font=label_font2).grid(row=0, pady=15, columnspan=3)
 
-        Label(self.reg_page, text="账号*:", font=label_font, width=10).grid(row=1, sticky=E, pady=10, padx=150)
-        Entry(self.reg_page, textvariable=self.username, font=entry_font, width=20).grid(row=1, column=1, stick=W, columnspan=3, ipady=5, pady=12)
-        Label(self.reg_page, text="密码*:", font=label_font, width=10).grid(row=2, stick=E, pady=10, padx=150)
-        Entry(self.reg_page, textvariable=self.password, show='*', font=entry_font, width=20).grid(row=2, column=1, stick=W, columnspan=3, ipady=5, pady=12)
-        Label(self.reg_page, text="重复密码*:", font=label_font, width=10).grid(row=3, stick=E, pady=10, padx=150)
-        Entry(self.reg_page, textvariable=self.repassword, show='*', font=entry_font, width=20).grid(row=3, column=1, stick=W, columnspan=3, ipady=5, pady=12)
-        Label(self.reg_page, text="邮箱:", font=label_font, width=10).grid(row=4, stick=E, pady=10, padx=150)
-        Entry(self.reg_page, textvariable=self.email, font=entry_font, width=20).grid(row=4, column=1, stick=W, columnspan=3, ipady=5, pady=12)
-        Label(self.reg_page, text="电话号码:", font=label_font, width=10).grid(row=5, stick=E, pady=10, padx=150)
-        Entry(self.reg_page, textvariable=self.phonenumber, font=entry_font, width=20).grid(row=5, column=1, stick=W, columnspan=3, ipady=5, pady=12)
-        Label(self.reg_page, text="昵称:", font=label_font, width=10).grid(row=6, stick=E, pady=10, padx=150)
-        Entry(self.reg_page, textvariable=self.nickname, font=entry_font, width=20).grid(row=6, column=1, stick=W, columnspan=2, ipady=5, pady=12)
-        Label(self.reg_page, text="性别:", font=label_font, width=10).grid(row=7, stick=E, pady=10, padx=150)
+        Label(self.reg_page, text="账号:", font=label_font).grid(row=1, sticky=W, pady=10, padx=60)
+        Entry(self.reg_page, textvariable=self.username, font=entry_font, width=20).grid(row=1, column=1, stick=W, columnspan=2, ipady=5)
+        Label(self.reg_page, text="密码:", font=label_font).grid(row=2, sticky=W, pady=10, padx=60)
+        Entry(self.reg_page, textvariable=self.password, show='*', font=entry_font, width=20).grid(row=2, column=1, stick=W, columnspan=2, ipady=5)
+        Label(self.reg_page, text="重复密码:", font=label_font).grid(row=3, sticky=W, pady=10, padx=60)
+        Entry(self.reg_page, textvariable=self.repassword, show='*', font=entry_font, width=20).grid(row=3, column=1, stick=W, columnspan=2, ipady=5)
+        Label(self.reg_page, text="邮箱:", font=label_font).grid(row=4, sticky=W, pady=10, padx=60)
+        Entry(self.reg_page, textvariable=self.email, font=entry_font, width=20).grid(row=4, column=1, stick=W, columnspan=2, ipady=5)
+        Label(self.reg_page, text="电话号码:", font=label_font).grid(row=5, sticky=W, pady=10, padx=60)
+        Entry(self.reg_page, textvariable=self.phonenumber, font=entry_font, width=20).grid(row=5, column=1, stick=W, columnspan=2, ipady=5)
+        Label(self.reg_page, text="昵称:", font=label_font).grid(row=6, sticky=W, pady=10, padx=60)
+        Entry(self.reg_page, textvariable=self.nickname, font=entry_font, width=20).grid(row=6, column=1, stick=W, columnspan=2, ipady=5)
+        Label(self.reg_page, text="性别:", font=label_font).grid(row=7, sticky=W, pady=10, padx=60)
         Checkbutton(self.reg_page, text='男', variable=self.sex, onvalue='男', offvalue='女', font=entry_font,
-                    width=6).grid(row=7, column=1, stick=W, pady=12)
+                    width=6).grid(row=7, column=1, stick=W)
         Checkbutton(self.reg_page, text='女', variable=self.sex, onvalue='女', offvalue='男', font=entry_font,
-                    width=8).grid(row=7, column=2, stick=W, pady=12)
+                    width=8).grid(row=7, column=2, stick=W)
+
         Button(self.reg_page, text="返回", command=self.re_login, font=entry_font, width=5).grid(row=8, pady=10)
         Button(self.reg_page, text="注册", command=self.register, font=entry_font, width=5).grid(row=8, column=1,
                                                                                                columnspan=2)
@@ -209,5 +220,4 @@ class LoginFrame(Frame):
             messagebox.showerror(title='错误提示！', message=error_mes[-check_res])
         else:
             messagebox.showinfo(title='温馨提示！', message=error_mes[0])
-            self.reg_page.pack_forget()
-            self.login_page.pack()
+            self.re_login()

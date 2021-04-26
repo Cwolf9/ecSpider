@@ -884,7 +884,7 @@
     <table id="282" parent="2" name="watchlist"/>
     <column id="283" parent="277" name="goodid">
       <Position>1</Position>
-      <DataType>varchar(20)|0s</DataType>
+      <DataType>varchar(30)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
     <column id="284" parent="277" name="comment">
@@ -899,7 +899,7 @@
     </column>
     <column id="286" parent="278" name="goodid">
       <Position>1</Position>
-      <DataType>varchar(20)|0s</DataType>
+      <DataType>varchar(30)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
     <column id="287" parent="278" name="platform">
@@ -929,12 +929,12 @@
     </column>
     <column id="292" parent="278" name="href">
       <Position>7</Position>
-      <DataType>varchar(50)|0s</DataType>
+      <DataType>varchar(100)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
     <column id="293" parent="278" name="picpath">
       <Position>8</Position>
-      <DataType>varchar(50)|0s</DataType>
+      <DataType>varchar(100)|0s</DataType>
       <DefaultExpression>&apos;img_huaban.gif&apos;</DefaultExpression>
     </column>
     <column id="294" parent="278" name="tags">
@@ -958,7 +958,7 @@
     </column>
     <column id="298" parent="279" name="wordcloud">
       <Position>3</Position>
-      <DataType>varchar(100)|0s</DataType>
+      <DataType>varchar(500)|0s</DataType>
     </column>
     <column id="299" parent="279" name="wcpath">
       <Position>4</Position>
@@ -990,7 +990,7 @@
     </column>
     <column id="305" parent="280" name="referer">
       <Position>4</Position>
-      <DataType>varchar(50)|0s</DataType>
+      <DataType>varchar(100)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
     <column id="306" parent="280" name="state">
@@ -1056,7 +1056,7 @@
     </column>
     <column id="318" parent="282" name="goodid">
       <Position>2</Position>
-      <DataType>varchar(20)|0s</DataType>
+      <DataType>varchar(30)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
     <column id="319" parent="282" name="platform">
@@ -1082,12 +1082,12 @@
     </column>
     <column id="323" parent="282" name="href">
       <Position>7</Position>
-      <DataType>varchar(50)|0s</DataType>
+      <DataType>varchar(100)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
     <column id="324" parent="282" name="picpath">
       <Position>8</Position>
-      <DataType>varchar(50)|0s</DataType>
+      <DataType>varchar(100)|0s</DataType>
     </column>
     <index id="325" parent="282" name="goodid">
       <ColNames>goodid</ColNames>

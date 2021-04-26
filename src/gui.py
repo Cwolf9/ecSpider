@@ -34,7 +34,7 @@ class ecSpider(Tk):
         super().__init__()
         self.rt = self
         self.rt.title("基于爬虫的电商比价系统")
-        self.change_src_size(800)
+        self.change_src_size(800, 700)
         self.login_frame = loginFrame.LoginFrame(self.rt)
         self.main_frame = Frame(self.rt, width=1200, height=800)
         self.pf_frame = None
@@ -47,7 +47,7 @@ class ecSpider(Tk):
         self.goodsinfo = []
         self.login_frame.pack()
         self.create_main_page()
-        self.show_main_window()
+        # self.show_main_window()
 
 
     # 计算函数运行时间的装饰器
@@ -71,7 +71,11 @@ class ecSpider(Tk):
     def goto_login(self):
         self.rt.config(menu=Menu())
         self.main_frame.pack_forget()
-        self.change_src_size(800)
+        if self.pf_frame != None:
+            self.pf_frame.pack_forget()
+        if self.profile_frame != None:
+            self.profile_frame.pack_forget()
+        self.change_src_size(800, 700)
         self.login_frame.pack()
 
     def show_main_window(self):
@@ -96,104 +100,6 @@ class ecSpider(Tk):
             messagebox.showerror(title='错误提示！', message='系统出错，请重新登录！')
             self.goto_login()
 
-    def update_platform_info(self, pf_id):
-        print(pf_id)
-        pf_strs = ['', '淘宝', '京东', '天猫超市', '唯品会']
-        self.main_frame.pack_forget()
-        if self.profile_frame: self.profile_frame.pack_forget()
-        if self.pf_frame == None:
-            self.pf_frame = Frame(self.rt, width=1200, height=800)
-            self.pf_ck_e = StringVar()
-            self.pf_re_e = StringVar()
-            self.pf_label = Label(self.pf_frame, text=pf_strs[pf_id], font=self.menu_font, pady=50)
-            self.pf_label.grid(row=0, column=0, columnspan=2)
-            Label(self.pf_frame, text='cookie: ', font=self.menu_font, width=10, padx=30).grid(row=1, column=0)
-            Entry(self.pf_frame, font=self.menu_font, width=20, textvariable=self.pf_ck_e).grid(row=1, column=1)
-            Label(self.pf_frame, text='referer: ', font=self.menu_font, width=10, padx=30).grid(row=2, column=0)
-            Entry(self.pf_frame, font=self.menu_font, width=20, textvariable=self.pf_re_e).grid(row=2, column=1)
-            Button(self.pf_frame, text='返回', font=self.menu_font, width=10, command=self.show_main_window, padx=30).grid(row=3, column=0, pady=80, padx=30)
-            Button(self.pf_frame, text='保存', font=self.menu_font, width=10, command=self.save_pf_info, padx=30).grid(row=3, column=1, pady=80)
-        else:
-            self.pf_label.configure(text=pf_strs[pf_id])
-        self.pf_frame.pack()
-
-    def save_pf_info(self):
-        tup = (int(self.login_userid), self.pf_label['text'], self.pf_ck_e.get(), self.pf_re_e.get(), 0)
-        Searchinfo.Searchinfo.insert(tup)
-
-    def show_profile(self):
-        self.main_frame.pack_forget()
-        if self.pf_frame: self.pf_frame.pack_forget()
-        self.cg_username = StringVar(value=self.login_username)
-        login_user = Users.Users.queryWithUserid(self.login_userid)
-        if self.profile_frame == None:
-            self.profile_frame = Frame(self.rt, width=800, height=500)
-            self.cg_password = StringVar()
-            self.cg_repassword = StringVar()
-            self.cg_email = StringVar(value=login_user.email)
-            self.cg_phonenumber = StringVar(value=login_user.phonenumber)
-            self.cg_nickname = StringVar(value=login_user.nickname)
-            self.cg_sex = StringVar(value=login_user.sex)
-            self.pf_label = Label(self.profile_frame, text='欢迎用户：' + self.login_username, font=self.menu_font, pady=50)
-            self.pf_label.grid(row=0, column=0, columnspan=2)
-            label_font = self.label_font
-            entry_font = font.Font(family='微软雅黑', size=14)
-            Label(self.profile_frame, text="账号*:", font=label_font, width=10).grid(row=1, sticky=E, pady=10, padx=150)
-            Entry(self.profile_frame, textvariable=self.cg_username, font=entry_font, width=20).grid(row=1, column=1, stick=W,
-                                                                                             columnspan=3, ipady=5,
-                                                                                             pady=12)
-            Label(self.profile_frame, text="密码*:", font=label_font, width=10).grid(row=2, stick=E, pady=10, padx=150)
-            Entry(self.profile_frame, textvariable=self.cg_password, show='*', font=entry_font, width=20).grid(row=2, column=1,
-                                                                                                       stick=W,
-                                                                                                       columnspan=3,
-                                                                                                       ipady=5, pady=12)
-            Label(self.profile_frame, text=" 确认密码*:", font=label_font, width=10).grid(row=3, stick=E, pady=10, padx=150)
-            Entry(self.profile_frame, textvariable=self.cg_repassword, show='*', font=entry_font, width=20).grid(row=3,
-                                                                                                         column=1,
-                                                                                                         stick=W,
-                                                                                                         columnspan=3,
-                                                                                                         ipady=5,
-                                                                                                         pady=12)
-            Label(self.profile_frame, text="邮箱:", font=label_font, width=10).grid(row=4, stick=E, pady=10, padx=150)
-            Entry(self.profile_frame, textvariable=self.cg_email, font=entry_font, width=20).grid(row=4, column=1, stick=W,
-                                                                                          columnspan=3, ipady=5,
-                                                                                          pady=12)
-            Label(self.profile_frame, text="电话号码:", font=label_font, width=10).grid(row=5, stick=E, pady=10, padx=150)
-            Entry(self.profile_frame, textvariable=self.cg_phonenumber, font=entry_font, width=20).grid(row=5, column=1,
-                                                                                                stick=W, columnspan=3,
-                                                                                                ipady=5, pady=12)
-            Label(self.profile_frame, text="昵称:", font=label_font, width=10).grid(row=6, stick=E, pady=10, padx=150)
-            Entry(self.profile_frame, textvariable=self.cg_nickname, font=entry_font, width=20).grid(row=6, column=1, stick=W,
-                                                                                             columnspan=2, ipady=5,
-                                                                                             pady=12)
-            Label(self.profile_frame, text="性别:", font=label_font, width=10).grid(row=7, stick=E, pady=10, padx=150)
-            Checkbutton(self.profile_frame, text='男', variable=self.cg_sex, onvalue='男', offvalue='女', font=entry_font,
-                        width=6).grid(row=7, column=1, stick=W, pady=12)
-            Checkbutton(self.profile_frame, text='女', variable=self.cg_sex, onvalue='女', offvalue='男', font=entry_font,
-                        width=8).grid(row=7, column=2, stick=W, pady=12)
-            Button(self.profile_frame, text="返回", command=self.show_main_window, font=entry_font, width=6).grid(row=8, pady=10)
-            Button(self.profile_frame, text="确认修改", command=self.save_profile, font=entry_font, width=6).grid(row=8, column=1,
-                                                                                                   columnspan=2)
-        else:
-            self.cg_email.set(login_user.email)
-            self.cg_phonenumber.set(login_user.phonenumber)
-            self.cg_nickname.set(login_user.nickname)
-            self.cg_sex.set(login_user.sex)
-        self.profile_frame.pack()
-
-    def save_profile(self):
-        print(Users.Users.genUsers((self.login_userid, self.cg_username.get(), self.cg_password.get(), self.cg_email.get(), self.cg_phonenumber.get(), self.cg_nickname.get(), self.cg_sex.get())))
-        if self.cg_password.get() != self.cg_repassword.get():
-            messagebox.showerror(title='提示', message='两次密码输入不一致')
-            return
-        if Users.Users.genUsers((self.login_userid, self.cg_username.get(), self.cg_password.get(), self.cg_email.get(), self.cg_phonenumber.get(), self.cg_nickname.get(), self.cg_sex.get())).self_check() < 0:
-            messagebox.showerror(title='提示', message='请检查输入信息是否合法')
-            return
-        f1 = (USERNAME, PASSWORD, EMAIL, PHONENUMBER, NICKNAME, SEX)
-        v1 = (self.cg_username.get(), self.cg_password.get(), self.cg_email.get(), self.cg_phonenumber.get(), self.cg_nickname.get(), self.cg_sex.get())
-        f2 = (USERID, )
-        v2 = (self.login_userid, )
-        Users.Users.updateUsers1(f1, v1, f2, v2)
 
     def create_main_page(self):
         """
@@ -223,9 +129,9 @@ class ecSpider(Tk):
 
         self.menubar.add_command(label='返回登录', command=self.goto_login)
 
-        self.search_frame = Frame(self.main_frame, width=1200, bg='green')
+        self.search_frame = LabelFrame(self.main_frame, width=1200)
         self.search_frame.pack(side='top', fill=BOTH, expand='yes')
-        self.pt_frame = Frame(self.main_frame, width=1200, bg='blue')
+        self.pt_frame = LabelFrame(self.main_frame, width=1200)
         self.pt_frame.pack(side='top', fill=BOTH, expand='yes')
         self.goodslist_frame = Frame(self.main_frame, width=1200, bg='pink', height=700)
         self.goodslist_frame.pack(side='bottom', fill=BOTH, expand='yes')
@@ -235,7 +141,7 @@ class ecSpider(Tk):
         self.key_word = StringVar()
         self.crawl_num = IntVar(value=3)
         self.list_id = StringVar(value='（多个序号请用空格隔开）')
-        Label(self.search_frame, text='搜索关键词：', width=20, bg='red', font=self.label_font).\
+        Label(self.search_frame, text='搜索关键词：', width=20, font=self.label_font).\
             grid(row=0, column=0, sticky=W, padx=50, pady=10)
         search_ep = Entry(self.search_frame, width=88, font=self.label_font, textvariable=self.key_word)
         search_ep.grid(row=0, column=1, sticky=W, padx=40, pady=10, ipady=5, columnspan=4)
@@ -243,7 +149,7 @@ class ecSpider(Tk):
         Button(self.search_frame, text='search', command=self.search, font=self.label_font, width=10).\
             grid(row=0, column=5, sticky=E, padx=15)
 
-        Label(self.pt_frame, text='平台选择：', width=15, bg='red').\
+        Label(self.pt_frame, text='平台选择：', width=15).\
             grid(row=1, column=0, sticky=W, padx=30, pady=10)
         Checkbutton(self.pt_frame, text='全选', variable=self.pf_all, onvalue=1, offvalue=0, command=lambda: (self.pf_tb.set(1), self.pf_jd.set(1), self.pf_tmcs.set(1), self.pf_wph.set(1))).\
             grid(row=1, column=1)
@@ -255,15 +161,15 @@ class ecSpider(Tk):
             grid(row=1, column=4, padx=8)
         Checkbutton(self.pt_frame, text='唯品会', variable=self.pf_wph, onvalue=1, offvalue=0). \
             grid(row=1, column=5, padx=4)
-        Label(self.pt_frame, text='排序方式：', width=15, bg='red'). \
+        Label(self.pt_frame, text='排序方式：', width=15). \
             grid(row=1, column=6, sticky=W, padx=20, pady=10)
-        Radiobutton(self.pt_frame, text='默认排序', variable=self.sort_var, value=1, command=self.show_search).\
+        Radiobutton(self.pt_frame, text='默认排序', variable=self.sort_var, value=1, command=self.change_sort).\
             grid(row=1, column=7, padx=3)
-        Radiobutton(self.pt_frame, text='价格升序', variable=self.sort_var, value=2, command=self.show_search).\
+        Radiobutton(self.pt_frame, text='价格升序', variable=self.sort_var, value=2, command=self.change_sort).\
             grid(row=1, column=8, padx=3)
-        Radiobutton(self.pt_frame, text='价格倒序', variable=self.sort_var, value=3, command=self.show_search).\
+        Radiobutton(self.pt_frame, text='价格倒序', variable=self.sort_var, value=3, command=self.change_sort).\
             grid(row=1, column=9, padx=3)
-        Label(self.pt_frame, text='爬取数量：', width=15, bg='red'). \
+        Label(self.pt_frame, text='爬取数量：', width=15). \
             grid(row=1, column=10, sticky=W, padx=30, pady=10)
         Entry(self.pt_frame, width=5, font=self.label_font, textvariable=self.crawl_num). \
             grid(row=1, column=11, sticky=W)
@@ -273,17 +179,17 @@ class ecSpider(Tk):
             grid(row=2, column=1, sticky=W + E, padx=14, columnspan=2)
         Button(self.pt_frame, text='更新关注列表价格', command=self.upd_watchlist, width=15). \
             grid(row=2, column=3, sticky=W + E, padx=15, columnspan=2)
-        Label(self.pt_frame, text='请输入序号：', width=15, bg='red'). \
+        Label(self.pt_frame, text='请输入序号：', width=15). \
             grid(row=2, column=6, sticky=W, padx=15)
         Entry(self.pt_frame, width=35, textvariable=self.list_id). \
             grid(row=2, column=7, sticky=W, columnspan=3)
-        Button(self.pt_frame, text='加入关注列表', command=self.add_watchlist, width=10, bg='red'). \
+        Button(self.pt_frame, text='加入关注列表', command=self.add_watchlist, width=10). \
             grid(row=2, column=10, sticky=W, padx=50, pady=10)
 
         s = ttk.Style()
         s.configure('Treeview', rowheight=80)
 
-        self.which_tree = 1
+        self.which_tree = 0
         # 表格及表格滚动条
         self.tree = ttk.Treeview(self.goodslist_frame, columns=['1', '2', '3', '4', '5', '6', '7', '8'],
                                  height=7)
@@ -386,8 +292,25 @@ class ecSpider(Tk):
             self.rt.clipboard_append("https://" + item_text[6])
 
 
+    def change_sort(self):
+        if self.which_tree == 1:
+            if self.sort_var.get() == 1:
+                self.treeview_sort_column(self.tree, '1', False)
+            if self.sort_var.get() == 2:
+                self.treeview_sort_column(self.tree, '5', False)
+            if self.sort_var.get() == 3:
+                self.treeview_sort_column(self.tree, '5', True)
+        if self.which_tree == 2:
+            if self.sort_var.get() == 1:
+                self.treeview2_sort_column(self.tree2, '2', False)
+            if self.sort_var.get() == 2:
+                self.treeview2_sort_column(self.tree2, '4', False)
+            if self.sort_var.get() == 3:
+                self.treeview2_sort_column(self.tree2, '4', True)
+
+
     def treeview_sort_column(self, tv, col, reverse):  # Treeview、列名、排列方式
-        if col == '5' or col == '6':
+        if col == '1' or col == '5' or col == '6':
             l = []
             for k in tv.get_children(''):
                 if tv.set(k, col) == '不显示':
@@ -418,6 +341,107 @@ class ecSpider(Tk):
             print(k)
         tv.heading(col, command=lambda: self.treeview2_sort_column(tv, col, not reverse))  # 重写标题，使之成为再点倒序的标题
 
+
+    def update_platform_info(self, pf_id):
+        print(pf_id)
+        pf_strs = ['', '淘宝', '京东', '天猫超市', '唯品会']
+        self.main_frame.pack_forget()
+        if self.profile_frame: self.profile_frame.pack_forget()
+        if self.pf_frame == None:
+            self.pf_frame = Frame(self.rt, width=1200, height=800)
+            self.pf_ck_e = StringVar()
+            self.pf_re_e = StringVar()
+            self.pf_label = Label(self.pf_frame, text=pf_strs[pf_id], font=self.menu_font, pady=50)
+            self.pf_label.grid(row=0, column=0, columnspan=2)
+            Label(self.pf_frame, text='cookie: ', font=self.menu_font, width=10, padx=30).grid(row=1, column=0)
+            Entry(self.pf_frame, font=self.menu_font, width=20, textvariable=self.pf_ck_e).grid(row=1, column=1)
+            Label(self.pf_frame, text='referer: ', font=self.menu_font, width=10, padx=30).grid(row=2, column=0)
+            Entry(self.pf_frame, font=self.menu_font, width=20, textvariable=self.pf_re_e).grid(row=2, column=1)
+            Button(self.pf_frame, text='返回', font=self.menu_font, width=10, command=self.show_main_window, padx=30).grid(row=3, column=0, pady=80, padx=30)
+            Button(self.pf_frame, text='保存', font=self.menu_font, width=10, command=self.save_pf_info, padx=30).grid(row=3, column=1, pady=80)
+        else:
+            self.pf_label.configure(text=pf_strs[pf_id])
+        self.pf_frame.pack()
+
+    def save_pf_info(self):
+        tup = (int(self.login_userid), self.pf_label['text'], self.pf_ck_e.get(), self.pf_re_e.get(), 0)
+        Searchinfo.Searchinfo.insert(tup)
+
+    def show_profile(self):
+        self.main_frame.pack_forget()
+        if self.pf_frame: self.pf_frame.pack_forget()
+        self.cg_username = StringVar(value=self.login_username)
+        login_user = Users.Users.queryWithUserid(self.login_userid)
+        if self.profile_frame == None:
+            self.profile_frame = Frame(self.rt, width=800, height=500)
+            self.cg_password = StringVar()
+            self.cg_repassword = StringVar()
+            self.cg_email = StringVar(value=login_user.email)
+            self.cg_phonenumber = StringVar(value=login_user.phonenumber)
+            self.cg_nickname = StringVar(value=login_user.nickname)
+            self.cg_sex = StringVar(value=login_user.sex)
+            self.pf_label = Label(self.profile_frame, text='欢迎用户：' + self.login_username, font=self.menu_font, pady=50)
+            self.pf_label.grid(row=0, column=0, columnspan=2)
+            label_font = self.label_font
+            entry_font = font.Font(family='微软雅黑', size=14)
+            Label(self.profile_frame, text="账号*:", font=label_font, width=10).grid(row=1, sticky=E, pady=10, padx=150)
+            Entry(self.profile_frame, textvariable=self.cg_username, font=entry_font, width=20).grid(row=1, column=1, stick=W,
+                                                                                             columnspan=3, ipady=5,
+                                                                                             pady=12)
+            Label(self.profile_frame, text="密码*:", font=label_font, width=10).grid(row=2, stick=E, pady=10, padx=150)
+            Entry(self.profile_frame, textvariable=self.cg_password, show='*', font=entry_font, width=20).grid(row=2, column=1,
+                                                                                                       stick=W,
+                                                                                                       columnspan=3,
+                                                                                                       ipady=5, pady=12)
+            Label(self.profile_frame, text=" 确认密码*:", font=label_font, width=10).grid(row=3, stick=E, pady=10, padx=150)
+            Entry(self.profile_frame, textvariable=self.cg_repassword, show='*', font=entry_font, width=20).grid(row=3,
+                                                                                                         column=1,
+                                                                                                         stick=W,
+                                                                                                         columnspan=3,
+                                                                                                         ipady=5,
+                                                                                                         pady=12)
+            Label(self.profile_frame, text="邮箱:", font=label_font, width=10).grid(row=4, stick=E, pady=10, padx=150)
+            Entry(self.profile_frame, textvariable=self.cg_email, font=entry_font, width=20).grid(row=4, column=1, stick=W,
+                                                                                          columnspan=3, ipady=5,
+                                                                                          pady=12)
+            Label(self.profile_frame, text="电话号码:", font=label_font, width=10).grid(row=5, stick=E, pady=10, padx=150)
+            Entry(self.profile_frame, textvariable=self.cg_phonenumber, font=entry_font, width=20).grid(row=5, column=1,
+                                                                                                stick=W, columnspan=3,
+                                                                                                ipady=5, pady=12)
+            Label(self.profile_frame, text="昵称:", font=label_font, width=10).grid(row=6, stick=E, pady=10, padx=150)
+            Entry(self.profile_frame, textvariable=self.cg_nickname, font=entry_font, width=20).grid(row=6, column=1, stick=W,
+                                                                                             columnspan=2, ipady=5,
+                                                                                             pady=12)
+            Label(self.profile_frame, text="性别:", font=label_font, width=10).grid(row=7, stick=E, pady=10, padx=150)
+            Checkbutton(self.profile_frame, text='男', variable=self.cg_sex, onvalue='男', offvalue='女', font=entry_font,
+                        width=6).grid(row=7, column=1, stick=W, pady=12)
+            Checkbutton(self.profile_frame, text='女', variable=self.cg_sex, onvalue='女', offvalue='男', font=entry_font,
+                        width=8).grid(row=7, column=2, stick=W, pady=12)
+            Button(self.profile_frame, text="返回", command=self.show_main_window, font=entry_font, width=6).grid(row=8, pady=10)
+            Button(self.profile_frame, text="确认修改", command=self.save_profile, font=entry_font, width=6).grid(row=8, column=1,
+                                                                                                   columnspan=2)
+        else:
+            self.cg_email.set(login_user.email)
+            self.cg_phonenumber.set(login_user.phonenumber)
+            self.cg_nickname.set(login_user.nickname)
+            self.cg_sex.set(login_user.sex)
+        self.profile_frame.pack()
+
+    def save_profile(self):
+        print(Users.Users.genUsers((self.login_userid, self.cg_username.get(), self.cg_password.get(), self.cg_email.get(), self.cg_phonenumber.get(), self.cg_nickname.get(), self.cg_sex.get())))
+        if self.cg_password.get() != self.cg_repassword.get():
+            messagebox.showerror(title='提示', message='两次密码输入不一致')
+            return
+        if Users.Users.genUsers((self.login_userid, self.cg_username.get(), self.cg_password.get(), self.cg_email.get(), self.cg_phonenumber.get(), self.cg_nickname.get(), self.cg_sex.get())).self_check() < 0:
+            messagebox.showerror(title='提示', message='请检查输入信息是否合法')
+            return
+        f1 = (USERNAME, PASSWORD, EMAIL, PHONENUMBER, NICKNAME, SEX)
+        v1 = (self.cg_username.get(), self.cg_password.get(), self.cg_email.get(), self.cg_phonenumber.get(), self.cg_nickname.get(), self.cg_sex.get())
+        f2 = (USERID, )
+        v2 = (self.login_userid, )
+        Users.Users.updateUsers1(f1, v1, f2, v2)
+
+
     def search(self, event=None):
         """
         统计搜索+显示总用时
@@ -425,6 +449,7 @@ class ecSpider(Tk):
         :return:
         """
         start = time.perf_counter()
+        self.which_tree = 1
         self.goodslist_frame.pack(side='bottom', fill=BOTH, expand='yes')
         self.watchlist_frame.pack_forget()
         self.key_word.set(self.key_word.get().strip())
@@ -438,7 +463,6 @@ class ecSpider(Tk):
         for item in self.tree.get_children():
             self.tree.delete(item)
         self.goodsinfo = []
-        rec_que_res = utilMysql.query(utilMysql.genQuerySql('records', (SEARCHTERM,), ("%" + self.key_word.get() + "%",)))
         if self.pf_tb.get() == 1:
             rec_que_res = utilMysql.query(
                 utilMysql.genQuerySql('goods', (PLATFORM, TAGS), ('淘宝', "%" + self.key_word.get() + "%")))
@@ -454,7 +478,11 @@ class ecSpider(Tk):
                 utilMysql.genQuerySql('goods', (PLATFORM, TAGS), ('天猫超市', "%" + self.key_word.get() + "%")))
             if not rec_que_res:
                 self.search_tmcs()
-
+        if self.pf_wph.get() == 1:
+            rec_que_res = utilMysql.query(
+                utilMysql.genQuerySql('goods', (PLATFORM, TAGS), ('唯品会', "%" + self.key_word.get() + "%")))
+            if not rec_que_res:
+                self.search_wph()
         # 获取商品待显示列表
         gds_que_res = []
         if self.pf_tb.get() == 1:
@@ -613,6 +641,7 @@ class ecSpider(Tk):
         显示关注列表
         :return:
         """
+        self.which_tree = 2
         self.goodslist_frame.pack_forget()
         self.watchlist_frame.pack(side='bottom', fill=BOTH, expand='yes')
         sql = utilMysql.genQuerySql('watchlist', (USERID, ), (self.usr_info['login_userid'], ))
@@ -742,7 +771,6 @@ class ecSpider(Tk):
     def show_word_cloud(self):
         """
         显示用户专属词云
-        TODO: 词云
         :return:
         """
         record = Records.Records.getRecords(self.login_userid)
@@ -753,7 +781,11 @@ class ecSpider(Tk):
             comments = Comments.Comments.getComments(goodid)
             for comment in comments:
                 my_words_list.append(comment[1])
-        my_wordcloud.create_word_cloud(my_words_list)
+        try:
+            my_wordcloud.create_word_cloud(my_words_list)
+        except Exception as e:
+            print(e)
+            pass
 
     def recommend_result(self):
         """
