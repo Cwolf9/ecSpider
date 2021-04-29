@@ -42,7 +42,8 @@ class Users:
 
     @classmethod
     def genUsers(cls, tup: tuple):
-        userid, username, password, email, phonenumber, nickname, sex = tup[0], tup[1], tup[2], tup[3], tup[4], tup[5], tup[6]
+        userid, username, password, email, phonenumber, nickname, sex = \
+            int(tup[0]), tup[1], tup[2], tup[3], tup[4], tup[5], tup[6]
         return Users(userid, username, password, email, phonenumber, nickname, sex)
 
     @classmethod

@@ -101,3 +101,6 @@ tkinter 焦点：
 2.给button按钮绑定回车按键失败。
 一运行程序马上进入回车键绑定的函数，且并非真实事件。焦点也不在窗口上
 
+python 调用命令行：
+https://www.it610.com/article/3762431.htm
+https://www.cnblogs.com/qican/p/11468866.html

@@ -27,6 +27,11 @@ class Watchlist:
             tup[0], tup[1], tup[2], tup[3], tup[4], tup[5], tup[6], tup[7]
         return Watchlist(userid, goodid, platform, nowprice, lowprice, highprice, href, picpath)
 
+    @classmethod
+    def getWatchlist(cls):
+        return utilMysql.query('select * from watchlist')
+
+
 if __name__ == "__main__":
     watchlist = Watchlist(1, 'TB615651833644', '淘宝', 12, 11, 13, '//detail.tmall.com/item.htm?id=615651833644', 'O1CN01qXLQ231sW59J818ds_!!0-item_pic.png')
     print(watchlist)

@@ -11,6 +11,7 @@ im = Image.open(path)
 im.show()
 '''
 import os
+import re
 import fileinput
 import tkinter as tk
 from tkinter import Tk, Frame, Button, Label, LabelFrame, Text, PhotoImage, Entry, messagebox\
@@ -24,7 +25,7 @@ import time
 import threading
 from functools import wraps
 from src.model import Users, Goods, Watchlist, Searchinfo, Records, Comments
-from src import utilMysql, loginFrame, my_wordcloud
+from src import utilMysql, loginFrame, my_wordcloud, ubcf
 from src.conf_win import *
 from src.spiders import taobao, jingdong, tmcs, wph
 
@@ -46,10 +47,11 @@ class ecSpider(Tk):
         self.sort_var = tk.IntVar(value=1)
         # 待显示商品信息
         self.goodsinfo = []
-        self.login_frame.pack()
+        self.ubcf = ubcf.Ubcf()
         self.create_main_page()
-        # self.show_main_window()
         self.create_comment_page()
+        self.login_frame.pack()
+        # self.show_main_window()
 
     def create_comment_page(self):
         entry_font = font.Font(family='微软雅黑', size=14)
@@ -100,6 +102,8 @@ class ecSpider(Tk):
             cm_list = taobao.getTBProdComments(good_url)
             for cm in cm_list:
                 self.comments_list.append(cm[-2:])
+            itemId = re.search(r'id\=(\d+)', good_url).group(1)
+            itemId = 'TB' + itemId
         self.delTreeView(self.cm_tree)
         num = 1
         for cm in self.comments_list:
@@ -107,6 +111,10 @@ class ecSpider(Tk):
             cm[2] = changeStrSize(cm[2], 800)
             self.cm_tree.insert('', 'end', values=cm)
             num = num + 1
+            try:
+                Comments.Comments.insert((itemId, cm[1], cm[2]))
+            except:
+                pass
 
     def a_new_decorator(a_func):
         """
@@ -825,7 +833,6 @@ class ecSpider(Tk):
                        '    为了方便您的使用，建议不定期更新您的电商信息，如：cookie等。', font=self.label_font, wraplength=300,
               justify='left', padx=10).pack()
 
-
     def software_about(self):
         """
         关于系统
@@ -862,11 +869,28 @@ class ecSpider(Tk):
 
     def recommend_result(self):
         """
-        展示推荐结果
+        展示推荐结果，算法为基于用户的协同过滤推荐算法，需要一定的历史数据量结果才准确
         TODO: 推荐
         :return:
         """
-        pass
+        try:
+            goodId_list = self.ubcf.get_recommend(self.login_userid)
+            self.delTreeView(self.tree)
+            num = 1
+            self.gdsimgs = []
+            for goodId in goodId_list:
+                good = Goods.Goods.queryWithGoodid(goodId)
+                goodslist = [num, *good.showItem(), good.picpath]
+                if goodslist[5] == 0:
+                    goodslist[5] = '不显示'
+                self.gdsimg = Image.open(DATA_ROOT_PATH + good.picpath)
+                self.gdsimg = self.gdsimg.resize((80, 80))
+                self.gdsimg = ImageTk.PhotoImage(self.gdsimg)
+                self.gdsimgs.append(self.gdsimg)
+                self.tree.insert('', 'end', image=self.gdsimgs[num - 1], values=goodslist)
+                num = num + 1
+        except Exception as e:
+            print(e)
 
 
 if __name__ == "__main__":

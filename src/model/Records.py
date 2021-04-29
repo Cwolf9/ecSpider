@@ -24,7 +24,7 @@ class Records:
     @classmethod
     def genRecords(cls, tup: tuple):
         userid, searchterm, wordcloud, wcpath, tags = \
-            tup[0], tup[1], tup[2], tup[3], tup[4]
+            int(tup[0]), tup[1], tup[2], tup[3], tup[4]
         return Records(userid, searchterm, wordcloud, wcpath, tags)
 
     @classmethod

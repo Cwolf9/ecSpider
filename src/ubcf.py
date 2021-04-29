@@ -1,0 +1,95 @@
+# -*- coding: UTF-8 -*-
+
+"""
+@author: Cwolf9
+@file: ubcf
+@date: 2021-04-29 14:50
+@desc:
+基于用户的协同过滤推荐算法
+1. 找到与目标用户兴趣相似的用户集合
+2. 找到这个集合中用户喜欢的、并且目标用户没有听说过的物品推荐给目标用户
+余弦相似度计算两个用户之间的相似度
+"""
+import math, copy
+import utilMysql
+from src.model import Users, Goods, Watchlist
+
+
+class Ubcf:
+    """
+    d_like[i]表示用户i喜欢的商品列表
+    d_thing[i]表示喜欢商品i的用户
+    w_point[i][j]表示用户i和j的相似度
+    """
+    top_k_user = 0
+    top_k_good = 0
+
+    def __init__(self, top_k_user=5, top_k_good=10):
+        self.n, self.m = utilMysql.query('select count(*) from users')[0][0], utilMysql.query('select count(*) from goods')[0][0]
+        self.top_k_user, self.top_k_good = min(self.n, top_k_user), min(self.m, top_k_good)
+        self.user_nid, self.good_nid = {}, {}
+        self.d_like = [[] for i in range(self.n)]
+        self.d_thing = [[] for i in range(self.m)]
+        self.w_point = [[0]*self.n for i in range(self.n)]
+        wls = Watchlist.Watchlist.getWatchlist()
+        for wl in wls:
+            if wl[0] not in self.user_nid.keys():
+                self.user_nid[wl[0]] = len(self.user_nid)
+            if wl[1] not in self.good_nid.keys():
+                self.good_nid[wl[1]] = len(self.good_nid)
+            self.d_like[self.user_nid[wl[0]]].append(self.good_nid[wl[1]])
+            self.d_thing[self.good_nid[wl[1]]].append(self.user_nid[wl[0]])
+        for x in range(self.m):
+            for i in self.d_thing[x]:
+                for j in range(i + 1, len(self.d_thing[x])):
+                    self.w_point[i][j] += 1
+                    self.w_point[j][i] += 1
+        for i in range(self.n):
+            for j in range(i + 1, self.n):
+                if len(self.d_like[i]) * len(self.d_like[j]):
+                    self.w_point[i][j] /= math.sqrt(len(self.d_like[i]) * len(self.d_like[j]))
+                self.w_point[j][i] = self.w_point[i][j]
+            print(self.w_point[i])
+
+    def execute_again(self, top_k_user=5, top_k_good=10):
+        self.__init__(top_k_user, top_k_good)
+
+    def get_recommend(self, userid, top_k_user=5, top_k_good=10):
+        self.top_k_user, self.top_k_good = min(self.n, top_k_user), min(self.m, top_k_good)
+        recommend_list = []
+        try:
+            new_uid = self.user_nid[userid]
+            user_list = copy.deepcopy(self.w_point[new_uid])
+            user_list = [(i, user_list[i]) for i in range(len(user_list))]
+            user_list.sort(key=lambda x: x[1], reverse=True)
+            print('user_list:\n', user_list)
+            candidate_list = []
+            for i in range(self.top_k_user):
+                for j in self.d_like[user_list[i][0]]:
+                    if j not in self.d_like[new_uid] and j not in candidate_list:
+                        candidate_list.append([j, 0])
+            print('candidate_list:\n', candidate_list)
+            for good in candidate_list:
+                for user in user_list:
+                    good[1] += self.w_point[user[0]][good[0]]
+            candidate_list.sort(key=lambda x: x[1], reverse=True)
+            candidate_list = candidate_list[:min(len(candidate_list), self.top_k_good)]
+            candidate_list.sort(key=lambda x: x[0])
+
+            c_index = 0
+            for good in self.good_nid.items():
+                if c_index < len(candidate_list) and good[1] == candidate_list[c_index][0]:
+                    recommend_list.append(good[0])
+                    c_index += 1
+                    if c_index == len(candidate_list):
+                        break
+            print(recommend_list)
+        except Exception as e:
+            print(repr(e))
+        finally:
+            return recommend_list
+
+
+if __name__ == '__main__':
+    ubcf = Ubcf()
+    ubcf.get_recommend(72)

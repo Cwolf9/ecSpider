@@ -8,6 +8,8 @@
 """
 from src import utilMysql
 from src.conf_win import *
+
+
 class Goods:
     def __init__(self, goodid, platform, title, price, msales, shopname, href, picpath, tags=''):
         self.goodid, self.platform, self.title, self.price, self.msales, self.shopname, self.href, \

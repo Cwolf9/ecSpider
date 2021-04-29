@@ -283,7 +283,7 @@ def reqProdComments(url, csv_writer, num = 10):
 def getTBProdComments(url):
     time.sleep(1)
     ilist = []
-    with open('tbData.csv', 'a+', newline='', encoding='gb18030') as f:
+    with open(DATA_ROOT_PATH + 'wphCommentData.csv', 'a+', newline='', encoding='gb18030') as f:
         writer = csv.writer(f)
         writer.writerow(("用户昵称", "商品型号", "评论时间", "评论内容"))
         ilist = reqProdComments(url, writer)

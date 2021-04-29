@@ -25,7 +25,7 @@ class Searchinfo:
 
     @classmethod
     def genSearchinfo(cls, tup: tuple):
-        userid, pt, cookie, referer, state = tup[0], tup[1], tup[2], tup[3], tup[4]
+        userid, pt, cookie, referer, state = int(tup[0]), tup[1], tup[2], tup[3], tup[4]
         return Searchinfo(userid, pt, cookie, referer, state)
 
     @classmethod
