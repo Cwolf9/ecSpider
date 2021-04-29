@@ -9,6 +9,11 @@
 1. 找到与目标用户兴趣相似的用户集合
 2. 找到这个集合中用户喜欢的、并且目标用户没有听说过的物品推荐给目标用户
 余弦相似度计算两个用户之间的相似度
+https://blog.csdn.net/shixiaoguo90/article/details/80253567
+https://www.bilibili.com/video/BV1L5411e7JZ?from=search&seid=6358184118000091269
+
+https://www.zhihu.com/question/29531839
+https://zhuanlan.zhihu.com/p/31927875
 """
 import math, copy
 import utilMysql

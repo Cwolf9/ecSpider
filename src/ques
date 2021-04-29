@@ -104,3 +104,6 @@ tkinter 焦点：
 python 调用命令行：
 https://www.it610.com/article/3762431.htm
 https://www.cnblogs.com/qican/p/11468866.html
+
+idea 查看方法在哪里被调用：
+alt+F7
