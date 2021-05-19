@@ -173,7 +173,7 @@ if __name__ == '__main__':
 jd_comment_path = DATA_ROOT_PATH + 'jd_comment.txt'
 
 
-def reqProdComments(url, csv_writer, num = 10):
+def reqProdComments(url, csv_writer, num=5):
     if num > 20: num = 20
     if num <= 0: num = 10
     result = []
@@ -193,17 +193,18 @@ def reqProdComments(url, csv_writer, num = 10):
         "isShadowSku":"0","fold":"1",
     }
     url = 'https://club.jd.com/comment/productPageComments.action'
-    attris = ["creationTime", "score", "replyCount", "usefulVoteCount", "imageCount", "content"]
+    attris = ["creationTime", "score", "replyCount", "usefulVoteCount", "content"]
     try:
         while len(result) < num :
             time.sleep(1)
-            r = requests.get(url, timeout=30, headers=head, params = dSearch)
+            r = requests.get(url, timeout=30, headers=head, params=dSearch)
             r.raise_for_status()
             r.encoding = r.apparent_encoding
             comment_list = reCommentLi.findall(r.text)
             if r.text == "" or len(comment_list) == 0:
                 break
-            # print(r.text[20:-2])
+            with open(DATA_ROOT_PATH + "iJingdongPinlun.html", "w", encoding='utf-8') as f:
+                f.write(r.text[20:-2])
             rtjs = json.loads(r.text[20:-2])
             comments = rtjs['comments']
             for comment in comments:
@@ -212,7 +213,7 @@ def reqProdComments(url, csv_writer, num = 10):
                     if(attri == 'content') :
                         # comment[attri] = html.unescape(comment[attri]).replace(r'\n', ' ')
                         comment[attri] = comment[attri].replace('\n', ' ')
-                        with open(jd_comment_path, 'a+', encoding='utf-8') as fjd :
+                        with open(jd_comment_path, 'a+', encoding='utf-8') as fjd:
                             fjd.write(comment[attri] + '\n')
                     tmp.append(comment[attri])
                 result.append(tmp)
@@ -236,24 +237,26 @@ def reqProdComments(url, csv_writer, num = 10):
             #     if len(result) == num:
             #         break
             dSearch['page'] = str(int(dSearch['page']) + 1)
-    except:
+    except Exception as e:
         print("获取京东评论出现bug")
+        print(repr(e))
     return result
 
 
 def printComments(ilist):
     cnt = 0
     for x in ilist:
-        print(cnt, x[0], x[1], x[2], x[3], x[4], x[5])
+        print(cnt, x[0], x[1], x[2], x[3], x[4])
         cnt += 1
     print("")
 
 
-def getJDProdComments():
+def getJDProdComments(good_url='https://item.jd.com/30191153091.html'):
     time.sleep(1)
     ilist = []
     with open('jdData.csv', 'a+', newline='', encoding='gb18030') as f:
         writer = csv.writer(f)
-        writer.writerow(('留言时间', '评分', '回复数', '点赞数', '图片数', '评论内容'))
-        ilist = reqProdComments('https://item.jd.com/30191153091.html', writer)
+        writer.writerow(('留言时间', '评分', '回复数', '点赞数', '评论内容'))
+        ilist = reqProdComments(good_url, writer)
     printComments(ilist)
+    return ilist
