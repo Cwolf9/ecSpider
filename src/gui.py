@@ -111,12 +111,19 @@ class ecSpider(Tk):
                 self.comments_list.append([cm[0], cm[-1]])
             itemId = good_url.split('/')[-1].split('.')[0]
             itemId = 'JD' + itemId
+        if self.good_shopname.cget('text')[:2] == '天猫':
+            cm_list = tmcs.getTMCSProdComments(good_url)
+            for cm in cm_list:
+                self.comments_list.append(cm[-2:])
+            itemId = re.search(r'id\=(\d+)', good_url).group(1)
+            itemId = 'TMCS' + itemId
+
         self.delTreeView(self.cm_tree)
         num = 1
         for cm in self.comments_list:
             cm.insert(0, num)
             cm[2] = changeStrSize(cm[2], 800)
-            print(cm)
+            # print(cm)
             self.cm_tree.insert('', 'end', values=cm)
             num = num + 1
             try:

@@ -258,5 +258,5 @@ def getJDProdComments(good_url='https://item.jd.com/30191153091.html'):
         writer = csv.writer(f)
         writer.writerow(('留言时间', '评分', '回复数', '点赞数', '评论内容'))
         ilist = reqProdComments(good_url, writer)
-    printComments(ilist)
+    # printComments(ilist)
     return ilist

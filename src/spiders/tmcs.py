@@ -282,8 +282,10 @@ def printComments(ilist):
         print(cnt, x[0], x[1], x[2], x[3])
         cnt += 1
     print("")
+
+
 # https://rate.tmall.com/list_detail_rate.htm?itemId=629748003807&spuId=1846540591&sellerId=268451883&order=3&currentPage=1&append=0&content=1&tagId=&posi=&picture=&groupId=&ua=098%23E1hvl9vnvPOvUpCkvvvvvjiWPLqZ1jEHRLFhAjthPmPhsjYbPLF9ljn2n2SOQjiRROvCvCLwjUYJDrMwznAa9lS5FMsJzVD448QCvvyvmCQmFgGvbvTVvpvhvvpvv29Cvvpvvvvv29hvCvvvMMGvvpvVvvpvvhCvKvhv8vvvvvCvpvvtvvmm7ZCvmR%2BvvvWvphvW9pvv9DDvpvACvvmm7ZCv2UVUvpvVmvvC9j3vuvhvmvvv9b%2B1eAw0mvhvLvCrpQvjn%2BkQ0f06WeCpqU0HsfUpwyjIAXcBKFyK2ixrQj7JVVQHYnFhAEI7nDeDyO2vSdtIjbmYSW94P5CXqU5EDfmlJ1kHsX7veEkevpvhvvmv9uQCvvyvmH9mKdIv8EQgvpvhvvvvvv%3D%3D&needFold=0&_ksTS=1612519758221_703&callback=jsonp704
-def reqProdComments(url, csv_writer, num = 10):
+def reqProdComments(url, csv_writer, num=5):
     if num > 20: num = 20
     if num <= 0: num = 10
     result = []
@@ -296,8 +298,7 @@ def reqProdComments(url, csv_writer, num = 10):
     print("itemId:", itemId)
     sellerId = "268451883"
     try:
-        url = "https:" + url
-        r = requests.get(url, timeout=3, headers=head)
+        r = requests.get(url, timeout=1, headers=head)
         r.raise_for_status()
         sellerId = re.search(r'sellerId\:\"(\d+)\"', r.text).group(1)
         print("sellerId: ", sellerId)
@@ -305,9 +306,9 @@ def reqProdComments(url, csv_writer, num = 10):
         print("获取淘宝评论出现bug1")
         return result
     dSearch = {
-        "itemId":itemId,
-        "sellerId": "196993935",
-        "currentPage":"1",
+        "itemId": itemId,
+        "sellerId": sellerId,
+        "currentPage": "1",
         "callback": "jsonp704"
     }
     url = 'https://rate.tmall.com/list_detail_rate.htm'
@@ -334,15 +335,17 @@ def reqProdComments(url, csv_writer, num = 10):
                 if len(result) == num:
                     break
             dSearch['currentPage'] = str(int(dSearch['currentPage']) + 1)
-    except:
+    except Exception as e:
+        print(e)
         print("获取tmcs评论出现bug2")
     return result
 
 def getTMCSProdComments(url):
     time.sleep(1)
     ilist = []
-    with open(DATA_ROOT_PATH+'tmcsData.csv', 'a+', newline='', encoding='gb18030') as f:
+    with open(DATA_ROOT_PATH+'tmcsCommentData.csv', 'a+', newline='', encoding='gb18030') as f:
         writer = csv.writer(f)
         writer.writerow(("用户昵称", "商品型号", "评论时间", "评论内容"))
         ilist = reqProdComments(url, writer)
     printComments(ilist)
+    return ilist
