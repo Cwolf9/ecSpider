@@ -873,6 +873,9 @@ class ecSpider(Tk):
         TODO: 推荐
         :return:
         """
+        self.which_tree = 1
+        self.goodslist_frame.pack(side='bottom', fill=BOTH, expand='yes')
+        self.watchlist_frame.pack_forget()
         try:
             goodId_list = self.ubcf.get_recommend(self.login_userid)
             self.delTreeView(self.tree)
