@@ -204,7 +204,7 @@ def printGoodsList(ilt, num=5):
 
 
 def getTMCSProd(qName='手机', cnt=3):
-    use_old = 1
+    use_old = 0
     print('qName, cnt: ', qName, cnt)
     url = "https://list.tmall.com/search_product.htm"
     dSearch = {'q': qName, 's': '0'}
