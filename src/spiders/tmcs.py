@@ -111,7 +111,7 @@ def getTMCSHTMLText(url, dSearch, ip=0):
     d3 = d1 + datetime.timedelta(hours=2, minutes=5)
     # 转字符串
     a = d3.strftime("%Y-%m-%d %H:%M:%S")
-    # 转数组
+    # 转time.struct_time元组
     b = time.strptime(a, "%Y-%m-%d %H:%M:%S")
     # 转时间戳
     time2 = int(time.mktime(b) * 1000)
