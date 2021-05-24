@@ -30,6 +30,18 @@ from src.conf_win import *
 from src.spiders import taobao, jingdong, tmcs, wph
 
 
+def printGoodsList(ilt, num=5):
+    tplt = "{:4}\t{:8}\t{:8}\t{:16}\t{:16}\t{:16}\t{:8}\t{:16}"
+    print(tplt.format("序号", "goodID", "商品名称", "价格", "月销量", "店铺", "链接", "图片url"))
+    count = 0
+    for g in ilt:
+        count = count + 1
+        print(tplt.format(count, g[0], g[1], g[2], g[3], g[4], g[5], g[6]))
+        if count == num:
+            break
+    print("")
+
+
 class ecSpider(Tk):
     def __init__(self):
         super().__init__()
@@ -52,6 +64,7 @@ class ecSpider(Tk):
         self.create_comment_page()
         self.login_frame.pack()
         # self.show_main_window()
+        # self.test_performance()
 
     def create_comment_page(self):
         entry_font = font.Font(family='微软雅黑', size=14)
@@ -144,7 +157,6 @@ class ecSpider(Tk):
             a_func(*args, **kwargs)
             end = time.perf_counter()
             print('Decorator: Running time: %s Seconds' % (end - start))
-
         return wrapTheFunction
 
     def change_src_size(self, width=1200, height=800):
@@ -224,7 +236,7 @@ class ecSpider(Tk):
         self.watchlist_frame = Frame(self.main_frame, width=1200, bg='yellow', height=700)
         # self.watchlist_frame.pack(side='bottom', fill=BOTH, expand='yes')
 
-        self.key_word = StringVar()
+        self.key_word = StringVar(value='')
         self.crawl_num = IntVar(value=3)
         self.list_id = StringVar(value='（多个序号请用空格隔开）')
         Label(self.search_frame, text='搜索关键词：', width=20, font=self.label_font).\
@@ -669,16 +681,21 @@ class ecSpider(Tk):
         res_good = (x[0], platform, x[1], x[2], x[3], x[4], x[5], picpath, key_word)
         sql = utilMysql.genInsSql('goods', (GOODID, PLATFORM, TITLE, PRICE, MSALES, SHOPNAME, HREF, PICPATH, TAGS),
                                   res_good)
-        print(sql)
-        print(res_good)
         utilMysql.insert(sql)
         # self.goodsinfo.append(res_good)
 
     @a_new_decorator
+    def mysql_tb(self):
+        rec_que_res = utilMysql.query(
+            utilMysql.genQuerySql('goods', (PLATFORM, TAGS), ('淘宝', "%" + self.key_word.get() + "%")))
+        printGoodsList(rec_que_res)
+        return rec_que_res
+
+    @a_new_decorator
     def search_tb(self, platform='淘宝'):
-        print(self.key_word.get(), self.crawl_num.get())
         # 注意res_info的排列
         res_info = taobao.getTaobaoProd(self.key_word.get(), self.crawl_num.get())
+        # self.printGoodsList(res_info)
         start = time.perf_counter()
         # 多线程异步存取商品（下载缩略图）
         t = None
@@ -691,7 +708,6 @@ class ecSpider(Tk):
 
     @a_new_decorator
     def search_jd(self, platform='京东'):
-        print(self.key_word.get(), self.crawl_num.get())
         # 注意res_info的排列
         res_info = jingdong.getJDProd(self.key_word.get(), self.crawl_num.get())
         start = time.perf_counter()
@@ -706,7 +722,6 @@ class ecSpider(Tk):
 
     @a_new_decorator
     def search_tmcs(self, platform='天猫超市'):
-        print('天猫超市', self.key_word.get(), self.crawl_num.get())
         # 注意res_info的排列
         res_info = tmcs.getTMCSProd(self.key_word.get(), self.crawl_num.get())
         start = time.perf_counter()
@@ -721,7 +736,6 @@ class ecSpider(Tk):
 
     @a_new_decorator
     def search_wph(self, platform='唯品会'):
-        print('唯品会', self.key_word.get(), self.crawl_num.get())
         # 注意res_info的排列
         res_info = wph.getWPHProd(self.key_word.get(), self.crawl_num.get())
         start = time.perf_counter()
@@ -911,6 +925,25 @@ class ecSpider(Tk):
                 num = num + 1
         except Exception as e:
             print(e)
+
+    def count_running_time(a_func):
+        @wraps(a_func)
+        def wrapTheFunction(*args, **kwargs):
+            start = time.perf_counter()
+            a_func(*args, **kwargs)
+            end = time.perf_counter()
+            print('\nTotal running time: %s Seconds' % (end - start))
+        return wrapTheFunction
+
+    @count_running_time
+    def test_performance(self):
+        print('淘宝 查询关键字, 搜索项目数: ', self.key_word.get(), self.crawl_num.get())
+        print('即时爬取法：')
+        self.search_tb()
+        print('\n数据库法：')
+        self.mysql_tb()
+
+
 
 
 if __name__ == "__main__":

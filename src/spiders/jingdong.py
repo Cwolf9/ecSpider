@@ -112,7 +112,7 @@ def printGoodsList(ilt, num = 20):
     print("")
 
 
-def getJDProd(qName = '手机', cnt = 1):
+def getJDProd(qName='手机', cnt=1):
     use_old = 0
     timeID = '%.5f' % time.time()  # 时间戳保留后五位
     infoList = []
@@ -135,7 +135,7 @@ def getJDProd(qName = '手机', cnt = 1):
                 break
         except:
             print("获取京东商品产生异常")
-    printGoodsList(infoList)
+    # printGoodsList(infoList)
     return infoList
 
 

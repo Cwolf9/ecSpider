@@ -68,7 +68,7 @@ def getTBHTMLText(url, dSearch, ip=0):
 
         cookies = requests.utils.cookiejar_from_dict(cookie_dict, cookiejar=None, overwrite=True)
         reqS.cookies = cookies
-        print(cookies)
+        # print(cookies)
         '''
         <RequestsCookieJar[<Cookie cookie=7b54f4e7e5b3a136597c2c5d57e44c0; t=5b9661cda0b5e825c49d562bbebfb7f1; _tb_token_=57b73e781399b; _samesite_flag_=true; enc=4IcYQAEf6n8oYeYZDLKpWuyuMMQld6/11EcD6gmhQrw/ybZmwqhhOo45tTuOpZMXQNYfj/hoIHrzvTvg+5UuTA==; thw=cn; hng=GLOBAL|zh-CN|USD|999; alitrackid=www.taobao.com; xlly_s=1; lastalitrackid=www.taobao.com; mt=ci=0_0; cna=ghItGJbpnRQCAd73JQuwqdcQ; _m_h5_tk=258f615938a9fffd610ad420c8b6c038_1612187188554; _m_h5_tk_enc=adf4cac53165bdf2f886f6d44e09196f; JSESSIONID=CE1405197D4F86041BF290FE23160A41; l=eBaGSPBgOnge41TyBOfZhurza77TGIRfguPzaNbMiOCPOa1p5LY5W6MkobT9CnGVH62MR38KdX68B4TWsydVtSQ5uM80AC1Z3dC..; isg=BHR0od8YqLBu6QNHDIAcZcY9RTLmTZg3W5DG-A7Vc_-LeRXDNlkixwc7-bGhgdCP; tfstk=cKDPBufYZLpyLFyB68wFPQULnSPRZqa35traZXUZ4qH2xlPlik7Lmn_L0kz9n7f..; sgcookie=E1005JQj9/1cnplokvGtldOlk/RurBNfOYmf7En3q+qG0/3ENfVuDTUmdPd6ErRlZLt677g5UqtOmRtO/K7M1YbXjw==; unb=2665991651; uc1=cookie21=W5iHLLyFe3xm&cookie14=Uoe1gBpbBvXwQw==&pas=0&cookie16=W5iHLLyFPlMGbLDwA+dvAGZqLg==&existShop=false&cookie15=W5iHLLyFOGW7aA==; uc3=lg2=V32FPkk/w0dUvg==&nk2=3Rj2a800wpk=&vt3=F8dCuAbxCWMMXsmH758=&id2=UU6nRCwmzNLA9Q==; csg=339090b8; lgc=\u9152\u75AF\u72FClp; cookie17=UU6nRCwmzNLA9Q==; dnk=\u9152\u75AF\u72FClp; skt=3937ef62536f1fb6; existShop=MTYxMjE3ODU2OQ==; uc4=nk4=0@35PWOqVA3il14dduk5b6A0kRbw==&id4=0@U2xqIFo4BlQVQlqi37AO9HfxSNjE; tracknick=\u9152\u75AF\u72FClp; _cc_=VFC/uZ9ajQ==; _l_g_=Ug==; sg=p17; _nk_=\u9152\u75AF\u72FClp; cookie1=U7HwN3kxiXT7IEAcQ8eG3KkqRoGDI3P9LO+TJyuRgyU= for />]>
         '''
@@ -76,12 +76,12 @@ def getTBHTMLText(url, dSearch, ip=0):
             r = reqS.get(url, timeout=0.7, headers=headers, params=dSearch)
         else:
             r = reqS.get(url, timeout=1, headers=headers)
-        print(r.status_code, r.encoding, r.apparent_encoding)
-        print(r.request.url)
+        # print(r.status_code, r.encoding, r.apparent_encoding)
+        # print(r.request.url)
         r.raise_for_status()  # 如果状态不是200 引发http error异常
         r.encoding = r.apparent_encoding
-        print(r.request.headers)
-        print(r.headers)
+        # print(r.request.headers)
+        # print(r.headers)
         # print(r.request.headers['cookie'])
         return r.text
     except Exception as e:
@@ -142,9 +142,8 @@ def printGoodsList(ilt, num=5):
     print("")
 
 
-def getTaobaoProd(qName = '手机', cnt = 1):
-    use_old = 0
-    print('qName, cnt: ', qName, cnt)
+def getTaobaoProd(qName='手机', cnt=1, uo=0):
+    use_old = uo
     url = "https://s.taobao.com/search"
     dSearch = {'q': qName, 's': '0',
     'imgfile':'',
@@ -168,7 +167,7 @@ def getTaobaoProd(qName = '手机', cnt = 1):
                 break
         except:
             print("获取淘宝商品产生异常")
-    printGoodsList(infoList)
+    # printGoodsList(infoList)
     return infoList
 
 

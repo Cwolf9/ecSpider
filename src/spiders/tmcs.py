@@ -205,7 +205,6 @@ def printGoodsList(ilt, num=5):
 
 def getTMCSProd(qName='手机', cnt=3):
     use_old = 0
-    print('qName, cnt: ', qName, cnt)
     url = "https://list.tmall.com/search_product.htm"
     dSearch = {'q': qName, 's': '0'}
     infoList = []
@@ -227,7 +226,7 @@ def getTMCSProd(qName='手机', cnt=3):
                 break
         except:
             print("获取商品产生异常")
-    printGoodsList(infoList)
+    # printGoodsList(infoList)
     return infoList
 
 

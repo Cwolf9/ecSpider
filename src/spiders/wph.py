@@ -133,7 +133,6 @@ def printGoodsList(ilt, num=5):
 
 def getWPHProd(qName='手机', cnt=3):
     use_old = 0
-    print('qName, cnt: ', qName, cnt)
     offset = 0
     infoList = []
     for idp in range(1):
@@ -175,7 +174,7 @@ def getWPHProd(qName='手机', cnt=3):
                 break
         except:
             print("获取商品产生异常")
-    printGoodsList(infoList)
+    # printGoodsList(infoList)
     return infoList
 
 
