@@ -58,6 +58,7 @@ def getHTMLText(url, code='utf-8'):
     }
     try:
         r = requests.get(url, timeout=1, headers=head)
+        print(r.status_code)
         r.raise_for_status()
         r.encoding = r.apparent_encoding
         return r.text
@@ -169,6 +170,9 @@ if __name__ == '__main__':
     x = getNewPrice('https://item.jd.com/100014348492.html', 12333.0)
     print(x)
     # getJDProdComments()
+
+
+
 
 jd_comment_path = DATA_ROOT_PATH + 'jd_comment.txt'
 

@@ -34,7 +34,7 @@ USERID, PT, COOKIE, REFERER, STATE = 'userid', 'pt', 'cookie', 'referer', 'state
 GOODID, COMMENT, CTIME = 'goodid', 'comment', 'ctime'
 
 
-def getMD5(s) :
+def getMD5(s):
     md5 = hashlib.md5()
     md5.update(s.encode('utf-8'))
     return md5.hexdigest()
@@ -81,4 +81,6 @@ def changeStrSize(s, width, wordSize=12):
 
 if __name__ == "__main__":
     print("conf_win")
+    print(utf_8ToStr("%E7%AC%94%E8%AE%B0%E6%9C%AC"))
     print(strToBytes('酒疯狼'))
+    print(strToBytes('酒疯狼', 'gb2312'))
